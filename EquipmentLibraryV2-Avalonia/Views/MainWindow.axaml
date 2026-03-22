@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:controls="using:EquipmentLibraryV2_Avalonia"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+        Width="1000" Height="650" MinWidth="500" MinHeight="350"
+        x:Class="EquipmentLibraryV2_Avalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Background="Gray"
+        ExtendClientAreaToDecorationsHint="False"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Assets/Logo/logo.ico"
+        Title="EquipmentLibraryV2_Avalonia">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Border ClipToBounds="True">
+        <Grid>
+            <ContentControl Content="{Binding TopOverlayContent}" ZIndex="1"/>
+            <Grid Grid.ColumnDefinitions="60, *">
+                <Grid Grid.Column="0" Grid.Row="1"
+                      ZIndex="1"
+                      MinWidth="50">
+                    <controls:RightBoardUserControl/>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
+                    <ContentControl Content="{Binding CurrentPage}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+
+</Window>

@@ -1,0 +1,33 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Border.UserCard">
+        <Setter Property="Background" Value="#333333"/>
+        <Setter Property="BorderBrush" Value="#444"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Margin" Value="4,4,4,8"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.UserCard:pointerover">
+        <Setter Property="Background" Value="#3D3D3D"/>
+        <Setter Property="BorderBrush" Value="#28A745"/>
+    </Style>
+
+    <Style Selector="Button.IconButton">
+        <Setter Property="Width" Value="34"/>
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.IconButton Image">
+        <Setter Property="Opacity" Value="0.8"/>
+    </Style>
+    <Style Selector="Button.IconButton:pointerover Image">
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+</Styles>

@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="55" d:DesignHeight="570"
+             x:DataType="vm:RightBoardUserControlViewModel"
+             x:Class="EquipmentLibraryV2_Avalonia.RightBoardUserControl">
+    <Grid>
+		<Border Background="Black" Opacity="0.8"/>
+        <Grid RowDefinitions="Auto,*,Auto">
+            <Border Grid.Row="0" 
+                    BorderBrush="Gray" 
+                    BorderThickness="0,0,0,1"
+                    Height="64">
+                <TextBlock Text="ELA V2"
+                           FontSize="10"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+            </Border>
+
+            <StackPanel Grid.Row="1" Spacing="8" HorizontalAlignment="Center">
+                <ItemsControl ItemsSource="{Binding Buttons}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+                            <Button Command="{Binding Command}" Width="40" Height="40" Background="Transparent">
+                                <Image Source="{Binding IconPath}"
+                                       Width="30"
+                                       Height="30"
+                                       Stretch="Uniform"/>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <Border Grid.Row="2" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                   <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="40" Height="40" Background="Transparent">
+                        <Image Source="/Assets/user-64.png"
+                               Width="30"
+                               Height="30"
+                               Stretch="Uniform"/>
+                    </Button>
+                    <Button Command="{Binding OpenSettingsCommand}" Width="40" Height="40" Background="Transparent">
+                        <Image Source="/Assets/settings-64.png"
+                               Width="30"
+                               Height="30"
+                               Stretch="Uniform"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

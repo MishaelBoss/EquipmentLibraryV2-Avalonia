@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Pages"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:LibraryPageUserControlViewModel"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Pages.LibraryPageUserControlView">
+	<Grid Margin="22"
+		  RowDefinitions="Auto, *">
+		<Grid	Margin="2"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Top"
+				Grid.Row="0">
+			<DockPanel DockPanel.Dock="Top">
+				<TextBox	Grid.Column="0"
+							Width="200"
+							Watermark="Search"
+							Classes="Search"
+							HorizontalAlignment="Center"
+							Text="{Binding SearchText, Mode=TwoWay}"
+							Margin="3"/>
+
+				<CalendarDatePicker SelectedDate="{Binding DateTime}"
+									Margin="3"/>
+				<StackPanel Orientation="Horizontal">
+					<ComboBox	Margin="3"
+								Width="95"
+								MinHeight="15"
+								Height="35"
+								DockPanel.Dock="Right"
+								FontSize="12">
+						<ComboBox.Styles>
+							<Style Selector="ComboBoxItem">
+								<Setter Property="Padding"
+										Value="5, 0"/>
+								<Setter Property="Height"
+										Value="20"/>
+								<Setter Property="MinHeight"
+										Value="12"/>
+								<Setter Property="Foreground"
+										Value="Black"/>
+							</Style>
+						</ComboBox.Styles>
+						<ComboBoxItem Content="Ничего"/>
+					</ComboBox>
+				</StackPanel>
+			</DockPanel>
+		</Grid>
+		<ScrollViewer Grid.Row="1">
+			
+		</ScrollViewer>
+	</Grid>
+</UserControl>

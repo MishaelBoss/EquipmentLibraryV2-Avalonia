@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:DataType="vm:AddOrEditUserUserControlViewModel"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Components.AddOrEditUserUserControlView">
+    
+    <UserControl.Styles>
+		<StyleInclude Source="/Styles/AddUserFormStyles.axaml"/>
+	</UserControl.Styles>
+
+    <Grid>
+        <Border Background="#1A1A1A" Opacity="0.8"/>
+    
+        <Border Classes="FormCard" Width="480" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Margin="25" Spacing="16">
+            
+                <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,10">
+                    <TextBlock Text="Add new user" Foreground="White" FontSize="22" FontWeight="SemiBold"/>
+                    <Button Grid.Column="1" Command="{Binding CloseCommand}" Background="Transparent">
+                        <Image Source="/Assets/close-64.png" Width="18" Height="18"/>
+                    </Button>
+                </Grid>
+            
+                <StackPanel>
+                    <TextBlock Text="Login" Classes="FieldLabel"/>
+                    <TextBox Classes="ModernInput" Text="{Binding Login}"/>
+                </StackPanel>
+
+                <UniformGrid Columns="2">
+                    <StackPanel Margin="0,0,8,0">
+                        <TextBlock Text="First name" Classes="FieldLabel"/>
+                        <TextBox Classes="ModernInput" Text="{Binding FirstName}"/>
+                    </StackPanel>
+                    <StackPanel Margin="8,0,0,0">
+                        <TextBlock Text="Last name" Classes="FieldLabel"/>
+                        <TextBox Classes="ModernInput" Text="{Binding LastName}"/>
+                    </StackPanel>
+                </UniformGrid>
+
+                <UniformGrid Columns="2">
+                    <StackPanel Margin="0,0,8,0">
+                        <TextBlock Text="Password" Classes="FieldLabel"/>
+                        <TextBox Classes="ModernInput" PasswordChar="•" Text="{Binding Password}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="8,0,0,0">
+                        <TextBlock Text="Role" Classes="FieldLabel"/>
+                        <ComboBox Classes="ModernSelect" PlaceholderText="Select role..." ItemsSource="{Binding UserRoles}" SelectedItem="{Binding SelectUserRole}"/>
+                    </StackPanel>
+                </UniformGrid>
+
+                <Button Classes="PrimaryButton" 
+                        Command="{Binding ConfirmCommand}" 
+                        Content="Confirm and Save"
+                        Margin="0,10,0,0"
+                        IsEnabled="{Binding IsActiveConfirmButton}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

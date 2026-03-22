@@ -1,0 +1,70 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using EquipmentLibraryV2_Avalonia.Scripts;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
+using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
+
+namespace EquipmentLibraryV2_Avalonia.ViewModels
+{
+    public partial class MainWindowViewModel : ViewModelBase, 
+        IRecipient<OpenAdminPanelMessage>, 
+        IRecipient<OpenLibraryMessage>, 
+        IRecipient<OpenWorkAreaMessage>, 
+        IRecipient<OpenOrCloseAuthorizationMessage>, 
+        IRecipient<OpenOrCloseAddOrEditUserMessage>,
+        IRecipient<OpenOrCloseConfirmDeleteMessage>
+    {
+        [ObservableProperty] private ViewModelBase? _currentPage;
+        [ObservableProperty] private ViewModelBase? _overlayContent;
+        [ObservableProperty] private ViewModelBase? _topOverlayContent;
+
+        private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
+        private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
+        private readonly WorkAreaUserControlViewModel _workAreaUserControlViewModel = new();
+
+        private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel = new();
+        //private readonly AddOrEditUserUserControlViewModel _addOrEditUserUserControlViewModel = new();
+
+        public MainWindowViewModel()
+        {
+            CurrentPage = _libraryPageUserControlView;
+
+            WeakReferenceMessenger.Default.RegisterAll(this);
+        }
+
+        public void Receive(OpenAdminPanelMessage message)
+        {
+            CurrentPage = _adminPanelPageUserControlViewModel;
+        }
+
+        public void Receive(OpenLibraryMessage message)
+        {
+            CurrentPage = _libraryPageUserControlView;
+        }
+
+        public void Receive(OpenWorkAreaMessage message)
+        {
+            CurrentPage = _workAreaUserControlViewModel;
+        }
+
+        public void Receive(OpenOrCloseAuthorizationMessage message)
+        {
+            OverlayContent = OverlayContent == null ? _authorizationUserControlViewModel : null;
+        }
+
+        public void Receive(OpenOrCloseAddOrEditUserMessage message)
+        {
+            TopOverlayContent = TopOverlayContent == null ? new AddOrEditUserUserControlViewModel(message.Id, message.Login, message.FirstName, message.LastName, message.Password, message.UserRole) : null;
+        }
+
+        public void Receive(OpenOrCloseConfirmDeleteMessage message)
+        {
+            TopOverlayContent = TopOverlayContent == null ? new ConfirmDeleteUserControlViewModel(message.Id, message.Title, message.DeleteSql, message.OnSuccessCallback!, message.AdditionalQueries) : null;
+        }
+
+        ~MainWindowViewModel() 
+        {
+            WeakReferenceMessenger.Default.UnregisterAll(this);
+        }
+    }
+}
