@@ -1,6 +1,3 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Scripts
-{
-    public record OpenLibraryMessage
-    {
-    }
-}
+﻿namespace EquipmentLibraryV2_Avalonia.Scripts;
+
+public record OpenLibraryMessage();

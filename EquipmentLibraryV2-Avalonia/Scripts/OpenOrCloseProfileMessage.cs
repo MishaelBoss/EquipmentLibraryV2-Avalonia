@@ -1,6 +1,3 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Scripts
-{
-    record class OpenOrCloseProfileMessage
-    {
-    }
-}
+﻿namespace EquipmentLibraryV2_Avalonia.Scripts;
+
+record class OpenOrCloseProfileMessage();
