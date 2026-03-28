@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using Dapper;
 using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -26,17 +28,14 @@ public static class AuthService
 
             const string sql = "SELECT id, login, user_type_id FROM public.users WHERE login = @u AND password = @p AND is_active = true";
 
-            await using var cmd = new NpgsqlCommand(sql, connection);
-            cmd.Parameters.AddWithValue("@u", username);
-            cmd.Parameters.AddWithValue("@p", password);
+            var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { u = username, p = password });
 
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (!await reader.ReadAsync()) return false;
+            if (user == null) return false;
 
             CurrentSession = new UserSession(
-                Id: reader.GetInt64(0),
-                Login: reader.GetString(1),
-                UserRole: reader.GetInt64(2)
+                Id: user.Id,
+                Login: user.Login,
+                UserRole: user.UserRole
             );
 
             await SaveLoginCookieAsync(CurrentSession.Id, CurrentSession.Login, Guid.NewGuid().ToString(), DateTime.Now.AddDays(7));

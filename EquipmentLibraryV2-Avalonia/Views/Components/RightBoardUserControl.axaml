@@ -3,52 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="55" d:DesignHeight="570"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="570"
              x:DataType="vm:RightBoardUserControlViewModel"
              x:Class="EquipmentLibraryV2_Avalonia.RightBoardUserControl">
+
     <Grid>
-		<Border Background="Black" Opacity="0.8"/>
-        <Grid RowDefinitions="Auto,*,Auto">
-            <Border Grid.Row="0" 
-                    BorderBrush="Gray" 
-                    BorderThickness="0,0,0,1"
-                    Height="64">
-                <TextBlock Text="ELA V2"
-                           FontSize="10"
-                           FontWeight="SemiBold"
-                           Foreground="White"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"/>
+        <Border Background="Black" Opacity="0.8"/>
+        <Grid RowDefinitions="Auto,Auto,*,Auto">        
+            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,0,1" Height="64">
+                <TextBlock Text="ELA V2" FontSize="15" FontWeight="SemiBold" Foreground="White"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Border>
 
-            <StackPanel Grid.Row="1" Spacing="8" HorizontalAlignment="Center">
+            <StackPanel Grid.Row="2" Spacing="8" HorizontalAlignment="Left" Margin="7,10,0,0">
                 <ItemsControl ItemsSource="{Binding Buttons}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-                            <Button Command="{Binding Command}" Width="40" Height="40" Background="Transparent">
-                                <Image Source="{Binding IconPath}"
-                                       Width="30"
-                                       Height="30"
-                                       Stretch="Uniform"/>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding Command}" Width="185" Height="40" Background="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding IconPath}" Width="30" Height="30" Stretch="Uniform"/>
+                                    <TextBlock Text="{Binding Content}" Classes="MenuText" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                </StackPanel>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
 
-            <Border Grid.Row="2" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">
-                <StackPanel Spacing="8" HorizontalAlignment="Center">
-                   <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="40" Height="40" Background="Transparent">
-                        <Image Source="/Assets/user-64.png"
-                               Width="30"
-                               Height="30"
-                               Stretch="Uniform"/>
+            <Border Grid.Row="3" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">
+                <StackPanel Spacing="8" HorizontalAlignment="Left" Margin="2,0,0,0">
+                   <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="185" Height="40" Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Assets/user-64.png" Width="30" Height="30"/>
+                            <TextBlock Text="Профиль" Classes="MenuText" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
                     </Button>
-                    <Button Command="{Binding OpenSettingsCommand}" Width="40" Height="40" Background="Transparent">
-                        <Image Source="/Assets/settings-64.png"
-                               Width="30"
-                               Height="30"
-                               Stretch="Uniform"/>
+                    <Button Command="{Binding OpenSettingsCommand}" Width="185" Height="40" Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Assets/settings-64.png" Width="30" Height="30"/>
+                            <TextBlock Text="Настройки" Classes="MenuText" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
                     </Button>
                 </StackPanel>
             </Border>

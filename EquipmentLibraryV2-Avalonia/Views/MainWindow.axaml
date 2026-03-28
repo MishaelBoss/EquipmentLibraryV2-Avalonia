@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:controls="using:EquipmentLibraryV2_Avalonia"
+        xmlns:converters="using:EquipmentLibraryV2_Avalonia.Converters"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +9,7 @@
         Width="1000" Height="650" MinWidth="500" MinHeight="350"
         x:Class="EquipmentLibraryV2_Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Background="Gray"
+        Background="#252526"
         ExtendClientAreaToDecorationsHint="False"
         WindowStartupLocation="CenterScreen"
         Icon="/Assets/Logo/logo.ico"
@@ -18,22 +19,24 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Border ClipToBounds="True">
-        <Grid>
-            <ContentControl Content="{Binding TopOverlayContent}" ZIndex="1"/>
-            <Grid Grid.ColumnDefinitions="60, *">
-                <Grid Grid.Column="0" Grid.Row="1"
-                      ZIndex="1"
-                      MinWidth="50">
-                    <controls:RightBoardUserControl/>
-                </Grid>
+    <Window.Resources>
+        <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
+    </Window.Resources>
 
-                <Grid Grid.Column="1">
-                    <ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
-                    <ContentControl Content="{Binding CurrentPage}"/>
-                </Grid>
-            </Grid>
+
+    <Grid ColumnDefinitions="Auto, *">
+        <Grid Grid.Column="0">
+            <controls:RightBoardUserControl DataContext="{Binding RightBoardViewModel}"/>
         </Grid>
-    </Border>
+
+        <Grid Grid.Column="1">
+            <ContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
+            <ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
+        </Grid>
+
+        <ContentControl Grid.ColumnSpan="2" 
+                        Content="{Binding TopOverlayContent}" 
+                        ZIndex="10"/>
+    </Grid>
 
 </Window>

@@ -118,6 +118,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 
         private async Task<List<long>> GetFilteredUserIdsAsync(CancellationToken cancellationToken = default)
         {
+            var currentUserId = AuthService.CurrentSession?.Id;
+
             var userIds = new List<long>();
 
             try
@@ -143,7 +145,11 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                     parameters.Add(new NpgsqlParameter("@search", $"%{SearchText}%"));
                 }
 
-                sql += $" AND u.id != {AuthService.CurrentSession?.Id}";
+                if (currentUserId.HasValue) 
+                {
+                    sql += " AND u.id != @currentUserId";
+                    parameters.Add(new NpgsqlParameter("@currentUserId", currentUserId.Value));
+                }
 
                 await using var command = new NpgsqlCommand(sql, connection);
                 command.Parameters.AddRange(parameters.ToArray());

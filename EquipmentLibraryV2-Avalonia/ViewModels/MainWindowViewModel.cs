@@ -12,7 +12,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         IRecipient<OpenWorkAreaMessage>, 
         IRecipient<OpenOrCloseAuthorizationMessage>, 
         IRecipient<OpenOrCloseAddOrEditUserMessage>,
-        IRecipient<OpenOrCloseConfirmDeleteMessage>
+        IRecipient<OpenOrCloseConfirmDeleteMessage>,
+        IRecipient<OpenMeasurementRegisterMessage>,
+        IRecipient<OpenRegisterOfTestingEquipmentMessage>
     {
         [ObservableProperty] private ViewModelBase? _currentPage;
         [ObservableProperty] private ViewModelBase? _overlayContent;
@@ -21,15 +23,20 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
         private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
         private readonly WorkAreaUserControlViewModel _workAreaUserControlViewModel = new();
+        private readonly MeasurementRegisterPageUserControlViewModel _measurementRegisterPageUserControlViewModel = new();
+        private readonly RegisterOfTestingEquipmentPageUserControlViewModel _registerOfTestingEquipmentPageUserControlViewModel = new();
 
         private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel = new();
         //private readonly AddOrEditUserUserControlViewModel _addOrEditUserUserControlViewModel = new();
+
+        public RightBoardUserControlViewModel RightBoardViewModel { get; }
 
         public MainWindowViewModel()
         {
             CurrentPage = _libraryPageUserControlView;
 
             WeakReferenceMessenger.Default.RegisterAll(this);
+            RightBoardViewModel = new RightBoardUserControlViewModel();
         }
 
         public void Receive(OpenAdminPanelMessage message)
@@ -60,6 +67,16 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         public void Receive(OpenOrCloseConfirmDeleteMessage message)
         {
             TopOverlayContent = TopOverlayContent == null ? new ConfirmDeleteUserControlViewModel(message.Id, message.Title, message.DeleteSql, message.OnSuccessCallback!, message.AdditionalQueries) : null;
+        }
+
+        public void Receive(OpenMeasurementRegisterMessage message)
+        {
+            CurrentPage = _measurementRegisterPageUserControlViewModel;
+        }
+
+        public void Receive(OpenRegisterOfTestingEquipmentMessage message)
+        {
+            CurrentPage = _registerOfTestingEquipmentPageUserControlViewModel;
         }
 
         ~MainWindowViewModel() 

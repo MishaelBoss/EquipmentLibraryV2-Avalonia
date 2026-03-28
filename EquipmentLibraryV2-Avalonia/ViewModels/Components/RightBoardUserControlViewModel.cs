@@ -36,6 +36,18 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     }
 
     [RelayCommand]
+    public void OpenMeasurementRegister()
+    {
+        WeakReferenceMessenger.Default.Send(new OpenMeasurementRegisterMessage());
+    }
+
+    [RelayCommand]
+    public void OpenRegisterOfTestingEquipment()
+    {
+        WeakReferenceMessenger.Default.Send(new OpenRegisterOfTestingEquipmentMessage());
+    }
+
+    [RelayCommand]
     public void OpenLibrary() 
     {
         WeakReferenceMessenger.Default.Send(new OpenLibraryMessage());
@@ -76,8 +88,10 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
 
         var newButtons = new List<DashboardButtonViewModel>
         {
-            new("AdminPanel",OpenAdminPanelCommand,  LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/admin-panel-64.png"), () => roleId == 1),
-            new("WorkArea", OpenWorkAreaCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"),() => roleId is 1 or 2),
+            new("Admin panel",OpenAdminPanelCommand,  LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/admin-panel-64.png"), () => roleId == 1),
+            new("Work area", OpenWorkAreaCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"),() => roleId is 1 or 2),
+            new("Measurement register", OpenMeasurementRegisterCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => roleId is 1 or 2),
+            new("Register of testing equipment", OpenRegisterOfTestingEquipmentCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => roleId is 1 or 2),
             new("Library", OpenLibraryCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => true),
         };
 
