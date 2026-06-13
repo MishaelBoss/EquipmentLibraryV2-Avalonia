@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/WorkAreaUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
