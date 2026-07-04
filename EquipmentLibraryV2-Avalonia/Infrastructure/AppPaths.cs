@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace EquipmentLibraryV2_Avalonia.Scripts 
+namespace EquipmentLibraryV2_Avalonia.Infrastructure 
 {
     public abstract class AppPaths
     {

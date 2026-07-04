@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Services;
 
-namespace EquipmentLibraryV2_Avalonia.Scripts 
+namespace EquipmentLibraryV2_Avalonia.Infrastructure 
 {
     public abstract class AppConfig
     {

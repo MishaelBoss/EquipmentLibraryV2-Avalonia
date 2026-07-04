@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
@@ -95,7 +96,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
             new("Library", OpenLibraryCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => true),
         };
 
-        var visibleButtons = newButtons.Where(b => b.IsVisible);
+        var visibleButtons = newButtons.Where(b => b.IsButtonVisible);
 
         foreach (var btn in visibleButtons)
         {

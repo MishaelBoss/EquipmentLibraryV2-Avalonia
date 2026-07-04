@@ -10,6 +10,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {

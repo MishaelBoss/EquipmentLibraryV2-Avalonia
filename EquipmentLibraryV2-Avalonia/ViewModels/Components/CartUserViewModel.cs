@@ -7,6 +7,8 @@ using Npgsql;
 using Serilog;
 using System;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {

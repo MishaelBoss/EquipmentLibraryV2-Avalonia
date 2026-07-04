@@ -1,13 +1,11 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using EquipmentLibraryV2_Avalonia.Scripts;
 using EquipmentLibraryV2_Avalonia.ViewModels;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 using System.IO;
-using System.Linq;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
 
 namespace EquipmentLibraryV2_Avalonia
 {

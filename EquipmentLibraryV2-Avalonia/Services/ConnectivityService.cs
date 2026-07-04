@@ -3,8 +3,9 @@ using Serilog;
 using System;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
 
-namespace EquipmentLibraryV2_Avalonia.Scripts;
+namespace EquipmentLibraryV2_Avalonia.Services;
 
 internal static class ConnectivityService
 {
