@@ -15,9 +15,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 {
     public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipient<RefreshUserListMessage>
     {
-        [ObservableProperty] private string _searchText = string.Empty;
-        [ObservableProperty] private bool _showActiveUsers = true;
-        [ObservableProperty] private bool _showInactiveUsers = true;
+        [ObservableProperty] public partial string SearchText { get; set; } = string.Empty;
+        [ObservableProperty] public partial bool ShowActiveUsers { get; set; } = true;
+        [ObservableProperty] public partial bool ShowInactiveUsers { get; set; } = true;
 
         [ObservableProperty] private ObservableCollection<CartUserViewModel> _userList = [];
 

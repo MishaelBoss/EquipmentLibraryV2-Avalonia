@@ -7,20 +7,18 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 public partial class DashboardButtonViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private string _content;
+    [ObservableProperty] public partial string ButtonText { get; set; }
 
-    [ObservableProperty]
-    private bool _isVisible = true;
+    [ObservableProperty] public partial bool IsButtonVisible { get; set; } = true;
 
     public ICommand Command { get; }
     public Bitmap IconPath { get; }
 
     private readonly Func<bool> _isVisibleFunc;
 
-    public DashboardButtonViewModel(string content, ICommand command, Bitmap iconPath, Func<bool>? isVisibleFunc = null)
+    public DashboardButtonViewModel(string buttonText, ICommand command, Bitmap iconPath, Func<bool>? isVisibleFunc = null)
     {
-        Content = content;
+        ButtonText = buttonText;
         Command = command;
         IconPath = iconPath;
         _isVisibleFunc = isVisibleFunc ?? (() => true);
@@ -30,6 +28,6 @@ public partial class DashboardButtonViewModel : ViewModelBase
 
     public void UpdateVisibility()
     {
-        IsVisible = _isVisibleFunc();
+        IsButtonVisible = _isVisibleFunc();
     }
 }

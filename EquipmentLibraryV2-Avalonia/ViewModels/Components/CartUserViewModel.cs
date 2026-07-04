@@ -14,13 +14,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
     {
         public long UserId { get; init; }
         public int UserRole { get; init; }
-        [ObservableProperty]private string _login = string.Empty;
-        [ObservableProperty]private string _middleName = string.Empty;
-        [ObservableProperty]private string _password = string.Empty;
-        [ObservableProperty]private string _firstName = string.Empty;
-        [ObservableProperty]private string _lastName = string.Empty;
-        [ObservableProperty]private string _dateJoined = string.Empty;
-        [ObservableProperty]private bool? _isActive;
+        [ObservableProperty] public partial string Login { get; set; } = string.Empty;
+        [ObservableProperty] public partial string MiddleName { get; set; } = string.Empty;
+        [ObservableProperty] public partial string Password { get; set; } = string.Empty;
+        [ObservableProperty] public partial string FirstName { get; set; } = string.Empty;
+        [ObservableProperty] public partial string LastName { get; set; } = string.Empty;
+        [ObservableProperty] public partial string DateJoined { get; set; } = string.Empty;
+        [ObservableProperty] public partial bool? IsActive { get; set; }
 
         [RelayCommand]
         public void CopyPassword()

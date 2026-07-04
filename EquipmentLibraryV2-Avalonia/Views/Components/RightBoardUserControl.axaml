@@ -6,6 +6,10 @@
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="570"
              x:DataType="vm:RightBoardUserControlViewModel"
              x:Class="EquipmentLibraryV2_Avalonia.RightBoardUserControl">
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/RightBoardStyles.axaml"/>
+    </UserControl.Styles>
 
     <Grid>
         <Border Background="Black" Opacity="0.8"/>
@@ -19,10 +23,10 @@
                 <ItemsControl ItemsSource="{Binding Buttons}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding Command}" Width="185" Height="40" Background="Transparent">
+                            <Button Command="{Binding Command}" Width="185" Height="40" Classes="BTN">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding IconPath}" Width="30" Height="30" Stretch="Uniform"/>
-                                    <TextBlock Text="{Binding Content}" Classes="MenuText" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                    <TextBlock Text="{Binding ButtonText}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>
@@ -32,16 +36,16 @@
 
             <Border Grid.Row="3" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">
                 <StackPanel Spacing="8" HorizontalAlignment="Left" Margin="2,0,0,0">
-                   <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="185" Height="40" Background="Transparent">
+                   <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="185" Height="40" Classes="BTN">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Assets/user-64.png" Width="30" Height="30"/>
-                            <TextBlock Text="Профиль" Classes="MenuText" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text="Профиль" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <Button Command="{Binding OpenSettingsCommand}" Width="185" Height="40" Background="Transparent">
+                    <Button Command="{Binding OpenSettingsCommand}" Width="185" Height="40" Classes="BTN">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Assets/settings-64.png" Width="30" Height="30"/>
-                            <TextBlock Text="Настройки" Classes="MenuText" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text="Настройки" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>

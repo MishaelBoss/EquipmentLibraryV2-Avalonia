@@ -15,16 +15,30 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {
     public partial class AddOrEditUserUserControlViewModel : ViewModelBase
     {
-        private long? _id { get; }
+        private readonly long? _id;
         private readonly int? _initialUserRoleId;
 
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private string? _login;
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private string? _firstName;
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private string? _lastName;
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private string? _password;
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private UserRole? _selectUserRole;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial string? Login { get; set; }
 
-        [ObservableProperty] private ObservableCollection<UserRole> _userRoles = [];
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial string? FirstName { get; set; }
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial string? LastName { get; set; }
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial string? Password { get; set; }
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial UserRole? SelectUserRole { get; set; }
+
+        [ObservableProperty] public partial ObservableCollection<UserRole> UserRoles { get; set; } = [];
 
         public bool IsActiveConfirmButton
             => !string.IsNullOrEmpty(Login)
@@ -48,7 +62,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Error(ex.Message);
             }
         }
 
@@ -83,7 +97,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                 command.Parameters.AddWithValue("@first_name", FirstName!);
                 command.Parameters.AddWithValue("@last_name", LastName!);
                 command.Parameters.AddWithValue("@password", Password!);
-                command.Parameters.AddWithValue("@user_type_id", SelectUserRole?.Id!);
+                command.Parameters.AddWithValue("@user_type_id", SelectUserRole!.Id);
                 if (_id != 0) command.Parameters.AddWithValue("@id", _id!);
 
                 await command.ExecuteNonQueryAsync();

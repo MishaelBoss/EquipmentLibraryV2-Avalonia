@@ -15,7 +15,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<LoginMessage>
 {
-    [ObservableProperty] private ObservableCollection<DashboardButtonViewModel> _buttons = [];
+    [ObservableProperty] public partial ObservableCollection<DashboardButtonViewModel> Buttons { get; set; } = [];
 
     public RightBoardUserControlViewModel() 
     {

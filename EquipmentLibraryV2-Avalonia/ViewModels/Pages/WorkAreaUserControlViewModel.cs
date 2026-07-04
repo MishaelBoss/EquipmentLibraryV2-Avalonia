@@ -14,12 +14,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
 public partial class WorkAreaUserControlViewModel : ViewModelBase
 {
-    [ObservableProperty] public ObservableCollection<EquipmentType> _equipmentTypes = [];
-    [ObservableProperty] private EquipmentType? _selectedEquipmentType;
+    [ObservableProperty] public partial ObservableCollection<EquipmentType> EquipmentTypes { get; set; } = [];
+    [ObservableProperty] public partial EquipmentType? SelectedEquipmentType { get; set; }
 
     public WorkAreaUserControlViewModel() 
     {
-        Task.Run(() => RefreshDataAsync());
+        Task.Run(async () => await RefreshDataAsync());
     }
 
     private async Task RefreshDataAsync() 
@@ -35,7 +35,7 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
     {
         try
         {
-            using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             const string sql = "SELECT id, type FROM public.equipment_type";
             var data = (await connection.QueryAsync<EquipmentType>(sql)).ToList();
 

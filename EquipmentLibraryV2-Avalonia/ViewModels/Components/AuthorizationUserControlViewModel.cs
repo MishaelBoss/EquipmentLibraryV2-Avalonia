@@ -11,12 +11,20 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {
     public partial class AuthorizationUserControlViewModel : ViewModelBase
     {
-        [ObservableProperty] private string _messageError = string.Empty;
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private string _login = string.Empty;
-        [ObservableProperty][NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))] private string _password = string.Empty;
-        [ObservableProperty] private Bitmap? _eyeIcon;
-        [ObservableProperty] private bool _isPasswordVisible;
+        [ObservableProperty] public partial string MessageError { get; set; } = string.Empty;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial string Login { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+        public partial string Password { get; set; } = string.Empty;
+
+        [ObservableProperty] public partial Bitmap? EyeIcon { get; set; }
+        
+        [ObservableProperty] public partial bool IsPasswordVisible { get; set; }
+        
         public bool IsActiveConfirmButton
             => !string.IsNullOrEmpty(Login)
             && !string.IsNullOrEmpty(Password);

@@ -68,7 +68,7 @@ internal static class ConnectivityService
 
         try
         {
-            using var connection = new NpgsqlConnection(connString);
+            await using var connection = new NpgsqlConnection(connString);
             await connection.OpenAsync();
 
             await using var cmd = new NpgsqlCommand("SELECT 1", connection);
