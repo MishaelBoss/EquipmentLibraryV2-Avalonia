@@ -3,7 +3,7 @@ using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using EquipmentLibraryV2_Avalonia.Scripts;
+using EquipmentLibraryV2_Avalonia.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

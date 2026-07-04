@@ -1,4 +1,4 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Scripts
+﻿namespace EquipmentLibraryV2_Avalonia.Messages
 {
     record class LogoutMessage
     {

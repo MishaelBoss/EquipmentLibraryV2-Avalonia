@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
 using EquipmentLibraryV2_Avalonia.Models;
-using EquipmentLibraryV2_Avalonia.Scripts;
+using EquipmentLibraryV2_Avalonia.Messages;
 using Npgsql;
 using Serilog;
 using System;

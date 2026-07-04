@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using EquipmentLibraryV2_Avalonia.Scripts;
+using EquipmentLibraryV2_Avalonia.Messages;
 using Npgsql;
 using Serilog;
 using System;
