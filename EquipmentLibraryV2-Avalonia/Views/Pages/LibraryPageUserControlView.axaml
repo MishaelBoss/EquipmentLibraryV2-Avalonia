@@ -8,28 +8,42 @@
              x:Class="EquipmentLibraryV2_Avalonia.Views.Pages.LibraryPageUserControlView">
 	<Grid Margin="22"
 		  RowDefinitions="Auto, *">
-		<Grid	Margin="2"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top"
-				Grid.Row="0">
-			<DockPanel DockPanel.Dock="Top">
-				<TextBox	Grid.Column="0"
-							Width="200"
-							Watermark="Search"
-							Classes="Search"
-							HorizontalAlignment="Center"
-							Text="{Binding SearchText, Mode=TwoWay}"
-							Margin="3"/>
+		<Grid Margin="2"
+		      HorizontalAlignment="Center"
+		      VerticalAlignment="Top"
+		      Grid.Row="0">
+			<Border CornerRadius="20"
+					Background="#8E9198"
+					Padding="16,8">
+				<DockPanel>
+					<TextBox Width="280"
+					         Height="38"
+					         Watermark="Search"
+					         Classes="Search"
+					         HorizontalAlignment="Center"
+					         Text="{Binding SearchText, Mode=TwoWay}"
+					         Margin="8"
+					         CornerRadius="14"
+					         BorderThickness="1.5"
+					         BorderBrush="#B0B3B8"
+					         FontSize="15"/>
 
-				<CalendarDatePicker SelectedDate="{Binding DateTime}"
-									Margin="3"/>
-				<StackPanel Orientation="Horizontal">
-					<ComboBox	Margin="3"
-								Width="95"
-								MinHeight="15"
-								Height="35"
-								DockPanel.Dock="Right"
-								FontSize="12">
+					<CalendarDatePicker SelectedDate="{Binding DateTime}"
+										Height="38"
+										Margin="8"
+										CornerRadius="14"
+										BorderThickness="1.5"
+										BorderBrush="#B0B3B8"
+										FontSize="15"/>
+					<StackPanel Orientation="Horizontal">
+						<ComboBox Margin="8"
+						          Width="140"
+						          Height="38"
+						          DockPanel.Dock="Right"
+						          FontSize="15"
+						          CornerRadius="14"
+						          BorderThickness="1.5"
+						          BorderBrush="#B0B3B8">
 						<ComboBox.Styles>
 							<Style Selector="ComboBoxItem">
 								<Setter Property="Padding"
@@ -46,7 +60,9 @@
 					</ComboBox>
 				</StackPanel>
 			</DockPanel>
+			</Border>
 		</Grid>
+		
 		<ScrollViewer Grid.Row="1">
 			
 		</ScrollViewer>
