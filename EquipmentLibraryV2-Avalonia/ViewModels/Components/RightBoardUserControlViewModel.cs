@@ -77,7 +77,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
 
                 if (mainWindow != null)
                 {
-                    await dialog.ShowDialog<bool>(mainWindow);
+                    await dialog.ShowDialog(mainWindow);
                 }
             }
         }
@@ -90,7 +90,19 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     [RelayCommand]
     public void OpenSettings()
     {
-        WeakReferenceMessenger.Default.Send(new OpenOrCloseSettingsMessage());
+        // WeakReferenceMessenger.Default.Send(new OpenOrCloseSettingsMessage());
+
+        var dialog = new SettingsDialogWindow();
+
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var mainWindow = desktop.MainWindow;
+
+            if (mainWindow != null)
+            {
+                dialog.ShowDialog(mainWindow);
+            }
+        }
     }
 
     private async void UpdateUi()
