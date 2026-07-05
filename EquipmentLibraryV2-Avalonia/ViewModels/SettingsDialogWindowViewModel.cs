@@ -1,13 +1,33 @@
-﻿using Avalonia.Controls;
+﻿using System.Collections.ObjectModel;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
-using EquipmentLibraryV2_Avalonia.Infrastructure;
-using System.Diagnostics;
-using System.IO;
+using CommunityToolkit.Mvvm.ComponentModel;
+using EquipmentLibraryV2_Avalonia.ViewModels.Settings;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels;
 
+public class SettingsPageItem
+{
+    public string Title { get; set; } = string.Empty;
+    public ViewModelBase ViewModel { get; set; } = null!;
+}
+
 public partial class SettingsDialogWindowViewModel : ViewModelBase
 {
+    public ObservableCollection<SettingsPageItem> Pages { get; }
+
+    [ObservableProperty] public partial SettingsPageItem? SelectedPage { get; set; }
+
+    public SettingsDialogWindowViewModel()
+    {
+        Pages =
+        [
+            new SettingsPageItem { Title = "Логирование", ViewModel = new LoggingViewModel() }
+        ];
+
+        SelectedPage = Pages[0];
+    }
+    
     [RelayCommand]
     public void Cancel(Window? window) {
         window?.Close();
@@ -20,23 +40,5 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
     [RelayCommand]
     public void Ok(Window? window) {
         window?.Close();
-    }
-
-    [RelayCommand]
-    public void OpenLogsFolder()
-    {
-        string logsPath = Path.Combine(AppPaths.UserDataDir, "logs");
-
-        if (!Directory.Exists(logsPath))
-        {
-            Directory.CreateDirectory(logsPath);
-        }
-
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = logsPath,
-            UseShellExecute = true,
-            Verb = "open"
-        });
     }
 }

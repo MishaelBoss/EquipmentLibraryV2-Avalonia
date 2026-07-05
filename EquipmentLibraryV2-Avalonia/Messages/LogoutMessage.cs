@@ -1,6 +1,3 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Messages
-{
-    record class LogoutMessage
-    {
-    }
-}
+﻿namespace EquipmentLibraryV2_Avalonia.Messages;
+
+public record LogoutMessage;

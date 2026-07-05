@@ -3,6 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+        xmlns:settings="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Settings"
+        xmlns:settingsVm="clr-namespace:EquipmentLibraryV2_Avalonia.ViewModels.Settings"
         x:DataType="vm:SettingsDialogWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
         Width="1000" Height="620"
@@ -12,10 +14,15 @@
         Background="#000000"
         x:Class="EquipmentLibraryV2_Avalonia.SettingsDialogWindow"
         Title="Настройки">
+    
+    <Window.DataTemplates>
+        <DataTemplate DataType="{x:Type settingsVm:LoggingViewModel}">
+            <settings:LoggingView/>
+        </DataTemplate>
+    </Window.DataTemplates>
 
     <Grid RowDefinitions="*, Auto">        
         <Grid Grid.Row="0" ColumnDefinitions="250, *">
-            
             <!-- ЛЕВАЯ ПАНЕЛЬ: Навигация в темном стиле -->
             <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#000000" Margin="0,16,0,0">
                 <!-- Поиск по настройкам -->
@@ -29,7 +36,13 @@
                          Foreground="White"/>
                 
                 <!-- Список категорий -->
-                <ListBox Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="0,12,0,0">
+                <ListBox Grid.Row="1" 
+                         ItemsSource="{Binding Pages}" 
+                         SelectedItem="{Binding SelectedPage}" 
+                         Background="Transparent" 
+                         BorderThickness="0" 
+                         Margin="0,12,0,0">
+                    
                     <ListBox.Styles>
                         <!-- Базовый стиль для всех элементов списка -->
                         <Style Selector="ListBoxItem">
@@ -52,67 +65,29 @@
                         </Style>
                     </ListBox.Styles>
                     
-                    <ListBoxItem Content="Admin panel" />
-                    <ListBoxItem Content="Work area" />
-                    <ListBoxItem Content="Measurement register" />
-                    <ListBoxItem Content="Register of testing eq" />
-                    <ListBoxItem Content="Library" />
-                    <ListBoxItem Content="Внешний вид" />
-                    <!-- Активный пункт логирования-->
-                    <ListBoxItem Content="Логирование" IsSelected="True" FontWeight="Medium"/>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
 
-            <!-- ПРАВАЯ ПАНЕЛЬ: Рабочая область -->
             <Border Grid.Column="1" 
                     Background="#1F2023" 
                     CornerRadius="12" 
                     Margin="0,16,16,16">
                 
                 <Grid RowDefinitions="Auto, *" Margin="24">
-                    <!-- Заголовок раздела -->
                     <TextBlock Grid.Row="0" 
-                               Text="Логирование" 
+                               Text="{Binding SelectedPage.Title}" 
                                FontSize="18" 
                                FontWeight="SemiBold" 
                                Foreground="White" 
                                Margin="0,0,0,16"/>
                     
-                    <!-- Контент подраздела -->
-                    <StackPanel Grid.Row="1" Spacing="20">
-                        <TextBlock Text="Управление системными журналами и аутентификацией. Вы можете настроить уровень детализации или просмотреть файлы логов напрямую." 
-                                   Foreground="#9E9EB0" 
-                                   FontSize="13" 
-                                   TextWrapping="Wrap"/>
-                        
-                        <!-- Карточка действия -->
-                        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517">
-                            <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
-                                <StackPanel Grid.Column="0" Spacing="4">
-                                    <TextBlock Text="Журналы работы приложения" FontSize="14" FontWeight="Medium" Foreground="White"/>
-                                    <TextBlock Text="Открыть папку со всеми текстовыми файлами логов (.log)" Foreground="#777778" FontSize="12"/>
-                                </StackPanel>
-                                
-                                <!-- Кнопка к логам -->
-                                <Button Grid.Column="1" 
-                                        Content="Открыть логи" 
-                                        Command="{Binding OpenLogsFolderCommand}"
-                                        Padding="16,8" 
-                                        Background="#1F2023" 
-                                        BorderBrush="#3D3D42" 
-                                        BorderThickness="1" 
-                                        Foreground="White"
-                                        CornerRadius="6">
-                                    <Button.Styles>
-                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                            <Setter Property="Background" Value="#2D2D30"/>
-                                            <Setter Property="BorderBrush" Value="#4D4D52"/>
-                                        </Style>
-                                    </Button.Styles>
-                                </Button>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
+                    <ContentControl Grid.Row="1" 
+                                    Content="{Binding SelectedPage.ViewModel}"/>
                 </Grid>
             </Border>
         </Grid>

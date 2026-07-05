@@ -7,6 +7,7 @@ using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase, 
+        IRecipient<LogoutMessage>,
         IRecipient<OpenAdminPanelMessage>, 
         IRecipient<OpenLibraryMessage>, 
         IRecipient<OpenWorkAreaMessage>, 
@@ -37,6 +38,11 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
             WeakReferenceMessenger.Default.RegisterAll(this);
             RightBoardViewModel = new RightBoardUserControlViewModel();
+        }
+
+        public void Receive(LogoutMessage message)
+        {
+            CurrentPage = _libraryPageUserControlView;
         }
 
         public void Receive(OpenAdminPanelMessage message)

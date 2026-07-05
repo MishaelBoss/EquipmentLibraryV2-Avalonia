@@ -16,18 +16,23 @@ using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
-public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<LoginMessage>
+public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<LoginMessage>, IRecipient<LogoutMessage>
 {
     [ObservableProperty] public partial ObservableCollection<DashboardButtonViewModel> Buttons { get; set; } = [];
 
     public RightBoardUserControlViewModel() 
     {
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.RegisterAll(this);
 
         UpdateUi();
     }
 
     public void Receive(LoginMessage message) 
+    {
+        UpdateUi();
+    }
+
+    public void Receive(LogoutMessage message)
     {
         UpdateUi();
     }
@@ -90,8 +95,6 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     [RelayCommand]
     public void OpenSettings()
     {
-        // WeakReferenceMessenger.Default.Send(new OpenOrCloseSettingsMessage());
-
         var dialog = new SettingsDialogWindow();
 
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

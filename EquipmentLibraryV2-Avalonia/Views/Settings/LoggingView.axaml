@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Settings"
+             x:DataType="vm:LoggingViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Settings.LoggingView">
+    
+    <StackPanel Spacing="20">
+        <TextBlock Text="Управление системными журналами и аутентификацией. Вы можете настроить уровень детализации или просмотреть файлы логов напрямую." 
+                   Foreground="#9E9EB0" 
+                   FontSize="13" 
+                   TextWrapping="Wrap"/>
+        
+        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517">
+            <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Журналы работы приложения" FontSize="14" FontWeight="Medium" Foreground="White"/>
+                    <TextBlock Text="Открыть папку со всеми текстовыми файлами логов (.text)" Foreground="#777778" FontSize="12"/>
+                </StackPanel>
+                
+                <Button Grid.Column="1" 
+                        Content="Открыть логи" 
+                        Command="{Binding OpenLogsFolderCommand}"
+                        Padding="16,8" 
+                        Background="#1F2023" 
+                        BorderBrush="#3D3D42" 
+                        BorderThickness="1" 
+                        Foreground="White"
+                        CornerRadius="6">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#2D2D30"/>
+                            <Setter Property="BorderBrush" Value="#4D4D52"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>
