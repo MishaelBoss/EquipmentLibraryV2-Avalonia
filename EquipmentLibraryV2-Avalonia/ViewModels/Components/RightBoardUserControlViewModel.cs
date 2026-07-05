@@ -1,16 +1,18 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
@@ -66,6 +68,22 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         if (await AuthService.TryAutoLoginAsync())
         {
             WeakReferenceMessenger.Default.Send(new OpenOrCloseProfileMessage());
+
+            var dialog = new LogoutDialogWindow();
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var mainWindow = desktop.MainWindow;
+
+                if (mainWindow != null)
+                {
+                    var result = await dialog.ShowDialog<bool>(mainWindow);
+
+                    if (result)
+                    {
+                    }
+                }
+            }
         }
         else
         {

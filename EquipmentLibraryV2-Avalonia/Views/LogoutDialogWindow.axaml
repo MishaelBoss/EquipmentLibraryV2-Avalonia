@@ -1,0 +1,75 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+        mc:Ignorable="d" 
+        Width="400" Height="180"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="#1E1E24"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        x:Class="EquipmentLibraryV2_Avalonia.LogoutDialogWindow"
+        x:DataType="vm:LogoutDialogWindowViewModel"
+        Title="Выход из системы">
+
+    <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8">
+        <Grid RowDefinitions="*, Auto" Margin="24">
+            
+            <StackPanel Grid.Row="0" Spacing="8" VerticalAlignment="Center">
+                <TextBlock Text="Выход из профиля" 
+                           Foreground="White" 
+                           FontSize="18" 
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="Вы уверены, что хотите выйти из учетной записи?" 
+                           Foreground="#9E9EB0" 
+                           FontSize="14" 
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Spacing="12" 
+                        Margin="0,16,0,0">
+                
+                <Button Content="Отмена" 
+                        Name="CancelButton"
+                        Command="{Binding CloseCommand}"
+                        CommandParameter="{Binding #RootWindow}"
+                        Background="Transparent" 
+                        Foreground="#9E9EB0" 
+                        BorderBrush="#3D3D45"
+                        BorderThickness="1"
+                        Padding="20,8"
+                        CornerRadius="6">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#2D2D35"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+
+                <Button Content="Выйти" 
+                        Name="LogoutButton"
+                        Command="{Binding LogoutCommand}"
+                        CommandParameter="{Binding #RootWindow}"
+                        Background="#E05252" 
+                        Foreground="White" 
+                        Padding="24,8"
+                        CornerRadius="6"
+                        FontWeight="Medium">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#C84141"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
