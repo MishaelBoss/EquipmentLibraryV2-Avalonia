@@ -67,7 +67,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     {
         if (await AuthService.TryAutoLoginAsync())
         {
-            WeakReferenceMessenger.Default.Send(new OpenOrCloseProfileMessage());
+            // WeakReferenceMessenger.Default.Send(new OpenOrCloseProfileMessage());
 
             var dialog = new LogoutDialogWindow();
 
@@ -77,11 +77,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
 
                 if (mainWindow != null)
                 {
-                    var result = await dialog.ShowDialog<bool>(mainWindow);
-
-                    if (result)
-                    {
-                    }
+                    await dialog.ShowDialog<bool>(mainWindow);
                 }
             }
         }
