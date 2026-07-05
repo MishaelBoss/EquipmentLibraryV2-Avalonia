@@ -26,7 +26,7 @@ public partial class DashboardButtonViewModel : ViewModelBase
         UpdateVisibility();
     }
 
-    public void UpdateVisibility()
+    private void UpdateVisibility()
     {
         IsButtonVisible = _isVisibleFunc();
     }

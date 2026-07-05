@@ -13,7 +13,7 @@ public partial class LogoutDialogWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void logout(Window? window)
+    public void Logout(Window? window)
     {
         AuthService.Logout();
 
