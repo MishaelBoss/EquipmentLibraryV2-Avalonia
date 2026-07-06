@@ -53,29 +53,40 @@
 						   HorizontalAlignment="Center" 
 						   VerticalAlignment="Top" 
 						   ColumnDefinitions="Auto, Auto">
-
-						 <TextBox Width="200"
-								  PlaceholderText="Поиск"
-								  Classes="Search"
-								  HorizontalAlignment="Center"
-								  Text="{Binding SearchText}"/>
-
+						<Border Grid.Column="0"
+								CornerRadius="20"
+						        Background="#8E9198"
+						        Padding="16,8">
+							
+							<TextBox Width="280"
+							         Height="38"
+							         PlaceholderText="Search"
+							         HorizontalAlignment="Center"
+							         VerticalContentAlignment="Center"
+							         Text="{Binding SearchText, Mode=TwoWay}"
+							         Margin="8"
+							         CornerRadius="14"
+							         BorderThickness="1.5"
+							         BorderBrush="#B0B3B8"
+							         FontSize="15"/>
+						</Border>
+						
 						<StackPanel Grid.Column="1"
-		  							Orientation="Horizontal"
-		  							HorizontalAlignment="Center"
-		  							Margin="10,0,0,0">
+						            Orientation="Horizontal"
+						            HorizontalAlignment="Center"
+						            Margin="10,0,0,0">
 
-		  					<Button Margin="10,0,0,0"
-		  							Width="32"
-		  							Height="32">
-		  						<Image Source="/Assets/download-cloud-64.png"/>
-		  					</Button>
+							<Button Margin="10,0,0,0"
+							        Width="32"
+							        Height="32">
+								<Image Source="/Assets/download-cloud-64.png"/>
+							</Button>
 
-		  					<Button Margin="10,0,0,0"
-		  							Width="32"
-		  							Height="32">
-		  						<Image Source="/Assets/return-64.png"/>
-		  					</Button>
+							<Button Margin="10,0,0,0"
+							        Width="32"
+							        Height="32">
+								<Image Source="/Assets/return-64.png"/>
+							</Button>
 						</StackPanel>
 					</Grid>
 					<StackPanel Grid.Row="1" 
@@ -91,6 +102,7 @@
 									   IsChecked="{Binding ShowInactiveUsers}"/>
 						 </StackPanel>
 						 <Button Content="Сбросить" 
+						         Foreground="White"
 								 Command="{Binding ResetFiltersCommand}" 
 								 Height="27" 
 								 Width="90"/>
