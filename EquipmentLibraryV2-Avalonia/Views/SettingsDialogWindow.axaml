@@ -28,7 +28,7 @@
                 <!-- Поиск по настройкам -->
                 <TextBox Grid.Row="0" 
                          Margin="16,4" 
-                         Watermark="Search" 
+                         PlaceholderText="Search" 
                          Height="32" 
                          CornerRadius="6" 
                          Background="#1F2023" 

@@ -55,7 +55,7 @@
 						   ColumnDefinitions="Auto, Auto">
 
 						 <TextBox Width="200"
-								  Watermark="Поиск"
+								  PlaceholderText="Поиск"
 								  Classes="Search"
 								  HorizontalAlignment="Center"
 								  Text="{Binding SearchText}"/>

@@ -36,7 +36,7 @@
                     <StackPanel>
                         <TextBlock Text="Login" Classes="FieldLabel"/>
                         <TextBox Text="{Binding Login}" 
-                                 Watermark="Your login..." 
+                                 PlaceholderText="Your login..." 
                                  Classes="ModernInput"/>
                     </StackPanel>
 
@@ -44,7 +44,7 @@
                         <TextBlock Text="Password" Classes="FieldLabel"/>
                         <TextBox Text="{Binding Password}" 
                                  PasswordChar="•" 
-                                 Watermark="••••••••" 
+                                 PlaceholderText="••••••••" 
                                  Classes="ModernInput"/>
                     </StackPanel>
                 </StackPanel>

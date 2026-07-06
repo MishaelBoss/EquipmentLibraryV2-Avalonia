@@ -13,7 +13,7 @@
         WindowStartupLocation="CenterScreen"
         Icon="/Assets/Logo/logo.ico"
         ExtendClientAreaToDecorationsHint="True"
-        SystemDecorations="Full"
+        WindowDecorations="Full"
         ExtendClientAreaTitleBarHeightHint="40"
         Title="">
 
