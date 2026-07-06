@@ -52,47 +52,20 @@
 							Background="Transparent"
 							BorderThickness="0"
 							Click="Minimize_Click">
-						<Panel Width="12" Height="12">
-							<Rectangle Fill="#CED0D6"
-									   Width="10" Height="1.5"
-									   HorizontalAlignment="Center"
-									   VerticalAlignment="Center"/>
-						</Panel>
+						<Image Source="{SvgImage /Assets/windows/minimize.svg}" Width="12" Height="12"/>
 					</Button>
 					<Button Width="46" Height="34"
 							Background="Transparent"
 							BorderThickness="0"
 							Click="MaximizeRestore_Click"
 							x:Name="MaximizeRestoreButton">
-						<Panel Width="12" Height="12">
-							<Rectangle Stroke="#CED0D6"
-									   StrokeThickness="1.5"
-									   Width="10" Height="10"
-									   HorizontalAlignment="Center"
-									   VerticalAlignment="Center"
-									   x:Name="MaximizeIcon"/>
-							<Rectangle Stroke="#CED0D6"
-									   StrokeThickness="1.5"
-									   Width="8" Height="8"
-									   HorizontalAlignment="Center"
-									   VerticalAlignment="Center"
-									   Margin="-1,-1,0,0"
-									   x:Name="RestoreIcon"
-									   IsVisible="False"/>
-						</Panel>
+						<Image Source="{SvgImage /Assets/windows/maximize.svg}" Width="12" Height="12"/>
 					</Button>
 					<Button Width="46" Height="34"
 							Background="Transparent"
 							BorderThickness="0"
 							Click="Close_Click">
-						<Panel Width="12" Height="12">
-							<Line StartPoint="1,1" EndPoint="11,11"
-								  Stroke="#CED0D6" StrokeThickness="1.5"
-								  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							<Line StartPoint="11,1" EndPoint="1,11"
-								  Stroke="#CED0D6" StrokeThickness="1.5"
-								  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						</Panel>
+						<Image Source="{SvgImage /Assets/windows/closeActive.svg}" Width="12" Height="12"/>
 					</Button>
 				</StackPanel>
 			</Grid>
