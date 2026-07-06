@@ -1,4 +1,5 @@
 using System;
+using Avalonia;
 using Avalonia.Controls;
 
 namespace EquipmentLibraryV2_Avalonia.Views
@@ -13,6 +14,18 @@ namespace EquipmentLibraryV2_Avalonia.Views
             {
                 WindowDecorations = WindowDecorations.None;
             }
+
+            PropertyChanged += OnWindowStateChanged;
+        }
+
+        private void OnWindowStateChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property == WindowStateProperty)
+            {
+                MainBorder.CornerRadius = WindowState == WindowState.Maximized
+                    ? new CornerRadius(8)
+                    : new CornerRadius(0);
+            }
         }
 
         private void Minimize_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -26,8 +39,8 @@ namespace EquipmentLibraryV2_Avalonia.Views
                 ? WindowState.Normal
                 : WindowState.Maximized;
 
-            //MaximizeIcon.IsVisible = WindowState != WindowState.Maximized;
-            //RestoreIcon.IsVisible = WindowState == WindowState.Maximized;
+            MaximizeIcon.IsVisible = WindowState != WindowState.Maximized;
+            RestoreIcon.IsVisible = WindowState == WindowState.Maximized;
         }
 
         private void Close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

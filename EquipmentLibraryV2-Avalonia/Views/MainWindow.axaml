@@ -52,7 +52,7 @@
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
     </Window.Resources>
 
-	<Border CornerRadius="8" Background="#000000" ClipToBounds="True">
+	<Border CornerRadius="8" Background="#000000" ClipToBounds="True" x:Name="MainBorder">
 		<Grid RowDefinitions="Auto, *">
 
 			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto"  WindowDecorationProperties.ElementRole="TitleBar">
