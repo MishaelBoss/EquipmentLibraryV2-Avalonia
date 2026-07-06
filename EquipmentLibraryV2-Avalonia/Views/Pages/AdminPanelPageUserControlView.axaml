@@ -47,7 +47,7 @@
 		</Grid>
 
         <TabControl Margin="5">
-			<TabItem Header="Users">
+			<TabItem Header="Users" Foreground="White">
 				<Grid RowDefinitions="Auto, Auto, *">
 					<Grid Grid.Row="0" 
 						   HorizontalAlignment="Center" 
