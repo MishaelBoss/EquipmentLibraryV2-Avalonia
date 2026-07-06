@@ -41,8 +41,62 @@
                        VerticalAlignment="Center"
                        IsHitTestVisible="False"/>
 
-            <Grid Grid.Column="2" Width="140" IsHitTestVisible="False"/>
-        </Grid>
+			<Grid Grid.Column="2" Width="140">
+				<Grid IsHitTestVisible="False"
+					  IsVisible="{OnPlatform True, Windows=False}"/>
+
+				<StackPanel Orientation="Horizontal"
+							HorizontalAlignment="Right"
+							IsVisible="{OnPlatform False, Windows=True}">
+					<Button Width="46" Height="34"
+							Background="Transparent"
+							BorderThickness="0"
+							Click="Minimize_Click">
+						<Panel Width="12" Height="12">
+							<Rectangle Fill="#CED0D6"
+									   Width="10" Height="1.5"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"/>
+						</Panel>
+					</Button>
+					<Button Width="46" Height="34"
+							Background="Transparent"
+							BorderThickness="0"
+							Click="MaximizeRestore_Click"
+							x:Name="MaximizeRestoreButton">
+						<Panel Width="12" Height="12">
+							<Rectangle Stroke="#CED0D6"
+									   StrokeThickness="1.5"
+									   Width="10" Height="10"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   x:Name="MaximizeIcon"/>
+							<Rectangle Stroke="#CED0D6"
+									   StrokeThickness="1.5"
+									   Width="8" Height="8"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   Margin="-1,-1,0,0"
+									   x:Name="RestoreIcon"
+									   IsVisible="False"/>
+						</Panel>
+					</Button>
+					<Button Width="46" Height="34"
+							Background="Transparent"
+							BorderThickness="0"
+							Click="Close_Click">
+						<Panel Width="12" Height="12">
+							<Line StartPoint="1,1" EndPoint="11,11"
+								  Stroke="#CED0D6" StrokeThickness="1.5"
+								  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							<Line StartPoint="11,1" EndPoint="1,11"
+								  Stroke="#CED0D6" StrokeThickness="1.5"
+								  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Panel>
+					</Button>
+				</StackPanel>
+			</Grid>
+		</Grid>
 
         <Grid Grid.Row="1" ColumnDefinitions="Auto, *">
             <Grid Grid.Column="0">
