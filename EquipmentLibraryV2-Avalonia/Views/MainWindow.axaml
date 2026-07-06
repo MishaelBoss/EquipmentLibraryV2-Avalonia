@@ -9,13 +9,40 @@
         Width="1000" Height="650" MinWidth="500" MinHeight="350"
         x:Class="EquipmentLibraryV2_Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Background="#000000"
+        Background="Transparent"
         WindowStartupLocation="CenterScreen"
         Icon="/Assets/Logo/logo.ico"
         ExtendClientAreaToDecorationsHint="True"
         WindowDecorations="Full"
         ExtendClientAreaTitleBarHeightHint="40"
         Title="">
+
+	<Window.Styles>
+		<Style Selector="Button.WindowButton">
+			<Setter Property="Width" Value="46"/>
+			<Setter Property="Height" Value="34"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+		</Style>
+		<Style Selector="Button.WindowButton:pointerover">
+			<Setter Property="Background" Value="#3A3A3A"/>
+		</Style>
+		<Style Selector="Button.WindowButton:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="#3A3A3A"/>
+		</Style>
+		<Style Selector="Button.WindowButton.CloseButton:pointerover">
+			<Setter Property="Background" Value="#E81123"/>
+		</Style>
+		<Style Selector="Button.WindowButton.CloseButton:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="#E81123"/>
+		</Style>
+		<Style Selector="Button.WindowButton:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="#505050"/>
+		</Style>
+		<Style Selector="Button.WindowButton.CloseButton:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="#F1707A"/>
+		</Style>
+	</Window.Styles>
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -25,74 +52,97 @@
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
     </Window.Resources>
 
-    <Grid RowDefinitions="Auto, *">
-        
-        <Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto"  WindowDecorationProperties.ElementRole="TitleBar">
-            
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
-                <Image Source="/Assets/Logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
-            </StackPanel>
+	<Border CornerRadius="8" Background="#000000" ClipToBounds="True">
+		<Grid RowDefinitions="Auto, *">
 
-            <TextBlock Grid.Column="1" 
-                       Text="EquipmentLibrary" 
-                       FontWeight="SemiBold" 
-                       Foreground="#CED0D6" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center"
-                       IsHitTestVisible="False"/>
+			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto"  WindowDecorationProperties.ElementRole="TitleBar">
 
-			<Grid Grid.Column="2" Width="140">
-				<Grid IsHitTestVisible="False"
-					  IsVisible="{OnPlatform True, Windows=False}"/>
-
-				<StackPanel Orientation="Horizontal"
-							HorizontalAlignment="Right"
-							IsVisible="{OnPlatform False, Windows=True}">
-					<Button Width="46" Height="34"
-							Background="Transparent"
-							BorderThickness="0"
-							Click="Minimize_Click">
-						<Image Source="{SvgImage /Assets/windows/minimize.svg}" Width="12" Height="12"/>
-					</Button>
-					<Button Width="46" Height="34"
-							Background="Transparent"
-							BorderThickness="0"
-							Click="MaximizeRestore_Click"
-							x:Name="MaximizeRestoreButton">
-						<Image Source="{SvgImage /Assets/windows/maximize.svg}" Width="12" Height="12"/>
-					</Button>
-					<Button Width="46" Height="34"
-							Background="Transparent"
-							BorderThickness="0"
-							Click="Close_Click">
-						<Image Source="{SvgImage /Assets/windows/closeActive.svg}" Width="12" Height="12"/>
-					</Button>
+				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+					<Image Source="/Assets/Logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
 				</StackPanel>
+
+				<TextBlock Grid.Column="1"
+						   Text="EquipmentLibrary"
+						   FontWeight="SemiBold"
+						   Foreground="#CED0D6"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   IsHitTestVisible="False"/>
+
+				<Grid Grid.Column="2" Width="140">
+					<Grid IsHitTestVisible="False"
+						  IsVisible="{OnPlatform True, Windows=False}"/>
+
+					<StackPanel Orientation="Horizontal"
+								HorizontalAlignment="Right"
+								IsVisible="{OnPlatform False, Windows=True}">
+						<Button Classes="WindowButton"
+								Click="Minimize_Click">
+							<Panel Width="12" Height="12">
+								<Rectangle Fill="#CED0D6"
+										   Width="10" Height="1.5"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"/>
+							</Panel>
+						</Button>
+						<Button Classes="WindowButton"
+								Click="MaximizeRestore_Click"
+								x:Name="MaximizeRestoreButton">
+							<Panel Width="12" Height="12">
+								<Rectangle Stroke="#CED0D6"
+										   StrokeThickness="1.5"
+										   Width="10" Height="10"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"
+										   x:Name="MaximizeIcon"/>
+								<Rectangle Stroke="#CED0D6"
+										   StrokeThickness="1.5"
+										   Width="8" Height="8"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"
+										   Margin="-1,-1,0,0"
+										   x:Name="RestoreIcon"
+										   IsVisible="False"/>
+							</Panel>
+						</Button>
+						<Button Classes="WindowButton CloseButton"
+								Click="Close_Click">
+							<Panel Width="12" Height="12">
+								<Line StartPoint="1,1" EndPoint="11,11"
+									  Stroke="#CED0D6" StrokeThickness="1.5"
+									  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+								<Line StartPoint="11,1" EndPoint="1,11"
+									  Stroke="#CED0D6" StrokeThickness="1.5"
+									  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							</Panel>
+						</Button>
+					</StackPanel>
+				</Grid>
 			</Grid>
+
+			<Grid Grid.Row="1" ColumnDefinitions="Auto, *">
+				<Grid Grid.Column="0">
+					<controls:RightBoardUserControl DataContext="{Binding RightBoardViewModel}"/>
+				</Grid>
+
+				<Border Grid.Column="1"
+						Background="#2B2D31"
+						CornerRadius="8"
+						Margin="8, 0, 8, 8"
+						ClipToBounds="True">
+
+					<Grid>
+						<ContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
+						<ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
+					</Grid>
+
+				</Border>
+			</Grid>
+
+			<ContentControl Grid.RowSpan="2" Grid.ColumnSpan="2"
+							Content="{Binding TopOverlayContent}"
+							ZIndex="10"/>
 		</Grid>
-
-        <Grid Grid.Row="1" ColumnDefinitions="Auto, *">
-            <Grid Grid.Column="0">
-                <controls:RightBoardUserControl DataContext="{Binding RightBoardViewModel}"/>
-            </Grid>
-
-            <Border Grid.Column="1"
-                    Background="#2B2D31" 
-                    CornerRadius="8"
-                    Margin="8, 0, 8, 8"
-                    ClipToBounds="True">
-                
-                <Grid>
-                    <ContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
-                    <ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
-                </Grid>
-                
-            </Border>
-        </Grid>
-
-        <ContentControl Grid.RowSpan="2" Grid.ColumnSpan="2" 
-                        Content="{Binding TopOverlayContent}" 
-                        ZIndex="10"/>
-    </Grid>
+	</Border>
 
 </Window>
