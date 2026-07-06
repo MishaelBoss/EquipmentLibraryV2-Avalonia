@@ -81,11 +81,19 @@
 										<CheckBox Content="Неактивные" 
 										          IsChecked="{Binding ShowInactiveUsers}"/>
 									</StackPanel>
-									<Button Content="Сбросить" 
+									<Button Content="Сбросить"
+									        VerticalContentAlignment="Center"
+									        HorizontalContentAlignment="Center"
 									        Foreground="White"
-									        Command="{Binding ResetFiltersCommand}" 
-									        Height="27" 
-									        Width="90"/>
+									        Background="#3A3A3A"
+									        BorderBrush="#555"
+									        BorderThickness="1"
+									        CornerRadius="6"
+									        Command="{Binding ResetFiltersCommand}"
+									        Height="30"
+									        Width="100"
+									        FontSize="13"
+									        FontWeight="SemiBold"/>
 								</StackPanel>
 							</StackPanel>
 						</Border>
@@ -132,7 +140,7 @@
 														<TextBlock Text="{Binding Login}" Foreground="White" FontWeight="SemiBold" FontSize="14"/>
 														<Border IsVisible="{Binding IsAdministrator}" 
 																Background="#4A90E2" CornerRadius="4" Padding="4,1">
-															<TextBlock Text="ADMIN" FontSize="9" Foreground="White" FontWeight="Black"/>
+															<TextBlock Text="ADMIN" FontSize="9" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontWeight="Black"/>
 														</Border>
 													</StackPanel>
             
