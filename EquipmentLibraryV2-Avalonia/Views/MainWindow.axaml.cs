@@ -1,7 +1,5 @@
 using System;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 
 namespace EquipmentLibraryV2_Avalonia.Views
 {
@@ -28,8 +26,8 @@ namespace EquipmentLibraryV2_Avalonia.Views
                 ? WindowState.Normal
                 : WindowState.Maximized;
 
-            MaximizeIcon.IsVisible = WindowState != WindowState.Maximized;
-            RestoreIcon.IsVisible = WindowState == WindowState.Maximized;
+            //MaximizeIcon.IsVisible = WindowState != WindowState.Maximized;
+            //RestoreIcon.IsVisible = WindowState == WindowState.Maximized;
         }
 
         private void Close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
