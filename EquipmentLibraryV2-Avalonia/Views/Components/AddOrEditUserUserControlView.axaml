@@ -15,8 +15,13 @@
             <StackPanel Margin="25" Spacing="16">
             
                 <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,10">
-                    <TextBlock Text="Add new user" Foreground="White" FontSize="22" FontWeight="SemiBold"/>
-                    <Button Grid.Column="1" Command="{Binding CloseCommand}" Background="Transparent">
+                    <TextBlock Text="Add new user" 
+                               Foreground="White" 
+                               FontSize="22" 
+                               FontWeight="SemiBold"/>
+                    <Button Grid.Column="1" 
+                            Command="{Binding CloseCommand}" 
+                            Background="Transparent">
                         <Image Source="/Assets/close-64.png" Width="18" Height="18"/>
                     </Button>
                 </Grid>
@@ -29,23 +34,30 @@
                 <UniformGrid Columns="2">
                     <StackPanel Margin="0,0,8,0">
                         <TextBlock Text="First name" Classes="FieldLabel"/>
-                        <TextBox Classes="ModernInput" Text="{Binding FirstName}"/>
+                        <TextBox Classes="ModernInput" 
+                                 Text="{Binding FirstName}"/>
                     </StackPanel>
                     <StackPanel Margin="8,0,0,0">
                         <TextBlock Text="Last name" Classes="FieldLabel"/>
-                        <TextBox Classes="ModernInput" Text="{Binding LastName}"/>
+                        <TextBox Classes="ModernInput" 
+                                 Text="{Binding LastName}"/>
                     </StackPanel>
                 </UniformGrid>
 
                 <UniformGrid Columns="2">
                     <StackPanel Margin="0,0,8,0">
                         <TextBlock Text="Password" Classes="FieldLabel"/>
-                        <TextBox Classes="ModernInput" PasswordChar="•" Text="{Binding Password}"/>
+                        <TextBox Classes="ModernInput" 
+                                 PasswordChar="•" 
+                                 Text="{Binding Password}"/>
                     </StackPanel>
 
                     <StackPanel Margin="8,0,0,0">
                         <TextBlock Text="Role" Classes="FieldLabel"/>
-                        <ComboBox Classes="ModernSelect" PlaceholderText="Select role..." ItemsSource="{Binding UserRoles}" SelectedItem="{Binding SelectUserRole}"/>
+                        <ComboBox Classes="ModernSelect" 
+                                  PlaceholderText="Select role..." 
+                                  ItemsSource="{Binding UserRoles}" 
+                                  SelectedItem="{Binding SelectUserRole}"/>
                     </StackPanel>
                 </UniformGrid>
 

@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <Content Include="Assets\Logo\logo.ico" />
+    <Content Include="Assets\logo\logo.ico" />
   </ItemGroup>
 
   <ItemGroup>

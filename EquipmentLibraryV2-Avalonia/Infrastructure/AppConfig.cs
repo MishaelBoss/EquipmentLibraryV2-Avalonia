@@ -23,11 +23,12 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
             if (!string.IsNullOrEmpty(_connectionString))
                 return _connectionString;
 
-            bool hasConnectionData = !string.IsNullOrWhiteSpace(Ip) &&
-                                        !string.IsNullOrWhiteSpace(Port) &&
-                                        !string.IsNullOrWhiteSpace(Database) &&
-                                        !string.IsNullOrWhiteSpace(User) &&
-                                        !string.IsNullOrWhiteSpace(Password);
+            
+            var hasConnectionData = !string.IsNullOrWhiteSpace(Ip) &&
+                                    !string.IsNullOrWhiteSpace(Port) &&
+                                    !string.IsNullOrWhiteSpace(Database) &&
+                                    !string.IsNullOrWhiteSpace(User) &&
+                                    !string.IsNullOrWhiteSpace(Password);
 
             if (!hasConnectionData)
             {

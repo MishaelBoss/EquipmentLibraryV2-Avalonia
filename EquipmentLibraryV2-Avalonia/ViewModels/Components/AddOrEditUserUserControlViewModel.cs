@@ -76,41 +76,114 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         [RelayCommand]
         public async Task Confirm() 
         {
-            if (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName) || string.IsNullOrEmpty(Password) || SelectUserRole == null)
+            Log.Debug(
+                "Confirm command started. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
+                _id,
+                Login,
+                FirstName,
+                LastName,
+                SelectUserRole?.Id);
+            
+            if (string.IsNullOrEmpty(Login) ||
+                string.IsNullOrEmpty(FirstName) ||
+                string.IsNullOrEmpty(LastName) ||
+                string.IsNullOrEmpty(Password) ||
+                SelectUserRole is null)
             {
+                Log.Warning(
+                    "Confirm aborted due to invalid form data. Id={Id}, LoginIsEmpty={LoginEmpty}, FirstNameEmpty={FirstNameEmpty}, LastNameEmpty={LastNameEmpty}, PasswordEmpty={PasswordEmpty}, UserRoleIsNull={UserRoleIsNull}",
+                    _id,
+                    string.IsNullOrEmpty(Login),
+                    string.IsNullOrEmpty(FirstName),
+                    string.IsNullOrEmpty(LastName),
+                    string.IsNullOrEmpty(Password),
+                    SelectUserRole is null);
                 return;
             }
 
             try
             {
                 const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
-                                    "VALUES (@login, @first_name, @last_name, @password, @user_type_id, now())";
+                                          "VALUES (@login, @first_name, @last_name, @password, @user_type_id, now())";
 
                 const string updateUserSql = @"UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = @password, user_type_id = @user_type_id WHERE id = @id";
 
-                var sql = _id == 0 ? addUserSql : updateUserSql;
+                var isNew = _id == 0;
+                var sql = isNew ? addUserSql : updateUserSql;
+                
+                Log.Debug(
+                    "Confirm will {Action} user. Id={Id}, Login={Login}, UserRoleId={UserRoleId}, Sql={SqlName}",
+                    _id,
+                    Login,
+                    // ReSharper disable once NullableWarningSuppressionIsUsed
+                    SelectUserRole!.Id,
+                    isNew ? "INSERT" : "UPDATE");
 
                 await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
                 await connection.OpenAsync();
                 await using var command = new NpgsqlCommand(sql, connection);
+                Log.Debug("Database connection opened for Confirm. Id={Id}", _id);
 
-                command.Parameters.AddWithValue("@login", Login!);
-                command.Parameters.AddWithValue("@first_name", FirstName!);
-                command.Parameters.AddWithValue("@last_name", LastName!);
-                command.Parameters.AddWithValue("@password", Password!);
-                command.Parameters.AddWithValue("@user_type_id", SelectUserRole!.Id);
-                if (_id != 0) command.Parameters.AddWithValue("@id", _id!);
+                if (_id is null)
+                {
+                    Log.Warning(
+                        "Confirm aborted: _id is null. Cannot determine whether to insert or update user. Login={Login}",
+                        Login);
+                    return;
+                }
 
-                await command.ExecuteNonQueryAsync();
+                command.Parameters.AddWithValue("@login", Login);
+                command.Parameters.AddWithValue("@first_name", FirstName);
+                command.Parameters.AddWithValue("@last_name", LastName);
+                command.Parameters.AddWithValue("@password", Password);
+                command.Parameters.AddWithValue("@user_type_id", SelectUserRole.Id);
+                
+                if (!isNew)
+                {
+                    command.Parameters.AddWithValue("@id", _id);
+                    Log.Debug("Update mode: parameter @id={Id} added", _id);
+                }
+                
+                Log.Debug(
+                    "Executing user {Action} command. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
+                    isNew ? "insert" : "update",
+                    _id,
+                    Login,
+                    FirstName,
+                    LastName,
+                    // ReSharper disable once NullableWarningSuppressionIsUsed
+                    SelectUserRole!.Id);
+                
+                var rows = await command.ExecuteNonQueryAsync();
+                Log.Information(
+                    "User {Action} completed. RowsAffected={RowsAffected}, Id={Id}, Login={Login}, UserRoleId={UserRoleId}",
+                    isNew ? "insert" : "update",
+                    rows,
+                    _id,
+                    Login,
+                    // ReSharper disable once NullableWarningSuppressionIsUsed
+                    SelectUserRole!.Id);
 
                 WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
                 WeakReferenceMessenger.Default.Send(new RefreshUserListMessage());
+                Log.Debug(
+                    "Messages sent: OpenOrCloseAddOrEditUserMessage and RefreshUserListMessage for Id={Id}, Login={Login}",
+                    _id,
+                    Login);
 
                 ClearForm();
+                Log.Debug("Form cleared after confirm. Id={Id}", _id);
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Error(
+                    ex,
+                    "Confirm failed. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
+                    _id,
+                    Login,
+                    FirstName,
+                    LastName,
+                    SelectUserRole?.Id);
             }
         }
 

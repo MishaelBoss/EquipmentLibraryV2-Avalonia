@@ -11,7 +11,7 @@
         x:DataType="vm:MainWindowViewModel"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
-        Icon="/Assets/Logo/logo.ico"
+        Icon="/Assets/logo/logo.ico"
         ExtendClientAreaToDecorationsHint="True"
         WindowDecorations="Full"
         ExtendClientAreaTitleBarHeightHint="40"
@@ -58,7 +58,7 @@
 			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto"  WindowDecorationProperties.ElementRole="TitleBar">
 
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
-					<Image Source="/Assets/Logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+					<Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
 				</StackPanel>
 
 				<TextBlock Grid.Column="1"

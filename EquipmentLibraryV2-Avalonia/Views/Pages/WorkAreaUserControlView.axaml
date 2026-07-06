@@ -33,11 +33,17 @@
                               SelectedItem="{Binding SelectedEquipmentType}"/>
 
                     <Grid ColumnDefinitions="*, *" Margin="0,10,0,0">
-                        <TextBox Grid.Column="0" PlaceholderText="Наименование" Margin="0,0,5,0" VerticalContentAlignment="Center"/>
-                        <TextBox Grid.Column="1" PlaceholderText="Заводской №" Margin="5,0,0,0" VerticalContentAlignment="Center"/>
+                        <TextBox Grid.Column="0" Text="{Binding Title}" PlaceholderText="Наименование" Margin="0,0,5,0" VerticalContentAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding SerialNumber}" PlaceholderText="Заводской №" Margin="5,0,0,0" VerticalContentAlignment="Center"/>
+                    </Grid>
+                    
+                    <Grid ColumnDefinitions="*, *" Margin="0,10,0,0">
+                        <TextBox Grid.Column="0" Text="{Binding Model}" PlaceholderText="Модель" Margin="0,0,5,0" VerticalContentAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding InvNumber}" PlaceholderText="Инвентарный номер" Margin="5,0,0,0" VerticalContentAlignment="Center"/>
                     </Grid>
 
                     <Button Content="Добавить в систему" 
+                            Command="{Binding AddCommand}"
                             Background="#4CAF50" 
                             Foreground="White" 
                             HorizontalAlignment="Stretch"
@@ -64,7 +70,7 @@
                     <Grid ColumnDefinitions="5, *">
                         <Border Background="#43A047" CornerRadius="4,0,0,4"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0">
-                            <TextBlock Text="854" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding TotalObjects}" FontSize="20" FontWeight="Bold" Foreground="White"/>
                             <TextBlock Text="ВСЕГО ОБЪЕКТОВ УЧЕТА" FontSize="9" Foreground="#666"/>
                         </StackPanel>
                     </Grid>

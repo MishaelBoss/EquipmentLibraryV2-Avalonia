@@ -9,6 +9,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels;
 public class SettingsPageItem
 {
     public string Title { get; set; } = string.Empty;
+    // ReSharper disable once NullableWarningSuppressionIsUsed
     public ViewModelBase ViewModel { get; set; } = null!;
 }
 

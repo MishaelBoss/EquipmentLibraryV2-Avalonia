@@ -22,28 +22,24 @@ internal static class ConnectivityService
         {
             if (IsConfigInvalid())
             {
-                Log.Error("Database connection data is incomplete", AppConfig.Database);
+                Log.Error("Database connection data is incomplete {PropertyValue0}", AppConfig.Database);
                 return false;
             }
 
             using var ping = new Ping();
-            var hostName = AppConfig.Ip;
-            var reply = ping.Send(hostName!, 3000);
+            const string? hostName = AppConfig.Ip;
+            var reply = ping.Send(hostName, 3000);
 
             Log.Information($"Ping status for ({hostName}): {reply.Status}");
 
-            if (reply is { Status: IPStatus.Success })
-            {
-                Log.Information($"Address: {reply.Address}");
-                Log.Information($"Roundtrip time: {reply.RoundtripTime}");
-                Log.Information($"Time to live: {reply.Options?.Ttl}");
+            if (reply is not { Status: IPStatus.Success }) return false;
+            
+            Log.Information($"Address: {reply.Address}");
+            Log.Information($"Roundtrip time: {reply.RoundtripTime}");
+            Log.Information($"Time to live: {reply.Options?.Ttl}");
 
-                return await TestPostgreSqlConnection();
-            }
-            else
-            {
-                return false;
-            }
+            return await TestPostgreSqlConnection();
+
         }
         catch (PingException ex)
         {
@@ -59,13 +55,13 @@ internal static class ConnectivityService
 
     private static async Task<bool> TestPostgreSqlConnection()
     {
-        var connString = $"Server={AppConfig.Ip};" +
-            $"Port={AppConfig.Port};" +
-            $"Database={AppConfig.Database};" +
-            $"User Id={AppConfig.User};" +
-            $"Password={AppConfig.Password};" +
-            $"Timeout=5;" +
-            $"CommandTimeout=5";
+        const string connString = $"Server={AppConfig.Ip};" +
+                                  $"Port={AppConfig.Port};" +
+                                  $"Database={AppConfig.Database};" +
+                                  $"User Id={AppConfig.User};" +
+                                  $"Password={AppConfig.Password};" +
+                                  $"Timeout=5;" +
+                                  $"CommandTimeout=5";
 
         try
         {

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
+using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
@@ -72,7 +73,24 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(OpenOrCloseConfirmDeleteMessage message)
         {
-            TopOverlayContent = TopOverlayContent == null ? new ConfirmDeleteUserControlViewModel(message.Id, message.Title, message.DeleteSql, message.OnSuccessCallback!, message.AdditionalQueries) : null;
+            if (message.OnSuccessCallback is null)
+            {
+                Log.Debug("Received CloseConfirmDelete message. Overlay will be closed.");
+                TopOverlayContent = null;
+                return;
+            }
+            
+            Log.Debug(
+                "Received OpenConfirmDelete message. Id={Id}, Title={Title}",
+                message.Id,
+                message.Title);
+
+            TopOverlayContent = new ConfirmDeleteUserControlViewModel(
+                message.Id,
+                message.Title,
+                message.DeleteSql,
+                message.OnSuccessCallback,
+                message.AdditionalQueries);
         }
 
         public void Receive(OpenMeasurementRegisterMessage message)

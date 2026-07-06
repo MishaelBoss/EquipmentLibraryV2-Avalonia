@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -20,10 +21,21 @@ namespace EquipmentLibraryV2_Avalonia
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var now = DateTime.Now;
+                var datePart = now.ToString("dd_MM_yyyy");
+
+                var logPath = Path.Combine(
+                    AppPaths.UserDataDir,
+                    "logs",
+                    $"launcher-log-{datePart}.txt");
+
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
-                    .WriteTo.Console()
-                    .WriteTo.File(Path.Combine(AppPaths.UserDataDir, "logs/launcher-log.txt"), rollingInterval: RollingInterval.Day)
+                    .WriteTo.Console(
+                        outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                    .WriteTo.File(
+                        logPath,
+                        outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
                     .CreateLogger();
 
                 Log.Information("Application starting...");
