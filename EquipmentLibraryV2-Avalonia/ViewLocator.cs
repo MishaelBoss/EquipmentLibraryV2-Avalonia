@@ -19,11 +19,13 @@ namespace EquipmentLibraryV2_Avalonia
             if (param is null)
                 return null;
 
+            // ReSharper disable once NullableWarningSuppressionIsUsed
             var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
             var type = Type.GetType(name);
 
             if (type != null)
             {
+                // ReSharper disable once NullableWarningSuppressionIsUsed
                 return (Control)Activator.CreateInstance(type)!;
             }
 
