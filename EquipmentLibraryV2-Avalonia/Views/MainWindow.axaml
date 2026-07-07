@@ -54,19 +54,22 @@
 
 	<Border CornerRadius="8" Background="#000000" ClipToBounds="True" x:Name="MainBorder">
 		<Grid RowDefinitions="Auto, *">
-			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto"  WindowDecorationProperties.ElementRole="TitleBar">
+			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto">
 
- 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
-					<Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
-				</StackPanel>
+				<Grid Grid.Column="0" WindowDecorationProperties.ElementRole="TitleBar">
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+						<Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+					</StackPanel>
+				</Grid>
 
-				<TextBlock Grid.Column="1"
-						   Text="EquipmentLibrary"
-						   FontWeight="SemiBold"
-						   Foreground="#CED0D6"
-						   HorizontalAlignment="Center"
-						   VerticalAlignment="Center"
-						   IsHitTestVisible="False"/>
+				<Grid Grid.Column="1" WindowDecorationProperties.ElementRole="TitleBar">
+					<TextBlock Text="EquipmentLibrary"
+							   FontWeight="SemiBold"
+							   Foreground="#CED0D6"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"
+							   IsHitTestVisible="False"/>
+				</Grid>
 
 				<Grid Grid.Column="2" Width="140">
 					<Grid IsHitTestVisible="False"
