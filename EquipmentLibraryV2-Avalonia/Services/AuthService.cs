@@ -32,8 +32,7 @@ public static class AuthService
             await connection.OpenAsync();
 
             const string sql = "SELECT id AS Id, login AS Login, user_type_id AS UserRole FROM public.users WHERE login = @u AND password = crypt(@p, password) AND is_active = true";
-
-
+            
             var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { u = username, p = password });
 
             if (user == null)

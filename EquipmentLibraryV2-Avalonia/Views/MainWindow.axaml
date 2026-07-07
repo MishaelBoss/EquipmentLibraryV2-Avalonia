@@ -132,10 +132,17 @@
 					<Grid>
 						<ContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
 						<ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
-						<ContentControl Content="{Binding ErrorContent}" ZIndex="999" 
-						                 VerticalAlignment="Bottom"
-						                 HorizontalAlignment="Right"
-						                 Margin="16"/>
+						<ScrollViewer ZIndex="999" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+						              MaxHeight="300" Margin="12">
+							<ItemsControl ItemsSource="{Binding ErrorMessages}"
+							              VerticalAlignment="Bottom">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel Spacing="8" VerticalAlignment="Bottom"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+						</ScrollViewer>
 					</Grid>
 				</Border>
 			</Grid>

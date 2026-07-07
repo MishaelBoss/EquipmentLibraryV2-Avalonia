@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.ViewModels.Components;
@@ -22,7 +23,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
         [ObservableProperty] public partial ViewModelBase? OverlayContent { get; set; }
         [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
-        [ObservableProperty] public partial ViewModelBase? ErrorContent { get; set; }
+        public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 
         private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
         private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
@@ -45,7 +46,17 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(ShowOrHideError message)
         {
-            ErrorContent = ErrorContent == null ? message.ViewModelBase : null;
+            if (message.Action == ErrorAction.Add)
+            {
+                if (!ErrorMessages.Contains(message.ViewModel))
+                {
+                    ErrorMessages.Add(message.ViewModel);
+                }
+            }
+            else
+            {
+                ErrorMessages.Remove(message.ViewModel);
+            }
         }
 
         public void Receive(LogoutMessage message)

@@ -37,7 +37,7 @@ internal static class ConnectivityService
 
             if (reply is not { Status: IPStatus.Success })
             {
-                WeakReferenceMessenger.Default.Send(new ShowOrHideError(new ConnectionErrorUserControlViewModel()));
+                WeakReferenceMessenger.Default.Send(new ShowOrHideError(ErrorAction.Add, new ConnectionErrorUserControlViewModel()));
                 return false;
             }
             
@@ -83,7 +83,7 @@ internal static class ConnectivityService
         catch (Exception ex)
         {
             Log.Warning($"PostgreSQL connection failed: {ex.Message}");
-            WeakReferenceMessenger.Default.Send(new ShowOrHideError(new ConnectionErrorUserControlViewModel()));
+            WeakReferenceMessenger.Default.Send(new ShowOrHideError(ErrorAction.Add, new ConnectionErrorUserControlViewModel()));
             return false;
         }
     }

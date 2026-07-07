@@ -9,6 +9,6 @@ public partial class ConnectionErrorUserControlViewModel : ViewModelBase
     [RelayCommand]
     public void Close()
     {
-        WeakReferenceMessenger.Default.Send(new ShowOrHideError());
+        WeakReferenceMessenger.Default.Send(new ShowOrHideError(ErrorAction.Remove, this));
     }
 }
