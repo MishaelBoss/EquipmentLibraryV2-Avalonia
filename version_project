@@ -1,0 +1,9 @@
+{
+    "detail": {
+        "1.0.0": "Project added beta"
+    },
+    "promos": {
+        "latest": "1.0.0",
+        "recommended": "1.0.0"
+    }
+}
