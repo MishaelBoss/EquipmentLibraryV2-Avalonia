@@ -54,7 +54,7 @@
 
 	<Border CornerRadius="8" Background="#000000" ClipToBounds="True" x:Name="MainBorder">
 		<Grid RowDefinitions="Auto, *">
-			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto" PointerPressed="TopBorder">
+			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto" WindowDecorationProperties.ElementRole="TitleBar">
 
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
 					<Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
@@ -69,12 +69,11 @@
 						   IsHitTestVisible="False"/>
 
 				<Grid Grid.Column="2" Width="140">
-					<Grid IsHitTestVisible="False"
-						  IsVisible="{OnPlatform True, Windows=False}"/>
+					<Grid IsHitTestVisible="False" x:Name="SpacerGrid"/>
 
 					<StackPanel Orientation="Horizontal"
 								HorizontalAlignment="Right"
-								IsVisible="{OnPlatform False, Windows=True}">
+								x:Name="ButtonStack">
 						<Button Classes="WindowButton"
 								Click="Minimize_Click">
 							<Panel Width="12" Height="12">

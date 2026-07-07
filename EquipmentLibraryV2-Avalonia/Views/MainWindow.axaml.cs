@@ -1,19 +1,49 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using System;
+using System.Runtime.InteropServices;
 
 namespace EquipmentLibraryV2_Avalonia.Views
 {
     public partial class MainWindow : Window
     {
+        [DllImport("dwmapi.dll", PreserveSig = true)]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private const int DWMWA_SNAP_FLOATING_CURSOR = 35;
+        private const int DWMWA_DISALLOW_PEEK = 37;
+
+        private readonly bool _isWindows11;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            if (OperatingSystem.IsWindows())
+            _isWindows11 = OperatingSystem.IsWindows() && Environment.OSVersion.Version.Build >= 22000;
+
+            if (OperatingSystem.IsWindows() && !_isWindows11)
             {
                 WindowDecorations = WindowDecorations.None;
+            }
+
+            if (OperatingSystem.IsWindows())
+            {
+                ButtonStack.IsVisible = !_isWindows11;
+                SpacerGrid.IsVisible = _isWindows11;
+            }
+
+            if (_isWindows11)
+            {
+                try
+                {
+                    var handle = TryGetPlatformHandle()?.Handle;
+                    if (handle.HasValue && handle.Value != IntPtr.Zero)
+                    {
+                        int enableSnap = 1;
+                        DwmSetWindowAttribute(handle.Value, DWMWA_SNAP_FLOATING_CURSOR, ref enableSnap, sizeof(int));
+                    }
+                }
+                catch { }
             }
 
             PropertyChanged += OnWindowStateChanged;
@@ -24,9 +54,13 @@ namespace EquipmentLibraryV2_Avalonia.Views
             if (e.Property == WindowStateProperty)
             {
                 var isFullScreen = WindowState is WindowState.Maximized or WindowState.FullScreen;
-                MainBorder.CornerRadius = isFullScreen
-                    ? new CornerRadius(0)
-                    : new CornerRadius(8);
+                MainBorder.CornerRadius = isFullScreen ? new CornerRadius(0) : new CornerRadius(8);
+
+                if (MaximizeIcon is not null && RestoreIcon is not null)
+                {
+                    MaximizeIcon.IsVisible = !isFullScreen;
+                    RestoreIcon.IsVisible = isFullScreen;
+                }
             }
         }
 
@@ -40,19 +74,11 @@ namespace EquipmentLibraryV2_Avalonia.Views
             WindowState = WindowState == WindowState.Maximized
                 ? WindowState.Normal
                 : WindowState.Maximized;
-
-            MaximizeIcon.IsVisible = WindowState != WindowState.Maximized;
-            RestoreIcon.IsVisible = WindowState == WindowState.Maximized;
         }
 
         private void Close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void TopBorder(object? sender, PointerPressedEventArgs e)
-        {
-            BeginMoveDrag(e);
         }
     }
 }
