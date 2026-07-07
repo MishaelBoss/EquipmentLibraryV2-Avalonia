@@ -15,7 +15,6 @@ namespace EquipmentLibraryV2_Avalonia.Views
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
         private const int DWMWA_SNAP_FLOATING_CURSOR = 35;
-        private const int DWMWA_DISALLOW_PEEK = 37;
 
         private readonly bool _isWindows11;
 

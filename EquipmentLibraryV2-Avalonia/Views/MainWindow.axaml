@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:controls="using:EquipmentLibraryV2_Avalonia"
         xmlns:converters="using:EquipmentLibraryV2_Avalonia.Converters"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -52,7 +52,7 @@
     </Window.Resources>
 
 	<Border CornerRadius="8" Background="#000000" ClipToBounds="True" x:Name="MainBorder">
-		<Grid RowDefinitions="Auto, *">
+		<Grid RowDefinitions="Auto, *, Auto">
 			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto" WindowDecorationProperties.ElementRole="TitleBar">
 
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
@@ -145,9 +145,30 @@
 				</Border>
 			</Grid>
 
-			<ContentControl Grid.RowSpan="2" Grid.ColumnSpan="2"
+			<ContentControl Grid.RowSpan="3" Grid.ColumnSpan="2"
 							Content="{Binding TopOverlayContent}"
 							ZIndex="10"/>
+
+			
+			<Border Grid.Row="2" Grid.ColumnSpan="2"
+			        Background="#000000"
+			        Padding="16,0" Height="28">
+				<Grid ColumnDefinitions="Auto, Auto, *, Auto">
+					<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+						<Ellipse Width="8" Height="8" Fill="#4CAF50"/>
+						<TextBlock Text="Подключено" Foreground="#888" FontSize="11"/>
+					</StackPanel>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
+					            x:Name="RefreshIndicator" Opacity="0" IsVisible="False">
+						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
+						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
+					</StackPanel>
+					<TextBlock Grid.Column="3" VerticalAlignment="Center"
+					           Foreground="#666" FontSize="11" FontWeight="SemiBold">
+						<Run Text="EquipmentLibrary v2"/>
+					</TextBlock>
+				</Grid>
+			</Border>
 		</Grid>
 	</Border>
 </Window>
