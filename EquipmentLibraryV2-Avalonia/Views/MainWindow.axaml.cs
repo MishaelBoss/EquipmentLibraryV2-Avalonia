@@ -22,7 +22,8 @@ namespace EquipmentLibraryV2_Avalonia.Views
         {
             if (e.Property == WindowStateProperty)
             {
-                MainBorder.CornerRadius = WindowState == WindowState.Maximized
+                var isFullScreen = WindowState is WindowState.Maximized or WindowState.FullScreen;
+                MainBorder.CornerRadius = isFullScreen
                     ? new CornerRadius(0)
                     : new CornerRadius(8);
             }
