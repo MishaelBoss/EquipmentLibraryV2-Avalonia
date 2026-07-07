@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
@@ -57,6 +58,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             else
             {
                 ErrorMessages.Remove(message.ViewModel);
+                if (message.ViewModel is IDisposable disposable) 
+                    disposable.Dispose();
             }
         }
 
