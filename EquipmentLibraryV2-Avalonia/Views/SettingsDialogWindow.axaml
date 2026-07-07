@@ -7,13 +7,15 @@
         xmlns:settingsVm="clr-namespace:EquipmentLibraryV2_Avalonia.ViewModels.Settings"
         x:DataType="vm:SettingsDialogWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
-        Width="1000" Height="620"
-        MinWidth="800"
-        MinHeight="620"
+        Width="1000" Height="620" MinWidth="800" MinHeight="620"
         WindowStartupLocation="CenterOwner"
-        Background="#000000"
+        Background="#2D2D35"
         x:Class="EquipmentLibraryV2_Avalonia.SettingsDialogWindow"
         Title="Настройки">
+    
+    <Window.Styles>
+        <StyleInclude Source="/Styles/SettingsStyles.axaml"/>
+    </Window.Styles>
     
     <Window.DataTemplates>
         <DataTemplate DataType="{x:Type settingsVm:LoggingViewModel}">
@@ -24,16 +26,13 @@
     <Grid RowDefinitions="*, Auto">        
         <Grid Grid.Row="0" ColumnDefinitions="250, *">
             <!-- ЛЕВАЯ ПАНЕЛЬ: Навигация в темном стиле -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#000000" Margin="0,16,0,0">
+            <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#2D2D35" Margin="0,16,0,0">
                 <!-- Поиск по настройкам -->
                 <TextBox Grid.Row="0" 
                          Margin="16,4" 
                          PlaceholderText="Search" 
                          Height="32" 
-                         CornerRadius="6" 
-                         Background="#1F2023" 
-                         BorderBrush="#3D3D42"
-                         Foreground="White"/>
+                         Classes="Search"/>
                 
                 <!-- Список категорий -->
                 <ListBox Grid.Row="1" 
@@ -93,12 +92,26 @@
         </Grid>
 
         <!-- НИЖНЯЯ ПАНЕЛЬ: Кнопки управления -->
-        <Border Grid.Row="1" Background="#000000" Padding="16,12,24,16">
+        <Border Grid.Row="1" Background="#2D2D35" Padding="16,0,24,16">
             <Grid ColumnDefinitions="Auto, *">                
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                    <Button Content="ОК" Command="{Binding OkCommand}" CommandParameter="{Binding $parent[Window]}" IsDefault="True" Width="85" Height="32" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#1F2023" BorderBrush="#3D3D42" BorderThickness="1" Foreground="White" CornerRadius="6"/>
-                    <Button Content="Отмена" Command="{Binding CancelCommand}" CommandParameter="{Binding $parent[Window]}" IsCancel="True" Width="85" Height="32" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent" BorderBrush="#3D3D42" BorderThickness="1" Foreground="#9E9EB0" CornerRadius="6"/>
-                    <Button Content="Применить" IsEnabled="False" Width="105" Height="32" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent" BorderBrush="#1F2023" BorderThickness="1" Foreground="#4D4D52" CornerRadius="6"/>
+                    <Button Content="ОК" 
+                            Command="{Binding OkCommand}" CommandParameter="{Binding $parent[Window]}" 
+                            IsDefault="True" 
+                            Width="85" Height="32" 
+                            VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                            Classes="Ok"/>
+                    <Button Content="Отмена" 
+                            Command="{Binding CancelCommand}" CommandParameter="{Binding $parent[Window]}" 
+                            IsCancel="True" 
+                            Width="85" Height="32" 
+                            VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                            Classes="Cancel"/>
+                    <Button Content="Применить" 
+                            IsEnabled="False" 
+                            Width="105" Height="32" 
+                            VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                            Classes="Apply"/>
                 </StackPanel>
             </Grid>
         </Border>

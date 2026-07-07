@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+        <Style Selector="Button">
+                <Setter Property="Background" Value="#1F2023"/>
+                <Setter Property="BorderBrush" Value="#3D3D42"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+        
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                <Setter Property="Background" Value="#2D2D30"/>
+                <Setter Property="BorderBrush" Value="#4D4D52"/>
+                <Setter Property="Foreground" Value="White"/>
+        </Style>
+</Styles>

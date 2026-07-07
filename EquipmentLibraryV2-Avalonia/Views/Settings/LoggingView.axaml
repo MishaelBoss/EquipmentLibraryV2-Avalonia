@@ -7,6 +7,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Settings.LoggingView">
     
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/Settings/LogginStyles.axaml"/>
+    </UserControl.Styles>
+    
     <StackPanel Spacing="20">
         <TextBlock Text="Управление системными журналами и аутентификацией. Вы можете настроить уровень детализации или просмотреть файлы логов напрямую." 
                    Foreground="#9E9EB0" 
@@ -21,20 +25,12 @@
                 </StackPanel>
                 
                 <Button Grid.Column="1" 
-                        Content="Открыть логи" 
                         Command="{Binding OpenLogsFolderCommand}"
-                        Padding="16,8" 
-                        Background="#1F2023" 
-                        BorderBrush="#3D3D42" 
-                        BorderThickness="1" 
-                        Foreground="White"
-                        CornerRadius="6">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#2D2D30"/>
-                            <Setter Property="BorderBrush" Value="#4D4D52"/>
-                        </Style>
-                    </Button.Styles>
+                        Padding="16,8">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                        <Image Source="{SvgImage /Assets/open.svg}" Width="12" Height="12"/>
+                        <TextBlock Text="Открыть логи"/>
+                    </StackPanel>
                 </Button>
             </Grid>
         </Border>
