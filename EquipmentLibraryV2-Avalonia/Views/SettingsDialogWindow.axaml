@@ -21,6 +21,9 @@
         <DataTemplate DataType="{x:Type settingsVm:LoggingViewModel}">
             <settings:LoggingView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type settingsVm:UpdatesUserControlViewModel}">
+            <settings:UpdatesUserControlView/>
+        </DataTemplate>
     </Window.DataTemplates>
 
     <Grid RowDefinitions="*, Auto">        

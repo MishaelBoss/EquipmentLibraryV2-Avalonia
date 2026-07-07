@@ -23,7 +23,8 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
     {
         Pages =
         [
-            new SettingsPageItem { Title = "Логирование", ViewModel = new LoggingViewModel() }
+            new SettingsPageItem { Title = "Логирование", ViewModel = new LoggingViewModel() },
+            new SettingsPageItem { Title = "Обновления", ViewModel = new UpdatesUserControlViewModel() }
         ];
 
         SelectedPage = Pages[0];

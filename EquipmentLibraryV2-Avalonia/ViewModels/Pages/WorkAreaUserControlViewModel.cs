@@ -57,7 +57,7 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
     {
         Log.Debug("RefreshDataAsync started");
         
-        Dispatcher.UIThread.Post(async () => {
+        Dispatcher.UIThread.Post(() => {
             Log.Debug("Clearing EquipmentTypes on UI thread");
             EquipmentTypes.Clear();
         });
