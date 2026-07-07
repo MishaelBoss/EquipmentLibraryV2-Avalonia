@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 namespace EquipmentLibraryV2_Avalonia.Services;

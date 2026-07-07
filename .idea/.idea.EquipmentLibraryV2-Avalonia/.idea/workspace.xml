@@ -17,7 +17,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/ShowError.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Models/ErrorAction.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/ConnectionErrorStyles.axaml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/SettingsStyles.axaml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/WorkAreaUserControlStyles.axaml" root0="FORCE_HIGHLIGHTING" />
