@@ -6,31 +6,32 @@
              x:DataType="vm:UpdatesUserControlViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Settings.UpdatesUserControlView">
-    <UserControl.Styles>
-        <StyleInclude Source="/Styles/Settings/LogginStyles.axaml"/>
-    </UserControl.Styles>
-    
     <StackPanel Spacing="20">
-        <TextBlock Text="Управление системными журналами и аутентификацией. Вы можете настроить уровень детализации или просмотреть файлы логов напрямую." 
-                   Foreground="#9E9EB0" 
-                   FontSize="13" 
+        <TextBlock Text="Настройка автоматической проверки обновлений приложения."
+                   Foreground="#9E9EB0"
+                   FontSize="13"
                    TextWrapping="Wrap"/>
-        
-        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517">
-            <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
-                <StackPanel Grid.Column="0" Spacing="4">
-                    <TextBlock Text="Журналы работы приложения" FontSize="14" FontWeight="Medium" Foreground="White"/>
-                    <TextBlock Text="Открыть папку со всеми текстовыми файлами логов (.text)" Foreground="#777778" FontSize="12"/>
+
+        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517"
+                BoxShadow="0 2 8 0 #30000000">
+            <Grid ColumnDefinitions="Auto, *, Auto" VerticalAlignment="Center">
+                <Border Width="40" Height="40" CornerRadius="20" Background="#1E3A5F" VerticalAlignment="Center">
+                    <Path Fill="#6CB4EE" HorizontalAlignment="Center" VerticalAlignment="Center"
+                          Data="M12,2C6.48,2,2,6.48,2,12C2,17.52,6.48,22,12,22C17.52,22,22,17.52,22,12C22,6.48,17.52,2,12,2M13,17H11V11H13V17M13,9H11V7H13V9Z"
+                          Width="20" Height="20"/>
+                </Border>
+
+                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Spacing="4">
+                    <TextBlock Text="Предлагать последние обновления"
+                               FontSize="14" FontWeight="Medium" Foreground="White"/>
+                    <TextBlock Text="При запуске приложение будет проверять наличие новых версий"
+                               Foreground="#777778" FontSize="12"/>
                 </StackPanel>
-                
-                <Button Grid.Column="1" 
-                        Command="{Binding OpenLogsFolderCommand}"
-                        Padding="16,8">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                        <Image Source="{SvgImage /Assets/open.svg}" Width="12" Height="12"/>
-                        <TextBlock Text="Открыть логи"/>
-                    </StackPanel>
-                </Button>
+
+                <CheckBox Grid.Column="2"
+                          IsChecked="{Binding CheckLatestUpdates}"
+                          VerticalAlignment="Center"
+                          Margin="16,0,0,0"/>
             </Grid>
         </Border>
     </StackPanel>

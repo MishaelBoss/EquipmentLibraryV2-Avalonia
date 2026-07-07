@@ -111,7 +111,8 @@
                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
                             Classes="Cancel"/>
                     <Button Content="Применить" 
-                            IsEnabled="False" 
+                            Command="{Binding ApplyCommand}"
+                            IsEnabled="{Binding HasChanges}" 
                             Width="105" Height="32" 
                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                             Classes="Apply"/>

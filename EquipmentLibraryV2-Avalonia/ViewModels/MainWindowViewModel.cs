@@ -71,6 +71,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         private async Task LoadVersion()
         {
+            Version = "EquipmentLibrary v2: 1.0.0";
+
             var handler = new SocketsHttpHandler
             {
                 PooledConnectionLifetime = TimeSpan.FromMinutes(1),
@@ -115,8 +117,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                throw;
+                Log.Warning(ex, "Failed to fetch version info");
+                if (string.IsNullOrEmpty(Version))
+                    Version = "EquipmentLibrary v2: ???";
             }
         }
 

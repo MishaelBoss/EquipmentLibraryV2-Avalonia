@@ -3,21 +3,25 @@ using EquipmentLibraryV2_Avalonia.Infrastructure;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Settings;
 
-public partial class UpdatesUserControlViewModel : ViewModelBase
+public partial class UpdatesUserControlViewModel : ViewModelBase, ISettingsPage
 {
     private readonly AppSettings _settings;
+    private readonly bool _originalValue;
 
     [ObservableProperty] public partial bool CheckLatestUpdates { get; set; }
+
+    public bool HasChanges => _originalValue != CheckLatestUpdates;
 
     public UpdatesUserControlViewModel()
     {
         _settings = AppSettings.Load();
+        _originalValue = _settings.CheckLatestUpdates;
         CheckLatestUpdates = _settings.CheckLatestUpdates;
     }
-    
-    partial void OnCheckLatestUpdatesChanged(bool value)
+
+    public void Save()
     {
-        _settings.CheckLatestUpdates = value;
+        _settings.CheckLatestUpdates = CheckLatestUpdates;
         _settings.Save();
     }
 }
