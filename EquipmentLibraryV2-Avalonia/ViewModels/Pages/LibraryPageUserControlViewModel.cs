@@ -60,6 +60,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase
             {
                 EquipmentTypes.Clear();
                 EquipmentTypes.Add(new EquipmentType(0, "Все"));
+                SelectedEquipmentType = EquipmentTypes.FirstOrDefault();
                 foreach (var item in data)
                 {
                     EquipmentTypes.Add(item);

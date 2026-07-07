@@ -10,7 +10,6 @@
         x:Class="EquipmentLibraryV2_Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Background="Transparent"
-        WindowStartupLocation="CenterScreen"
         Icon="/Assets/logo/logo.ico"
         ExtendClientAreaToDecorationsHint="True"
         WindowDecorations="Full"

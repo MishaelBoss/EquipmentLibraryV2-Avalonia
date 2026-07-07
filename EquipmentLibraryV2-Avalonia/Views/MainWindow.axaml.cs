@@ -1,7 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Models;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace EquipmentLibraryV2_Avalonia.Views
 {
@@ -15,9 +19,12 @@ namespace EquipmentLibraryV2_Avalonia.Views
 
         private readonly bool _isWindows11;
 
+        private readonly string _settingsPath = Path.Combine(AppPaths.UserDataDir, "window_settings.json");
+
         public MainWindow()
         {
             InitializeComponent();
+            LoadWindowSettings();
 
             _isWindows11 = OperatingSystem.IsWindows() && Environment.OSVersion.Version.Build >= 22000;
 
@@ -52,6 +59,62 @@ namespace EquipmentLibraryV2_Avalonia.Views
             }
 
             PropertyChanged += OnWindowStateChanged;
+
+            Closing += (s, e) => SaveWindowSettings();
+        }
+
+        private void LoadWindowSettings() {
+            try {
+                if (!File.Exists(_settingsPath)) {
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                    return;
+                }
+
+                string json = File.ReadAllText(_settingsPath);
+                var settings = JsonSerializer.Deserialize<WindowSettings>(json);
+
+                if (settings == null) return;
+
+                WindowStartupLocation = WindowStartupLocation.Manual;
+
+                Width = settings.Width;
+                Height = settings.Height;
+                Position = new PixelPoint(settings.X, settings.Y);
+
+                if (Enum.TryParse<WindowState>(settings.WindowState, out var state)) 
+                    WindowState = state;
+            }
+            catch {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+        }
+
+        private void SaveWindowSettings()
+        {
+            try
+            {
+                var state = WindowState;
+                var settings = new WindowSettings { WindowState = state.ToString() };
+
+                if (state == WindowState.Normal)
+                {
+                    settings.Width = Width;
+                    settings.Height = Height;
+                    settings.X = Position.X;
+                    settings.Y = Position.Y;
+                } else {
+                    settings.Width = Bounds.Width;
+                    settings.Height = Bounds.Height;
+                    settings.X = Position.X;
+                    settings.Y = Position.Y;
+                }
+
+                string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(_settingsPath, json);
+            }
+            catch
+            {
+            }
         }
 
         private void OnWindowStateChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
