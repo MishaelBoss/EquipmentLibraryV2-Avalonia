@@ -43,13 +43,11 @@
 
                     <Button Content="Добавить в систему" 
                             Command="{Binding AddCommand}"
-                            Background="#4CAF50" 
-                            Foreground="White" 
                             HorizontalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalContentAlignment="Center"
                             Height="40" 
-                            CornerRadius="3"
+                            Classes="Add"
                             Margin="0,15,0,0"/>
                 </StackPanel>
             </Border>

@@ -4,9 +4,27 @@
         <Setter Property="Background" Value="#252525"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="PlaceholderForeground" Value="#80FFFFFF"/> 
+        <Setter Property="BorderBrush" Value="#3D3D42"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Height" Value="35"/>
+        
+        <Style.Resources>
+            <SolidColorBrush x:Key="TextControlForegroundPointerOver">White</SolidColorBrush>
+            <SolidColorBrush x:Key="TextControlForegroundFocused">White</SolidColorBrush>
+        </Style.Resources>
+    </Style>
+    
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="BorderBrush" Value="#3D3D42"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="BorderBrush" Value="#8D8D9A"/>
+        <Setter Property="BorderThickness" Value="2"/>
     </Style>
     
     <Style Selector="ComboBox">
@@ -25,5 +43,21 @@
     <Style Selector="ComboBox:pointerover /template/ Border#Layer_1">
         <Setter Property="Background" Value="#404040"/>
         <Setter Property="BorderBrush" Value="#555"/>
+    </Style>
+    
+    <Style Selector="Button.Add">
+        <Setter Property="Background" Value="#4CAF50"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+    
+    <Style Selector="Button.Add:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#4CAF52"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    
+    <Style Selector="Button.Add:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#19721F"/>
+        <Setter Property="Foreground" Value="White"/>
     </Style>
 </Styles>
