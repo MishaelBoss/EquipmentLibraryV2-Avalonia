@@ -31,6 +31,11 @@ namespace EquipmentLibraryV2_Avalonia.Views
                 ButtonStack.IsVisible = !_isWindows11;
                 SpacerGrid.IsVisible = _isWindows11;
             }
+            else
+            {
+                ButtonStack.IsVisible = false;
+                SpacerGrid.IsVisible = true;
+            }
 
             if (_isWindows11)
             {
