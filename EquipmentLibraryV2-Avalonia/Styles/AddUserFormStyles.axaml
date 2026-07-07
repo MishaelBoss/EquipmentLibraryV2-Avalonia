@@ -36,7 +36,7 @@
 
     <Style Selector="ComboBox.ModernSelect">
         <Setter Property="Background" Value="#3A3A3A"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="#444"/>
         <Setter Property="CornerRadius" Value="6"/>

@@ -106,13 +106,13 @@
 							<Button Margin="10,0,0,0"
 							        Width="32"
 							        Height="32">
-								<Image Source="/Assets/download-cloud-64.png"/>
+								<Image Source="{SvgImage  /Assets/download_dark.svg}"/>
 							</Button>
 
 							<Button Margin="10,0,0,0"
 							        Width="32"
 							        Height="32">
-								<Image Source="/Assets/return-64.png"/>
+								<Image Source="{SvgImage /Assets/refresh_dark.svg}"/>
 							</Button>
 						</StackPanel>
 					</Grid>
