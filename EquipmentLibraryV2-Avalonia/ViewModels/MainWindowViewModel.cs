@@ -7,7 +7,8 @@ using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
-    public partial class MainWindowViewModel : ViewModelBase, 
+    public partial class MainWindowViewModel : ViewModelBase,
+        IRecipient<ShowOrHideError>,
         IRecipient<LogoutMessage>,
         IRecipient<OpenAdminPanelMessage>, 
         IRecipient<OpenLibraryMessage>, 
@@ -18,9 +19,10 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         IRecipient<OpenMeasurementRegisterMessage>,
         IRecipient<OpenRegisterOfTestingEquipmentMessage>
     {
-        [ObservableProperty] private ViewModelBase? _currentPage;
-        [ObservableProperty] private ViewModelBase? _overlayContent;
-        [ObservableProperty] private ViewModelBase? _topOverlayContent;
+        [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
+        [ObservableProperty] public partial ViewModelBase? OverlayContent { get; set; }
+        [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
+        [ObservableProperty] public partial ViewModelBase? ErrorContent { get; set; }
 
         private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
         private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
@@ -39,6 +41,11 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
             WeakReferenceMessenger.Default.RegisterAll(this);
             RightBoardViewModel = new RightBoardUserControlViewModel();
+        }
+
+        public void Receive(ShowOrHideError message)
+        {
+            ErrorContent = ErrorContent == null ? message.ViewModelBase : null;
         }
 
         public void Receive(LogoutMessage message)

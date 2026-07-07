@@ -2,12 +2,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
+             x:DataType="vm:ConnectionErrorUserControlViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             MinHeight="50" MaxWidth="450" 
+             Background="Transparent"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Components.ConnectionErrorUserControlView">
-    <Border>
-        <Grid ColumnDefinitions="*, *">
-            <Image Source="{SvgImage /Assets/errorDialog.svg}"/>
-            <TextBlock Text="Error to connection network"></TextBlock>
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/ConnectionErrorStyles.axaml"/>
+    </UserControl.Styles>
+    
+    <Border Background="#1E1E24" BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8" Padding="0,6">
+        <Grid ColumnDefinitions="Auto, *, Auto" VerticalAlignment="Center">
+            <Image Grid.Column="0" 
+                   Source="{SvgImage /Assets/errorDialog.svg}" 
+                   Width="21" Height="21"
+                   VerticalAlignment="Center"
+                   Margin="8,0,8,0"/>
+            
+            <TextBlock Grid.Column="1" 
+                       Text="Error to connection network" 
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Stretch" 
+                       TextAlignment="Left"
+                       TextWrapping="Wrap"
+                       Margin="4,4,8,4"/>
+            
+            <Button Grid.Column="2" Classes="CloseBtn" Margin="0,0,8,0" Command="{Binding CloseCommand}" VerticalAlignment="Center">
+                <Grid>
+                    <Image Classes="DarkIcon" Source="{SvgImage /Assets/closeSmall.svg}" Width="21" Height="21"/>
+                    <Image Classes="LightIcon" Source="{SvgImage /Assets/closeSmallHovered.svg}" Width="21" Height="21"/>
+                </Grid>
+            </Button>
         </Grid>
     </Border>
 </UserControl>

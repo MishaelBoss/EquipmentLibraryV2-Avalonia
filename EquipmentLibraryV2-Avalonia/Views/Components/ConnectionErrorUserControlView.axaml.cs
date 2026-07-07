@@ -1,6 +1,5 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 namespace EquipmentLibraryV2_Avalonia.Views.Components;
 
@@ -9,5 +8,6 @@ public partial class ConnectionErrorUserControlView : UserControl
     public ConnectionErrorUserControlView()
     {
         InitializeComponent();
+        DataContext = new ConnectionErrorUserControlViewModel();
     }
 }

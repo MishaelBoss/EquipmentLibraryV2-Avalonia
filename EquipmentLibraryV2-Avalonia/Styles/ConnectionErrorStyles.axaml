@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Button.CloseBtn">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="Button.CloseBtn:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <Style Selector="Button.CloseBtn Image.DarkIcon">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="Button.CloseBtn Image.LightIcon">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+
+    <Style Selector="Button.CloseBtn:pointerover Image.DarkIcon">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.CloseBtn:pointerover Image.LightIcon">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+</Styles>

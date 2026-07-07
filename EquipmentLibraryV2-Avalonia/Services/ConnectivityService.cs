@@ -3,7 +3,10 @@ using Serilog;
 using System;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 namespace EquipmentLibraryV2_Avalonia.Services;
 
@@ -32,12 +35,15 @@ internal static class ConnectivityService
 
             Log.Information($"Ping status for ({hostName}): {reply.Status}");
 
-            if (reply is not { Status: IPStatus.Success }) return false;
+            if (reply is not { Status: IPStatus.Success })
+            {
+                WeakReferenceMessenger.Default.Send(new ShowOrHideError(new ConnectionErrorUserControlViewModel()));
+                return false;
+            }
             
             Log.Information($"Address: {reply.Address}");
             Log.Information($"Roundtrip time: {reply.RoundtripTime}");
             Log.Information($"Time to live: {reply.Options?.Ttl}");
-
             return await TestPostgreSqlConnection();
 
         }
@@ -77,6 +83,7 @@ internal static class ConnectivityService
         catch (Exception ex)
         {
             Log.Warning($"PostgreSQL connection failed: {ex.Message}");
+            WeakReferenceMessenger.Default.Send(new ShowOrHideError(new ConnectionErrorUserControlViewModel()));
             return false;
         }
     }
