@@ -1,0 +1,41 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBlock.PageTitle">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="TextBlock.SectionTitle">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="TextBlock.Subtitle">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="TextBlock.Body">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="#CED0D6"/>
+    </Style>
+
+    <Style Selector="TextBlock.Label">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="#999"/>
+    </Style>
+
+    <Style Selector="TextBlock.Caption">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#888"/>
+    </Style>
+
+    <Style Selector="TextBlock.Muted">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#666"/>
+    </Style>
+</Styles>

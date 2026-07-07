@@ -1,0 +1,59 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Surface levels -->
+    <Color x:Key="Surface0">#1A1A1A</Color>
+    <Color x:Key="Surface1">#252525</Color>
+    <Color x:Key="Surface2">#2E2E2E</Color>
+    <Color x:Key="Surface3">#3A3A3A</Color>
+    <Color x:Key="SurfaceContent">#2B2D31</Color>
+
+    <!-- Text -->
+    <Color x:Key="TextPrimary">White</Color>
+    <Color x:Key="TextSecondary">#CED0D6</Color>
+    <Color x:Key="TextMuted">#888</Color>
+    <Color x:Key="TextDim">#666</Color>
+    <Color x:Key="TextLink">#6CB4EE</Color>
+    <Color x:Key="TextError">#FF4D4D</Color>
+
+    <!-- Accents -->
+    <Color x:Key="AccentGreen">#28A745</Color>
+    <Color x:Key="AccentGreenHover">#218838</Color>
+    <Color x:Key="AccentGreenPressed">#19721F</Color>
+    <Color x:Key="AccentBlue">#007ACC</Color>
+    <Color x:Key="AccentBlueBadge">#4A90E2</Color>
+    <Color x:Key="AccentRed">#D32F2F</Color>
+    <Color x:Key="AccentRedHover">#E81123</Color>
+    <Color x:Key="AccentRedPressed">#F1707A</Color>
+
+    <!-- Borders -->
+    <Color x:Key="BorderSubtle">#2A2A2A</Color>
+    <Color x:Key="BorderDefault">#444</Color>
+    <Color x:Key="BorderFocus">#28A745</Color>
+    <Color x:Key="BorderInput">#3D3D42</Color>
+
+    <!-- Search pill -->
+    <Color x:Key="SearchPillBackground">#8E9198</Color>
+    <Color x:Key="SearchPillBorder">#B0B3B8</Color>
+
+    <!-- Corner radii -->
+    <CornerRadius x:Key="RadiusSmall">4</CornerRadius>
+    <CornerRadius x:Key="RadiusMedium">8</CornerRadius>
+    <CornerRadius x:Key="RadiusLarge">12</CornerRadius>
+    <CornerRadius x:Key="RadiusPill">20</CornerRadius>
+
+    <!-- Spacing -->
+    <x:Double x:Key="SpacingXS">4</x:Double>
+    <x:Double x:Key="SpacingSM">8</x:Double>
+    <x:Double x:Key="SpacingMD">16</x:Double>
+    <x:Double x:Key="SpacingLG">20</x:Double>
+    <x:Double x:Key="SpacingXL">24</x:Double>
+
+    <!-- Font sizes -->
+    <x:Double x:Key="FontSizeCaption">11</x:Double>
+    <x:Double x:Key="FontSizeSmall">12</x:Double>
+    <x:Double x:Key="FontSizeBody">13</x:Double>
+    <x:Double x:Key="FontSizeLabel">13</x:Double>
+    <x:Double x:Key="FontSizeSubtitle">15</x:Double>
+    <x:Double x:Key="FontSizeTitle">20</x:Double>
+    <x:Double x:Key="FontSizePageTitle">24</x:Double>
+</ResourceDictionary>
