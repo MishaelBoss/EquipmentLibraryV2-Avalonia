@@ -1,6 +1,7 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using System;
 
 namespace EquipmentLibraryV2_Avalonia.Views
 {
@@ -47,6 +48,11 @@ namespace EquipmentLibraryV2_Avalonia.Views
         private void Close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void TopBorder(object? sender, PointerPressedEventArgs e)
+        {
+            BeginMoveDrag(e);
         }
     }
 }

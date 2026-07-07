@@ -54,7 +54,7 @@
 
 	<Border CornerRadius="8" Background="#000000" ClipToBounds="True" x:Name="MainBorder">
 		<Grid RowDefinitions="Auto, *">
-			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto" WindowDecorationProperties.ElementRole="TitleBar">
+			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto" PointerPressed="TopBorder">
 
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
 					<Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
