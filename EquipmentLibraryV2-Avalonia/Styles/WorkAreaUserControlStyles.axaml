@@ -34,15 +34,33 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
-    
-    <Style Selector="ComboBox ComboBoxItem">
-        <Setter Property="Padding" Value="10,8"/>
-        <Setter Property="Foreground" Value="Black"/>
+
+    <Style Selector="ComboBox /template/ Border#PopupBorder">
+        <Setter Property="Background" Value="#2B2D31"/>
+        <Setter Property="BorderBrush" Value="#404040"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
     </Style>
-    
-    <Style Selector="ComboBox:pointerover /template/ Border#Layer_1">
+
+    <Style Selector="ComboBox ComboBoxItem">
+         <Setter Property="Padding" Value="10,8"/>
+         <Setter Property="Foreground" Value="#CED0D6"/>
+         <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="ComboBox ComboBoxItem:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="#404040"/>
-        <Setter Property="BorderBrush" Value="#555"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="ComboBox ComboBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="#007ACC"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="ComboBox:pointerover /template/ Border#Layer_1">
+         <Setter Property="Background" Value="#404040"/>
+         <Setter Property="BorderBrush" Value="#555"/>
     </Style>
     
     <Style Selector="Button.Add">
