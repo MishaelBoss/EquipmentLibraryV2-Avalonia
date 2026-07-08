@@ -10,6 +10,7 @@ using Serilog;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
@@ -22,8 +23,11 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
     [ObservableProperty] public partial ObservableCollection<EquipmentType> EquipmentTypes { get; set; } = [];
     [ObservableProperty] public partial bool IsLoading { get; set; }
 
-    partial void OnSearchTextChanged(string? value) => _ = FilterChanged();
-    partial void OnSelectedEquipmentTypeChanged(EquipmentType? value) => _ = FilterChanged();
+    private CancellationTokenSource _debounceCts = new();
+
+    partial void OnSearchTextChanged(string? value) => _ = DebounceFilterChanged();
+    partial void OnSelectedEquipmentTypeChanged(EquipmentType? value) => _ = DebounceFilterChanged();
+    
     public async void Receive(RefreshDataMessage message)
     {
         try
@@ -48,10 +52,21 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
         });
     }
 
-    private async Task FilterChanged()
+    private async Task DebounceFilterChanged()
     {
-        Log.Debug("Filter changed, reloading data");
-        await LoadAllEquipmentsAsync();
+        await _debounceCts.CancelAsync();
+        _debounceCts = new CancellationTokenSource();
+        var token = _debounceCts.Token;
+        try
+        {
+            await Task.Delay(300, token);
+            Log.Debug("Filter changed, reloading data");
+            if (!token.IsCancellationRequested)
+                await LoadAllEquipmentsAsync();
+        }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     private async Task RefreshDataAsync()

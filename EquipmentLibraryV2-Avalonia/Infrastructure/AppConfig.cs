@@ -41,13 +41,15 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
                                     !string.IsNullOrWhiteSpace(User) &&
                                     !string.IsNullOrWhiteSpace(Password);
 
+            var baseConnection = $"Server={Ip};Port={Port};Database={Database};User Id={User};Password={Password};SslMode=Disable";
+            
             if (!hasConnectionData)
             {
-                _connectionString = await ConnectivityService.ConnectivityChecker() ? $"Server={Ip};Port={Port};Database={Database};User Id={User};Password={Password};" : string.Empty;
+                _connectionString = await ConnectivityService.ConnectivityChecker() ? baseConnection : string.Empty;
             }
             else
             {
-                _connectionString = $"Server={Ip};Port={Port};Database={Database};User Id={User};Password={Password};";
+                _connectionString = baseConnection;
             }
 
             return _connectionString;

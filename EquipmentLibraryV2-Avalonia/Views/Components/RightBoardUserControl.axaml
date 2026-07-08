@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="570"
              x:DataType="vm:RightBoardUserControlViewModel"
-             x:Class="EquipmentLibraryV2_Avalonia.RightBoardUserControl">
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Components.RightBoardUserControl">
     
     <UserControl.Styles>
         <StyleInclude Source="/Styles/RightBoardStyles.axaml"/>

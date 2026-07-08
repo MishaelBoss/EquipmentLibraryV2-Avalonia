@@ -50,14 +50,22 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         private string _releaseNotes = string.Empty;
         private string _releaseDate = string.Empty;
 
-        private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
-        private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
-        private readonly WorkAreaUserControlViewModel _workAreaUserControlViewModel = new();
-        private readonly MeasurementRegisterPageUserControlViewModel _measurementRegisterPageUserControlViewModel = new();
-        private readonly RegisterOfTestingEquipmentPageUserControlViewModel _registerOfTestingEquipmentPageUserControlViewModel = new();
+        private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel = new(() =>
+            new AdminPanelPageUserControlViewModel());
+        
+        private readonly Lazy<LibraryPageUserControlViewModel> _library = new(() =>
+            new LibraryPageUserControlViewModel());
+        
+        private readonly Lazy<WorkAreaUserControlViewModel> _workArea = new(() => 
+            new WorkAreaUserControlViewModel());
+        
+        private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister =
+            new(() => new MeasurementRegisterPageUserControlViewModel());
 
-        private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel = new();
-        //private readonly AddOrEditUserUserControlViewModel _addOrEditUserUserControlViewModel = new();
+        private readonly Lazy<RegisterOfTestingEquipmentPageUserControlViewModel> _registerOfTestingEquipment =
+            new(() => new RegisterOfTestingEquipmentPageUserControlViewModel());
+
+        private readonly AuthorizationUserControlViewModel _authorization = new();
 
         public RightBoardUserControlViewModel RightBoardViewModel { get; }
 
@@ -67,6 +75,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         public async Task ReturnToConnectNetwork()
         {
             await ConnectivityService.ConnectivityChecker();
+            await CheckNetworkAsync();
         }
 
         [RelayCommand]
@@ -102,7 +111,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         public MainWindowViewModel()
         {
             IsLoading = true;
-            CurrentPage = _libraryPageUserControlView;
+            CurrentPage = _library.Value;
             _settings = AppSettings.Load();
 
             WeakReferenceMessenger.Default.RegisterAll(this);
@@ -258,27 +267,27 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(LogoutMessage message)
         {
-            CurrentPage = _libraryPageUserControlView;
+            CurrentPage = _library.Value;
         }
 
         public void Receive(OpenAdminPanelMessage message)
         {
-            CurrentPage = _adminPanelPageUserControlViewModel;
+            CurrentPage = _adminPanel.Value;
         }
 
         public void Receive(OpenLibraryMessage message)
         {
-            CurrentPage = _libraryPageUserControlView;
+            CurrentPage = _library.Value;
         }
 
         public void Receive(OpenWorkAreaMessage message)
         {
-            CurrentPage = _workAreaUserControlViewModel;
+            CurrentPage = _workArea.Value;
         }
 
         public void Receive(OpenOrCloseAuthorizationMessage message)
         {
-            OverlayContent = OverlayContent == null ? _authorizationUserControlViewModel : null;
+            OverlayContent = OverlayContent == null ? _authorization : null;
         }
 
         public void Receive(OpenOrCloseAddOrEditUserMessage message)
@@ -312,12 +321,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(OpenMeasurementRegisterMessage message)
         {
-            CurrentPage = _measurementRegisterPageUserControlViewModel;
+            CurrentPage = _measurementRegister.Value;
         }
 
         public void Receive(OpenRegisterOfTestingEquipmentMessage message)
         {
-            CurrentPage = _registerOfTestingEquipmentPageUserControlViewModel;
+            CurrentPage = _registerOfTestingEquipment.Value;
         }
 
         public void Dispose()

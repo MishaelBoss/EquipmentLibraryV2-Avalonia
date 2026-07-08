@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Services;
 
@@ -20,6 +21,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
         [ObservableProperty] public partial string SearchText { get; set; } = string.Empty;
         [ObservableProperty] public partial bool ShowActiveUsers { get; set; } = true;
         [ObservableProperty] public partial bool ShowInactiveUsers { get; set; } = true;
+        [ObservableProperty] public partial bool IsLoading { get; set; }
 
         [ObservableProperty] private ObservableCollection<CartUserViewModel> _userList = [];
 
@@ -94,6 +96,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                     await LoadUsersWithResetAsync(token);
                 }
             }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 Log.Error($"Error scheduling search {ex.Message}");
@@ -122,10 +125,18 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
             catch (Exception ex)
             {
                 Log.Error($"Error loading users {ex.Message}");
+                
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                await Dispatcher.UIThread.InvokeAsync(() => IsLoading = true);
+                
                 UserList.Clear();
+                
+                await GetFilteredUserIdsAsync(cancellationToken);
             }
             finally
             {
+                await Dispatcher.UIThread.InvokeAsync(() => IsLoading = false);
                 _loadingSemaphore.Release();
             }
         }
