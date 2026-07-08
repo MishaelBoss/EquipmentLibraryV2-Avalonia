@@ -14,11 +14,14 @@
         <entry key="EquipmentLibraryV2-Avalonia/Styles/UserCardStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/WorkAreaUserControlStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/settings/LogginStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/AboutDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/AddOrEditUserUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/AuthorizationUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/ConfirmDeleteUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/ConnectionErrorUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/LogoutDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />

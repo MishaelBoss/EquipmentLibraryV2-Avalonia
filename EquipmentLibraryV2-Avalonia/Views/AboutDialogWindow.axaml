@@ -12,7 +12,7 @@
         ShowInTaskbar="False"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
-         Background="#1E1E24"
+        Background="#1E1E24"
         Title="AboutDialogWindow">
     
     <Border BorderThickness="1" CornerRadius="8">

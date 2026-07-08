@@ -20,10 +20,10 @@ public partial class AboutDialogWindowViewModel : ViewModelBase
     }
 
     public AboutDialogWindowViewModel() {
-        Dispatcher.UIThread.Post(getPakedgesInProject);
+        Dispatcher.UIThread.Post(GetPakedgesInProject);
     }
 
-    private void getPakedgesInProject() {
+    private void GetPakedgesInProject() {
         var list = new List<PackageInfo>();
 
         var entryAssembly = Assembly.GetEntryAssembly();
@@ -44,11 +44,11 @@ public partial class AboutDialogWindowViewModel : ViewModelBase
             {
                 var assembly = Assembly.Load(assemblyName);
 
-                string version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split("+")[0]
+                var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split("+")[0]
                                  ?? assemblyName.Version?.ToString(3)
                                  ?? "unknown";
 
-                string name = assemblyName.Name ?? "unknown";
+                var name = assemblyName.Name ?? "unknown";
                 if (!name.StartsWith("System.") && !name.StartsWith("Microsoft.") && name != "netstandard")
                 {
                     list.Add(new PackageInfo(name, version));

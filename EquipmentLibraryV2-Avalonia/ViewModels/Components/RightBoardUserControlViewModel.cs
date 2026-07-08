@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Views;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 

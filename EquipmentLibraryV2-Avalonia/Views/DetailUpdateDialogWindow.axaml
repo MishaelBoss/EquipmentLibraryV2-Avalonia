@@ -1,20 +1,18 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
-        mc:Ignorable="d" 
-        Width="400" Height="180"
-        CanResize="False"
-        WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"
-        Background="#1E1E24"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaTitleBarHeightHint="-1"
-        x:Class="EquipmentLibraryV2_Avalonia.Views.LogoutDialogWindow"
-        x:DataType="vm:LogoutDialogWindowViewModel"
-        Title="Выход из системы">
-
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+             x:DataType="vm:DetailUpdateDialogWindowViewModel"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="320"
+             Width="450" Height="320"
+             CanResize="False"
+             WindowStartupLocation="CenterOwner"
+             ShowInTaskbar="False"
+             ExtendClientAreaToDecorationsHint="True"
+             ExtendClientAreaTitleBarHeightHint="-1"
+             Background="#1E1E24"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.DetailUpdateDialogWindow">
     <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8">
         <Grid RowDefinitions="*, Auto" Margin="24">
             
@@ -35,7 +33,7 @@
                         Spacing="12" 
                         Margin="0,16,0,0">
                 
-                <Button Content="Отмена" 
+                <Button Content="Закрыть" 
                         Name="CancelButton"
                         Command="{Binding CloseCommand}"
                         CommandParameter="{Binding $parent[Window]}"
@@ -52,23 +50,6 @@
                         </Style>
                     </Button.Styles>
                 </Button>
-
-                <Button Content="Выйти" 
-                        Name="LogoutButton"
-                        Command="{Binding LogoutCommand}"
-                        CommandParameter="{Binding $parent[Window]}"
-                        Background="#E05252" 
-                        Foreground="White" 
-                        Padding="24,8"
-                        CornerRadius="6"
-                        FontWeight="Medium">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#C84141"/>
-                        </Style>
-                    </Button.Styles>
-                </Button>
-                
             </StackPanel>
         </Grid>
     </Border>
