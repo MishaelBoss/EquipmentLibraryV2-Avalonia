@@ -68,25 +68,9 @@ internal static class ConnectivityService
 
     private static async Task<bool> TestPostgreSqlConnection()
     {
-        #if DEBUG
-        const string connString = $"Server={AppConfig.Ip};" +
-                                  $"Port={AppConfig.Port};" +
-                                  $"Database={AppConfig.Database};" +
-                                  $"User Id={AppConfig.User};" +
-                                  $"Password={AppConfig.Password};" +
-                                  $"Timeout=5;" +
-                                  $"CommandTimeout=5;" +
-                                  $"SslMode=Disable"; 
-        #else
-        const string connString = $"Server={AppConfig.Ip};" +
-                                  $"Port={AppConfig.Port};" +
-                                  $"Database={AppConfig.Database};" +
-                                  $"User Id={AppConfig.User};" +
-                                  $"Password={AppConfig.Password};" +
-                                  $"Timeout=5;" +
-                                  $"CommandTimeout=5;" +
-                                  $"SslMode=Require"; 
-        #endif
+        const string connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
+                                  $"User Id={AppConfig.User};Password={AppConfig.Password};" +
+                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5";
         
         try
         {
