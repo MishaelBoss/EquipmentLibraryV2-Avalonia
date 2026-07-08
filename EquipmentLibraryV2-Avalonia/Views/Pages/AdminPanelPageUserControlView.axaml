@@ -9,6 +9,7 @@
 	
 	<UserControl.Styles>
 		<StyleInclude Source="/Styles/UserCardStyles.axaml"/>
+		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
 	</UserControl.Styles>
 
 	<Grid>
@@ -20,28 +21,35 @@
 					HorizontalAlignment="Right" 
 					VerticalAlignment="Top" 
 					ColumnDefinitions="Auto, Auto">
-				<StackPanel		Grid.Column="1"
-		  						Orientation="Horizontal"
-		  						HorizontalAlignment="Center"
-		  						Margin="10,0,0,0">
+				<StackPanel	Grid.Column="1"
+		  					Orientation="Horizontal"
+		  					HorizontalAlignment="Center"
+		  					Margin="10,0,0,0">
 
-		  			<Button HorizontalAlignment="Right"
-		  					VerticalAlignment="Top"
-		  					Width="32"
-		  					Height="32"
-		  					ToolTip.Tip="Adds">
-		  				<Image Source="/Assets/add-64.png"/>
-		  				<Button.Flyout>
-		  					<Flyout Placement="Bottom">
-		  						<ListBox>
-									<Button Command="{Binding AddUserCommand}"
-		  									VerticalAlignment="Stretch"
-		  									HorizontalAlignment="Stretch"
-		  									Content="Add user"/>
-		  						</ListBox>
-		  					</Flyout>
-		  				</Button.Flyout>
-		  			</Button>
+					<Button Height="34"
+					        Classes="modernPrimary"
+					        Cursor="Hand"
+					        Padding="12,0" BorderThickness="0"
+                            HorizontalAlignment="Left">
+                    	<StackPanel Orientation="Horizontal" Spacing="6">
+                    	    <Path Data="M10 2v6h6v2h-6v6H8v-6H2V8h6V2z"
+                    	          Fill="White" Stretch="Uniform" Width="14" Height="14"/>
+                    	    <TextBlock Text="Добавить" FontSize="13" FontWeight="SemiBold"
+                    	               VerticalAlignment="Center"/>
+                    	</StackPanel>
+                    	<Button.Flyout>
+                    	    <Flyout Placement="Bottom">
+                    	        <StackPanel Spacing="2" MinWidth="160">
+                    	            <Button Classes="modernFlyoutItem"
+                    	                    Command="{Binding AddUserCommand}">
+                    	                <StackPanel Orientation="Horizontal" Spacing="8">
+                    	                    <TextBlock Text="Добавить пользователя" FontSize="13"/>
+                    	                </StackPanel>
+                    	            </Button>
+                    	        </StackPanel>
+                    	    </Flyout>
+                    	</Button.Flyout>
+					</Button>
 		  		</StackPanel>
 			</Grid>
 		</Grid>
@@ -139,8 +147,7 @@
 													<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0">
 														<StackPanel Orientation="Horizontal" Spacing="8">
 															<TextBlock Text="{Binding Login}" Foreground="White" FontWeight="SemiBold" FontSize="14"/>
-															<Border IsVisible="{Binding IsAdministrator}" 
-																	Background="#4A90E2" CornerRadius="4" Padding="4,1">
+															<Border Background="#4A90E2" CornerRadius="4" Padding="4,1">
 																<TextBlock Text="ADMIN" FontSize="9" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontWeight="Black"/>
 															</Border>
 														</StackPanel>
@@ -150,7 +157,6 @@
 													</StackPanel>
 
 													<Border Grid.Column="2" 
-															IsVisible="{Binding IsAdministrator}"
 															Background="#2A2A2A"
 															CornerRadius="6"
 															Padding="8,4"
@@ -167,7 +173,6 @@
 
 													<StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
 														<ToggleButton IsChecked="{Binding IsActive}"
-																	  IsVisible="{Binding IsAdministrator}"
 																	  Command="{Binding ChangeActiveUserCommand}"
 																	  Classes="action isActive">
 															<Panel>
@@ -177,14 +182,12 @@
 														</ToggleButton>
 
 														<Button Command="{Binding EditCommand}"
-																Classes="action edit" Background="#34C759"
-																IsVisible="{Binding IsAdministrator}">
+																Classes="action edit" Background="#34C759">
 															<Image Source="/Assets/edit-user-64.png"/>
 														</Button>
 
 														<Button Command="{Binding DeleteCommand}"
-																Classes="action delete" Background="#FF3B30"
-																IsVisible="{Binding IsAdministrator}">
+																Classes="action delete" Background="#FF3B30">
 															<Image Source="/Assets/remove-64.png"/>
 														</Button>
 													</StackPanel>

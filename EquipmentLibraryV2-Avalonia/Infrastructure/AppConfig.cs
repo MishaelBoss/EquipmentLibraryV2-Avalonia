@@ -1,13 +1,10 @@
 ﻿using EquipmentLibraryV2_Avalonia.Services;
-using System.Diagnostics;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace EquipmentLibraryV2_Avalonia.Infrastructure 
+namespace EquipmentLibraryV2_Avalonia.Infrastructure
 {
     public abstract class AppConfig
     {
-        public static readonly string ApplicationNames = Process.GetCurrentProcess().ProcessName;
         private static readonly Assembly ApplicationAssembly = Assembly.GetEntryAssembly() ?? typeof(App).Assembly;
         public static string Version =>
             ApplicationAssembly

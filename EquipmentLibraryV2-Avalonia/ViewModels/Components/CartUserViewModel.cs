@@ -37,18 +37,10 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         }
 
         [RelayCommand]
-        public void View() 
-        { 
-        }
-
-        [RelayCommand]
         public void Delete()
         {
             WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage(UserId, Login, "DELETE FROM public.users WHERE id = @id", () => WeakReferenceMessenger.Default.Send(new RefreshUserListMessage())));
         }
-
-        public static Task<bool> IsAdministrator 
-            => AuthService.TryAutoLoginAsync();
 
         [RelayCommand]
         private async Task ChangeActiveUserAsync()
@@ -61,7 +53,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message);
+                Log.Error(ex, "Failed to toggle user active state for UserId={UserId}", UserId);
             }
         }
     }

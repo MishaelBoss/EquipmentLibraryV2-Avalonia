@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace EquipmentLibraryV2_Avalonia.Infrastructure 
@@ -6,6 +7,7 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
     public abstract class AppPaths
     {
         private static string LauncherDir => AppDomain.CurrentDomain.BaseDirectory;
+        private static string AppName => Process.GetCurrentProcess().ProcessName;
 
         public static string UserDataDir
         {
@@ -13,7 +15,7 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
             {
                 string path = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    AppConfig.ApplicationNames);
+                    AppName);
 
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
-using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
@@ -15,9 +12,11 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {
     public partial class AuthorizationUserControlViewModel : ViewModelBase
     {
-        private readonly IImage[] _animationFrames = new IImage[8];
+        private readonly IImage?[] _animationFrames = new IImage[8];
         
         private CancellationTokenSource? _animationCts;
+        private DateTime _lastAttempt = DateTime.MinValue;
+        private static readonly TimeSpan Cooldown = TimeSpan.FromSeconds(1);
         
         [ObservableProperty]
         public partial string MessageError { get; set; } = string.Empty;
@@ -37,7 +36,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         public partial bool IsLoading { get; set; }
         
         [ObservableProperty]
-        public partial IImage CurrentAnimationFrame { get; set; }
+        public partial IImage? CurrentAnimationFrame { get; set; }
         
         public bool IsActiveConfirmButton
             => !string.IsNullOrEmpty(Login)
@@ -73,7 +72,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Failed to load SVG frame {FrameIndex} from {Path}", i, path);
-                    _animationFrames[i - 1] = null!;
+                    _animationFrames[i - 1] = _animationFrames[0];
                 }
             }
             
@@ -84,12 +83,22 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         private async Task Authorization()
         {
             if (IsLoading) return;
-            
+
+            var elapsed = DateTime.UtcNow - _lastAttempt;
+            if (elapsed < Cooldown)
+            {
+                var remaining = Math.Ceiling((Cooldown - elapsed).TotalSeconds);
+                MessageError = $"Подождите {remaining} сек.";
+                return;
+            }
+
             IsLoading = true;
             MessageError = string.Empty;
             
             _animationCts = new CancellationTokenSource();
             _ = RunAnimationAsync(_animationCts.Token);
+
+            _lastAttempt = DateTime.UtcNow;
             
             try
             {
@@ -122,17 +131,15 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 
             while (!token.IsCancellationRequested)
             {
+                var frameIndex = currentFrameIndex;
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    var frame = _animationFrames[currentFrameIndex];
-                    CurrentAnimationFrame = frame;
+                    var frame = _animationFrames[frameIndex];
+                    if (frame is not null)
+                        CurrentAnimationFrame = frame;
                 });
 
-                currentFrameIndex++;
-                if (currentFrameIndex >= _animationFrames.Length)
-                {
-                    currentFrameIndex = 0;
-                }
+                currentFrameIndex = (currentFrameIndex + 1) % _animationFrames.Length;
 
                 try
                 {
