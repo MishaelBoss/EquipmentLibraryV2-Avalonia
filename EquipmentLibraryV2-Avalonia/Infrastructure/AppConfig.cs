@@ -1,12 +1,23 @@
-﻿using System.Diagnostics;
+﻿using EquipmentLibraryV2_Avalonia.Services;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
-using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.Infrastructure 
 {
     public abstract class AppConfig
     {
-        public static readonly string Applicationnames = Process.GetCurrentProcess().ProcessName;
+        public static readonly string ApplicationNames = Process.GetCurrentProcess().ProcessName;
+        public static readonly Assembly ApplicationAssembly = Assembly.GetEntryAssembly() ?? typeof(App).Assembly;
+        public static string Version =>
+            ApplicationAssembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion
+                ?.Split('+')[0]
+            ?? ApplicationAssembly.GetName().Version?.ToString(3)
+            ?? "unknown";
+
+        public static string DisplayVersion => $"EquipmentLibrary v2: {Version}";
 
         #region DB
 

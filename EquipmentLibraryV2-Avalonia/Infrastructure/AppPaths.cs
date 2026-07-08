@@ -13,7 +13,7 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
             {
                 string path = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    AppConfig.Applicationnames);
+                    AppConfig.ApplicationNames);
 
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 

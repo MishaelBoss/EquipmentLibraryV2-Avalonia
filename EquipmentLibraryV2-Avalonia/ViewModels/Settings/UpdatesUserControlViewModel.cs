@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Services.Interfaces;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Settings;
 

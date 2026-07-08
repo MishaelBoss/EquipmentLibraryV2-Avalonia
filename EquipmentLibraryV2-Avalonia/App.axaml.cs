@@ -7,6 +7,7 @@ using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 using System.IO;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia
 {
@@ -40,10 +41,14 @@ namespace EquipmentLibraryV2_Avalonia
 
                 Log.Information("Application starting...");
 
+                var viewModel = new MainWindowViewModel();
+
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = viewModel,
                 };
+
+                Task.Run(async () => await viewModel.InitializeAsync());
             }
 
             base.OnFrameworkInitializationCompleted();

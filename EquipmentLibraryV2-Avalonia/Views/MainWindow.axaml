@@ -161,8 +161,8 @@
 							<TextBlock Text="{Binding StatusNetwork}" Foreground="#888" FontSize="11"/>
 						</StackPanel>
 						
-						<Button Background="Transparent" Command="{Binding ReturnToConnectNetworkCommand}">
-							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" IsVisible="{Binding !IsConnected}">
+						<Button Background="Transparent" Command="{Binding ReturnToConnectNetworkCommand}" IsVisible="{Binding !IsConnected}">
+							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
 								<Ellipse Width="8" Height="8" Fill="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"/>
 								<TextBlock Text="{Binding StatusNetwork}" Foreground="#888" FontSize="11"/>
 								<Image Source="{SvgImage /Assets/refresh.svg}" Width="12" Height="12"/>
@@ -174,10 +174,29 @@
 						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
 						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
 					</StackPanel>
-					<TextBlock Grid.Column="3" VerticalAlignment="Center"
-					           Foreground="#666" FontSize="11" FontWeight="SemiBold">
-						<Run Text="{Binding Version}"/>
-					</TextBlock>
+					<Grid Grid.Column="3">
+						<Button Background="Transparent" Command="{Binding AboutCommand}" IsVisible="{Binding !IsNewVerion}">
+							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+								<TextBlock VerticalAlignment="Center"
+										   Foreground="#666" FontSize="11" FontWeight="SemiBold">
+									<Run Text="{Binding Version}"/>
+								</TextBlock>
+							</StackPanel>
+						</Button>
+
+						<Button Background="Transparent" 
+								IsVisible="{Binding IsNewVerion}" 
+								Command="{Binding UpdateCommand}"
+								CommandParameter="{Binding $self}">
+							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+								<Image Source="{SvgImage /Assets/refresh.svg}" Width="12" Height="12"/>
+								<TextBlock VerticalAlignment="Center"
+								   Foreground="#666" FontSize="11" FontWeight="SemiBold">
+									<Run Text="{Binding Version}"/>
+								</TextBlock>
+							</StackPanel>
+						</Button>
+					</Grid>
 				</Grid>
 			</Border>
 		</Grid>

@@ -4,28 +4,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
         x:DataType="vm:AboutDialogWindowViewModel"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="320"
         x:Class="EquipmentLibraryV2_Avalonia.Views.AboutDialogWindow"
+        Width="450" Height="320"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+         Background="#1E1E24"
         Title="AboutDialogWindow">
     
-    <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8">
-        <Grid RowDefinitions="*, Auto" Margin="24">
-            
-            <StackPanel Grid.Row="0" Spacing="8" VerticalAlignment="Center">
-                <TextBlock Text="Выход из профиля" 
+    <Border BorderThickness="1" CornerRadius="8">
+        <Grid RowDefinitions="Auto, *, Auto" Margin="24, 28, 24, 20">
+            <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+                <TextBlock Text="О программе" 
                            Foreground="White" 
-                           FontSize="18" 
+                           FontSize="20" 
                            FontWeight="SemiBold"/>
-                <TextBlock Text="Вы уверены, что хотите выйти из учетной записи?" 
+                <TextBlock Text="Используемые компоненты и библиотеки:" 
                            Foreground="#9E9EB0" 
-                           FontSize="14" 
-                           TextWrapping="Wrap"/>
+                           FontSize="13"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" 
+            <ScrollViewer Grid.Row="1">
+                <ItemsControl ItemsSource="{Binding Packages}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#25252B" 
+                                    CornerRadius="6" 
+                                    Margin="0,0,0,6" 
+                                    Padding="14,10">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <TextBlock Grid.Column="0" 
+                                               Text="{Binding PackageName}" 
+                                               Foreground="White" 
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               FontSize="14"/>
+                                    <Border Grid.Column="1" 
+                                            Background="#2D2D35" 
+                                            CornerRadius="4" 
+                                            Padding="8,3">
+                                        <TextBlock Text="{Binding PackageVersion}" 
+                                                   Foreground="#9E9EB0" 
+                                                   FontSize="12"
+                                                   FontFamily="Consolas, Menlo, Monospace"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2" 
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right" 
-                        Spacing="12" 
                         Margin="0,16,0,0">
                 
                 <Button Content="Закрыть" 
@@ -36,7 +72,7 @@
                         Foreground="#9E9EB0" 
                         BorderBrush="#3D3D45"
                         BorderThickness="1"
-                        Padding="20,8"
+                        Padding="24,8"
                         CornerRadius="6">
                     <Button.Styles>
                         <Style Selector="Button:pointerover /template/ ContentPresenter">

@@ -1,9 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using EquipmentLibraryV2_Avalonia.Helpers;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.Services;
 using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
+using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 using System;
 using System.Collections.ObjectModel;
@@ -11,14 +19,11 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using CommunityToolkit.Mvvm.Input;
-using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase,
-        IRecipient<ShowOrHideError>,
+        IRecipient<ShowOrHideNotification>,
         IRecipient<LogoutMessage>,
         IRecipient<OpenAdminPanelMessage>, 
         IRecipient<OpenLibraryMessage>, 
@@ -29,14 +34,17 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         IRecipient<OpenMeasurementRegisterMessage>,
         IRecipient<OpenRegisterOfTestingEquipmentMessage>
     {
+        [ObservableProperty] public partial bool IsLoading { get; set; }
+
         [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
         [ObservableProperty] public partial ViewModelBase? OverlayContent { get; set; }
         [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
         public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 
-        [ObservableProperty] public partial string Version { get; set; }
+        [ObservableProperty] public partial string Version { get; set; } = AppConfig.Version;
         [ObservableProperty] public partial string StatusNetwork { get; set; } = "Проверка...";
         [ObservableProperty] public partial bool IsConnected { get; set; }
+        [ObservableProperty] public partial bool IsNewVerion { get; set; } = false;
 
         private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
         private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
@@ -49,34 +57,75 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public RightBoardUserControlViewModel RightBoardViewModel { get; }
 
+        private readonly AppSettings _settings;
+
         [RelayCommand]
         public async Task ReturnToConnectNetwork()
         {
             await ConnectivityService.ConnectivityChecker();
         }
 
+        [RelayCommand]
+        public async Task About() {
+            var dialog = new AboutDialogWindow();
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var mainWindow = desktop.MainWindow;
+
+                if (mainWindow != null)
+                {
+                    await dialog.ShowDialog(mainWindow);
+                }
+            }
+        }
+
+        [RelayCommand]
+        public async Task Update(Visual visualContext) {
+            var topLevel = TopLevel.GetTopLevel(visualContext);
+
+            if (topLevel?.Launcher is { } launcher)
+                await launcher.LaunchUriAsync(new Uri("https://github.com/MishaelBoss/EquipmentLibraryV2-Avalonia"));
+        }
+        
         public MainWindowViewModel()
         {
+            IsLoading = true;
             CurrentPage = _libraryPageUserControlView;
+            _settings = AppSettings.Load();
 
             WeakReferenceMessenger.Default.RegisterAll(this);
             RightBoardViewModel = new RightBoardUserControlViewModel();
+        }
 
-            Task.Run(async () =>
+        public async Task InitializeAsync()
+        {
+            Log.Information("Initialization started.");
+
+            try {
+                await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
+                Log.Information("Initialization completed successfully.");
+            }
+            catch (Exception ex)
             {
-                await LoadVersion();
-                await CheckNetworkAsync();
-            });
+                Log.Error(ex, "Initialization failed.");
+            }
+            finally
+            {
+                IsLoading = false;
+                Log.Information("Loading state set to false.");
+            }
         }
 
         private async Task LoadVersion()
         {
-            Version = "EquipmentLibrary v2: 1.0.0";
+            Version = AppConfig.DisplayVersion;
+            Log.Information("Starting version check. Current version: {CurrentVersion}", AppConfig.Version);
 
             var handler = new SocketsHttpHandler
             {
                 PooledConnectionLifetime = TimeSpan.FromMinutes(1),
-                ConnectTimeout = TimeSpan.FromSeconds(5)
+                ConnectTimeout = TimeSpan.FromSeconds(10)
             };
 
             using var client = new HttpClient(handler);
@@ -90,36 +139,57 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
                 var jsonString = await response.Content.ReadAsStringAsync();
                 var jsonNode = JsonNode.Parse(jsonString);
-                
-                if (jsonNode != null)
+
+                if (jsonNode == null)
                 {
-                    var latest = jsonNode["promos"]?["latest"]?.ToString() ?? "Не найдено";
-                    var recommended = jsonNode["promos"]?["recommended"]?.ToString() ?? "Не найдено";
+                    Log.Warning("Version manifest is empty or invalid JSON.");
+                    return;
+                }
 
-                    Console.WriteLine($"Latest Version: {latest}");
-                    Console.WriteLine($"Recommended Version: {recommended}");
-                    
-                    Version = "EquipmentLibrary v2: " + recommended;
+                var latest = jsonNode["promos"]?["latest"]?.ToString();
+                var recommended = jsonNode["promos"]?["recommended"]?.ToString();
 
-                    var detailObject = jsonNode["detail"]?.AsObject();
-                    if (detailObject != null)
+                Log.Information("Remote versions loaded. Latest: {Latest}, Recommended: {Recommended}", latest, recommended);
+
+                var currentVersion = AppConfig.Version;
+                var targetVersion = _settings.CheckLatestUpdates ? latest : recommended;
+
+                if (!string.IsNullOrWhiteSpace(targetVersion) &&
+                    VersionHelper.IsNewerVersion(currentVersion, targetVersion))
+                {
+                    IsNewVerion = true;
+                    Version = $"EquipmentLibrary v2: {targetVersion}";
+                    Log.Information("Update found: {Version}", targetVersion);
+                }
+                else
+                {
+                    IsNewVerion = false;
+                    Version = AppConfig.DisplayVersion;
+                    Log.Information("No update available for current version {CurrentVersion}", currentVersion);
+                }
+
+                var detailObject = jsonNode["detail"]?.AsObject();
+                if (detailObject != null)
+                {
+                    Log.Debug("Version details loaded: {Count} entries", detailObject.Count);
+                    foreach (var property in detailObject)
                     {
-                        Console.WriteLine("Details:");
-                        foreach (var property in detailObject)
-                        {
-                            var versionKey = property.Key;
-                            var description = property.Value?.ToString() ?? "";
-                    
-                            Console.WriteLine($" - {versionKey}: {description}");
-                        }
+                        Log.Debug("Detail {VersionKey}: {Description}", property.Key, property.Value?.ToString() ?? "");
                     }
                 }
             }
+            catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+            {
+                Log.Warning(ex, "Version check timed out.");
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(ErrorAction.Add, new ConnectionErrorUserControlViewModel(), ("Version check timed out", 503L)));
+            }
             catch (Exception ex)
             {
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(ErrorAction.Add, new ConnectionErrorUserControlViewModel(), ("Failed to fetch version info", 503L)));
                 Log.Warning(ex, "Failed to fetch version info");
-                if (string.IsNullOrEmpty(Version))
-                    Version = "EquipmentLibrary v2: ???";
+                Version = AppConfig.DisplayVersion;
             }
         }
 
@@ -130,10 +200,21 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             StatusNetwork = IsConnected ? "Подключено" : "Нет соединения";
         }
 
-        public void Receive(ShowOrHideError message)
+        public void Receive(ShowOrHideNotification message)
         {
             if (message.Action == ErrorAction.Add)
             {
+                if (message.ViewModel is ConnectionErrorUserControlViewModel errorVm)
+                {
+                    errorVm.Object = message.Data switch
+                    {
+                        (string text, long id)  => $"{text} (Cod: {id})",
+                        string textOnly         => textOnly,
+                        long codeOnly           => $"Cod error: {codeOnly}",
+                        _                       => "An unknown error occurred"
+                    };
+                }
+
                 if (!ErrorMessages.Contains(message.ViewModel))
                 {
                     ErrorMessages.Add(message.ViewModel);
@@ -142,7 +223,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             else
             {
                 ErrorMessages.Remove(message.ViewModel);
-                if (message.ViewModel is IDisposable disposable) 
+                if (message.ViewModel is IDisposable disposable)
                     disposable.Dispose();
             }
         }
@@ -189,14 +270,16 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             Log.Debug(
                 "Received OpenConfirmDelete message. Id={Id}, Title={Title}",
                 message.Id,
-                message.Title);
+                message.Title
+            );
 
             TopOverlayContent = new ConfirmDeleteUserControlViewModel(
                 message.Id,
                 message.Title,
                 message.DeleteSql,
                 message.OnSuccessCallback,
-                message.AdditionalQueries);
+                message.AdditionalQueries
+            );
         }
 
         public void Receive(OpenMeasurementRegisterMessage message)

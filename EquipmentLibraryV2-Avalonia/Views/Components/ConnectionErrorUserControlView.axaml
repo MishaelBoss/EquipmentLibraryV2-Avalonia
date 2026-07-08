@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
              x:DataType="vm:ConnectionErrorUserControlViewModel"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="50"
              MinHeight="50" MaxWidth="450" 
              Background="Transparent"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Components.ConnectionErrorUserControlView">
@@ -22,7 +22,7 @@
                    Margin="8,0,8,0"/>
             
             <TextBlock Grid.Column="1" 
-                       Text="Error to connection network" 
+                       Text="{Binding Object}"
                        Foreground="White"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Stretch" 

@@ -1,19 +1,13 @@
 ﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using EquipmentLibraryV2_Avalonia.ViewModels.Settings;
+using EquipmentLibraryV2_Avalonia.Services.Interfaces;
+using EquipmentLibraryV2_Avalonia.Models;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels;
-
-public class SettingsPageItem
-{
-    public string Title { get; set; } = string.Empty;
-    // ReSharper disable once NullableWarningSuppressionIsUsed
-    public ViewModelBase ViewModel { get; set; } = null!;
-}
 
 public partial class SettingsDialogWindowViewModel : ViewModelBase
 {
@@ -27,8 +21,8 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
     {
         Pages =
         [
-            new SettingsPageItem { Title = "Логирование", ViewModel = new LoggingViewModel() },
-            new SettingsPageItem { Title = "Обновления", ViewModel = new UpdatesUserControlViewModel() }
+            new SettingsPageItem("Логирование", new LoggingViewModel()),
+            new SettingsPageItem("Обновления", new UpdatesUserControlViewModel())
         ];
 
         SelectedPage = Pages[0];
