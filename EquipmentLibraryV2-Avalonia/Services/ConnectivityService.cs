@@ -44,7 +44,7 @@ internal static class ConnectivityService
 
             if (reply is not { Status: IPStatus.Success })
             {
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ConnectionErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
+                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
                 return false;
             }
             
@@ -90,7 +90,7 @@ internal static class ConnectivityService
         catch (Exception ex)
         {
             Log.Warning($"PostgreSQL connection failed: {ex.Message}");
-            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ConnectionErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
+            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
             return false;
         }
     }

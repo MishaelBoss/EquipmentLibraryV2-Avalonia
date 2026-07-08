@@ -8,7 +8,7 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
     public abstract class AppConfig
     {
         public static readonly string ApplicationNames = Process.GetCurrentProcess().ProcessName;
-        public static readonly Assembly ApplicationAssembly = Assembly.GetEntryAssembly() ?? typeof(App).Assembly;
+        private static readonly Assembly ApplicationAssembly = Assembly.GetEntryAssembly() ?? typeof(App).Assembly;
         public static string Version =>
             ApplicationAssembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?

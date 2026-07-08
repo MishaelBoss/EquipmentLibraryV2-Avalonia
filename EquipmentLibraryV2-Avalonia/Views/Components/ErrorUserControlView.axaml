@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
-             x:DataType="vm:ConnectionErrorUserControlViewModel"
+             x:DataType="vm:ErrorUserControlViewModel"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="50"
              MinHeight="50" MaxWidth="450" 
              Background="Transparent"
-             x:Class="EquipmentLibraryV2_Avalonia.Views.Components.ConnectionErrorUserControlView">
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Components.ErrorUserControlView">
     
     <UserControl.Styles>
         <StyleInclude Source="/Styles/ConnectionErrorStyles.axaml"/>

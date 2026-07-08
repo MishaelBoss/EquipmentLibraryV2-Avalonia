@@ -189,7 +189,7 @@
 								Command="{Binding UpdateCommand}"
 								CommandParameter="{Binding $self}">
 							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-								<Image Source="{SvgImage /Assets/refresh.svg}" Width="12" Height="12"/>
+								<Image Source="{SvgImage /Assets/update.svg}" Width="12" Height="12"/>
 								<TextBlock VerticalAlignment="Center"
 								   Foreground="#666" FontSize="11" FontWeight="SemiBold">
 									<Run Text="{Binding Version}"/>

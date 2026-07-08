@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
-public partial class ConnectionErrorUserControlViewModel : ViewModelBase
+public partial class ErrorUserControlViewModel : ViewModelBase
 {
-    public static ConnectionErrorUserControlViewModel Instance { get; } = new();
+    public static ErrorUserControlViewModel Instance { get; } = new();
 
     [ObservableProperty] public partial NotificationType type { get; set; }
     [ObservableProperty] public partial object Object { get; set; }

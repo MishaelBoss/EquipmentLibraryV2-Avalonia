@@ -134,7 +134,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
             try
             {
-                var response = await client.GetAsync("https://raw.githubusercontent.com/MishaelBoss/EquipmentLibraryV2-Avalonia/refs/heads/main/version_project");
+                var response = await client.GetAsync("https://pastebin.com/raw/5CArBfWP");
                 response.EnsureSuccessStatusCode();
 
                 var jsonString = await response.Content.ReadAsStringAsync();
@@ -182,12 +182,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             {
                 Log.Warning(ex, "Version check timed out.");
                 WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(ErrorAction.Add, new ConnectionErrorUserControlViewModel(), ("Version check timed out", 503L)));
+                    new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Version check timed out", 503L)));
             }
             catch (Exception ex)
             {
                 WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(ErrorAction.Add, new ConnectionErrorUserControlViewModel(), ("Failed to fetch version info", 503L)));
+                    new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Failed to fetch version info", 503L)));
                 Log.Warning(ex, "Failed to fetch version info");
                 Version = AppConfig.DisplayVersion;
             }
@@ -204,7 +204,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         {
             if (message.Action == ErrorAction.Add)
             {
-                if (message.ViewModel is ConnectionErrorUserControlViewModel errorVm)
+                if (message.ViewModel is ErrorUserControlViewModel errorVm)
                 {
                     errorVm.Object = message.Data switch
                     {
