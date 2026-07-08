@@ -146,15 +146,14 @@
 				</Border>
 			</Grid>
 
-			<ContentControl Grid.RowSpan="3" Grid.ColumnSpan="2"
+			<ContentControl Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2"
 							Content="{Binding TopOverlayContent}"
 							ZIndex="10"/>
-
 			
 			<Border Grid.Row="2" Grid.ColumnSpan="2"
 			        Background="#000000"
 			        Padding="16,0" Height="28">
-				<Grid ColumnDefinitions="Auto, Auto, *, Auto">
+				<Grid ColumnDefinitions="Auto, Auto, * ,Auto">
 					<Grid Grid.Column="0">
 						<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" IsVisible="{Binding IsConnected}">
 							<Ellipse Width="8" Height="8" Fill="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"/>
@@ -169,11 +168,13 @@
 							</StackPanel>
 						</Button>
 					</Grid>
+					
 					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
 					            x:Name="RefreshIndicator" Opacity="0" IsVisible="False">
 						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
 						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
 					</StackPanel>
+					
 					<Grid Grid.Column="3">
 						<Button Background="Transparent" Command="{Binding AboutCommand}" IsVisible="{Binding !IsNewVerion}">
 							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">

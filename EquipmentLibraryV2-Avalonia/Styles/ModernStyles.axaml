@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style Selector="Border.FormCard">
+    <Style Selector="Border.modernBorder">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="BorderBrush" Value="#444"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -8,13 +8,13 @@
         <Setter Property="BoxShadow" Value="0 8 24 0 #60000000"/>
     </Style>
 
-    <Style Selector="TextBlock.FieldLabel">
+    <Style Selector="TextBlock.modernFieldLabel">
         <Setter Property="Foreground" Value="#999"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Margin" Value="4,0,0,6"/>
     </Style>
 
-    <Style Selector="TextBox.ModernInput">
+    <Style Selector="TextBox.modernInput">
         <Setter Property="Background" Value="#3A3A3A"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -24,17 +24,17 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
     
-    <Style Selector="TextBox.ModernInput:pointerover /template/ Border#PART_BorderElement">
+    <Style Selector="TextBox.modernInput:pointerover /template/ Border#PART_BorderElement">
         <Setter Property="BorderBrush" Value="#555"/>
         <Setter Property="Background" Value="#404040"/>
     </Style>
     
-    <Style Selector="TextBox.ModernInput:focus /template/ Border#PART_BorderElement">
+    <Style Selector="TextBox.modernInput:focus /template/ Border#PART_BorderElement">
         <Setter Property="BorderBrush" Value="#28A745"/>
         <Setter Property="Background" Value="#3A3A3A"/>
     </Style>
 
-    <Style Selector="ComboBox.ModernSelect">
+    <Style Selector="ComboBox.modernSelect">
         <Setter Property="Background" Value="#3A3A3A"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -45,17 +45,17 @@
         <Setter Property="MinHeight" Value="40"/>
     </Style>
 
-    <Style Selector="ComboBox.ModernSelect ComboBoxItem">
+    <Style Selector="ComboBox.modernSelect ComboBoxItem">
         <Setter Property="Padding" Value="10,8"/>
         <Setter Property="Foreground" Value="Black"/>
     </Style>
 
-    <Style Selector="ComboBox.ModernSelect:pointerover /template/ Border#Layer_1">
+    <Style Selector="ComboBox.modernSelect:pointerover /template/ Border#Layer_1">
         <Setter Property="Background" Value="#404040"/>
         <Setter Property="BorderBrush" Value="#555"/>
     </Style>
 
-    <Style Selector="Button.primary">
+    <Style Selector="Button.modernPrimary">
         <Setter Property="Background" Value="#28A745"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -63,13 +63,13 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
     
-    <Style Selector="Button.primary TextBlock">
+    <Style Selector="Button.modernPrimary TextBlock">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="16"/>
     </Style>
     
-    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="Button.modernPrimary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#218838"/>
     </Style>
 </Styles>

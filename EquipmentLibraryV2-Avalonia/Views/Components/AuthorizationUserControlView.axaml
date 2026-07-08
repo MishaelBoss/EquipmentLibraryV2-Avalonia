@@ -8,59 +8,127 @@
              x:Class="EquipmentLibraryV2_Avalonia.Views.Components.AuthorizationUserControlView">
     
     <UserControl.Styles>
-		<StyleInclude Source="/Styles/AuthorizationStyles.axaml"/>
-	</UserControl.Styles>
+        <StyleInclude Source="/Styles/ModernStyles.axaml"/>
+    </UserControl.Styles>
     
-    <Grid ColumnDefinitions="Auto, *">
-        <Border Grid.Column="0" 
-                Width="280" 
-                Classes="SidePanel"
-                Padding="25, 40, 25, 25">
+    <Grid PointerPressed="CloseAuthorization_PointerPressed">
+        <Border Background="#1A1A1A" Opacity="0.8"/>
         
-            <StackPanel Spacing="20">
-                <StackPanel Spacing="5" Margin="0,0,0,10">
-                    <TextBlock Text="Welcome back" 
-                               Foreground="White" 
-                               FontSize="24" 
-                               FontWeight="Bold"/>
-                    <TextBlock Text="Please sign in to continue" 
-                               Foreground="#666" 
-                               FontSize="13"/>
-                </StackPanel>
+        <Border Width="380" MaxHeight="440"
+                BoxShadow="0 8 32 0 #60000000"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Classes="modernBorder"
+                PointerPressed="BlockPointerPressed">
 
-                <TextBlock Text="{Binding MessageError}" 
-                           Classes="ErrorMessage"
-                           IsVisible="{Binding MessageError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+            <StackPanel Spacing="0">
+                <Grid ColumnDefinitions="*, Auto" Height="40" Margin="0,4,8,0">
+                    <StackPanel Spacing="10" 
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center">
+                        <Image Source="/Assets/logo/logo.ico" Width="21" Height="21" Margin="0,0,0,5"/>
+                        <TextBlock Text="Вход в систему"
+                                   FontSize="15" FontWeight="SemiBold"
+                                   Foreground="#CED0D6"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Grid.Column="1"
+                            Width="30" Height="30"
+                            Command="{Binding CloseCommand}"
+                            VerticalAlignment="Center">
+                        <Panel Width="14" Height="14">
+                            <Line StartPoint="1,1" EndPoint="13,13"
+                                  Stroke="#888" StrokeThickness="1.5"/>
+                            <Line StartPoint="13,1" EndPoint="1,13"
+                                  Stroke="#888" StrokeThickness="1.5"/>
+                        </Panel>
+                    </Button>
+                </Grid>
 
-                <StackPanel Spacing="15">
-                    <StackPanel>
-                        <TextBlock Text="Login" Classes="FieldLabel"/>
-                        <TextBox Text="{Binding Login}" 
-                                 PlaceholderText="Your login..." 
-                                 Classes="ModernInput"/>
+                <TextBlock Text="Добро пожаловать"
+                           FontSize="20" FontWeight="Bold"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           Margin="0,16,0,4"/>
+                <TextBlock Text="Войдите, чтобы продолжить"
+                           FontSize="13" Foreground="#666"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,4"/>
+
+                <Border Background="#2D1B1B" BorderBrush="#5C2D2D" BorderThickness="1"
+                        CornerRadius="6" Padding="12,8"
+                        Margin="32,12,32,0"
+                        IsVisible="{Binding MessageError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                    <TextBlock Text="{Binding MessageError}"
+                               Foreground="#FF4D4D"
+                               FontSize="13"
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Center"/>
+                </Border>
+
+                <StackPanel Spacing="16" Margin="32,20,32,32">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Логин" Classes="modernFieldLabel"/>
+                        <TextBox Text="{Binding Login}"
+                                 PlaceholderText="Введите логин..."
+                                 Background="#1E1E1E"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Padding="12,10"
+                                 PlaceholderForeground="#555"
+                                 Classes="modernInput"
+                                 CaretBrush="White"/>
                     </StackPanel>
 
-                    <StackPanel>
-                        <TextBlock Text="Password" Classes="FieldLabel"/>
-                        <TextBox Text="{Binding Password}" 
-                                 PasswordChar="•" 
-                                 PlaceholderText="••••••••" 
-                                 Classes="ModernInput"/>
+                    <StackPanel Spacing="6">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Grid.Column="0" Text="Пароль" Classes="modernFieldLabel"/>
+                        </Grid>
+                        <Grid>
+                            <TextBox Text="{Binding Password}"
+                                     PasswordChar="•"
+                                     RevealPassword="{Binding IsPasswordVisible}"
+                                     PlaceholderText="Введите пароль..."
+                                     Background="#1E1E1E"
+                                     Foreground="White"
+                                     FontSize="14"
+                                     Padding="12,10"
+                                     PlaceholderForeground="#555"
+                                     Classes="modernInput"
+                                     CaretBrush="White"/>
+                            <Button Width="32" Height="32"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,4,0"
+                                    Command="{Binding TogglePasswordVisibilityCommand}">
+                                <Panel Width="16" Height="16" Margin="0">
+                                    <Image Source="{SvgImage /Assets/show.svg}" IsVisible="{Binding IsPasswordVisible, Converter={x:Static BoolConverters.Not}}"/>
+                                    <Image Source="{SvgImage /Assets/show.svg}" IsVisible="{Binding IsPasswordVisible}"/>
+                                </Panel>
+                            </Button>
+                        </Grid>
                     </StackPanel>
-                </StackPanel>
+                    
+                    <Button Command="{Binding AuthorizationCommand}"
+                            IsEnabled="{Binding IsActiveConfirmButton}"
+                            Height="45"
+                            Cursor="Hand"
+                            Classes="modernPrimary"
+                            Margin="0,10,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="{Binding  CurrentAnimationFrame}" 
+                                   Width="32" Height="32"
+                                   IsVisible="{Binding IsLoading}"/>
 
-                <Button Command="{Binding AuthorizationCommand}" 
-                        IsEnabled="{Binding IsActiveConfirmButton}" 
-                        Content="Sign In" 
-                        Classes="PrimaryButton"
-                        Margin="0,10,0,0"/>
+                            <TextBlock Text="Войти"
+                                       IsVisible="{Binding IsLoading, Converter={x:Static BoolConverters.Not}}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </StackPanel>
-        </Border>
-
-        <Border Grid.Column="1" 
-                Background="Black" 
-                Opacity="0.4" 
-                PointerPressed="CloseAuthorization_PointerPressed">
         </Border>
     </Grid>
 </UserControl>

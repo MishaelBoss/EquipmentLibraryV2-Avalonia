@@ -15,8 +15,12 @@
         <Border Background="Black" Opacity="0.8"/>
         <Grid RowDefinitions="Auto,Auto,*,Auto">        
             <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,0,1" Height="64">
-                <TextBlock Text="ELA V2" FontSize="15" FontWeight="SemiBold" Foreground="White"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="ELA V2" FontSize="15" FontWeight="SemiBold" Foreground="White"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image Source="{SvgImage /Assets/alpha.svg}" 
+                           Width="40" Height="40"/>
+                </StackPanel>
             </Border>
 
             <StackPanel Grid.Row="2" Spacing="8" HorizontalAlignment="Left" Margin="7,10,0,0">

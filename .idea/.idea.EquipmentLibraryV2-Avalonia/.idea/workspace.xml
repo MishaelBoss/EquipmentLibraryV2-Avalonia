@@ -8,17 +8,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/alpha.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/alpha_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/beta.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/beta_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/github.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/new_badge.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/new_badge_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/save.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/save_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/error.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/errorOutline.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/errorOutline_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/error_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/failedInProgress.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/failedInProgress_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/info.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/infoOutline.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/infoOutline_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/info_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/success.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/success_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/warning.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/warningOutline.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/warningOutline_dark.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/status/warning_dark.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/avalonia.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/avalonia.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/error-64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/errorDialog.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/errorDialog_dark.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Infrastructure/AppConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Infrastructure/AppConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Services/ConnectivityService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Services/ConnectivityService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/LibraryPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/LibraryPageUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/AddUserFormStyles.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/ModernStyles.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/AuthorizationUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/AuthorizationUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AddOrEditUserUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AddOrEditUserUserControlView.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AuthorizationUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AuthorizationUserControlView.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AuthorizationUserControlView.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AuthorizationUserControlView.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/ConfirmDeleteUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/ConfirmDeleteUserControlView.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/ErrorUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/ErrorUserControlView.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +75,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04b3841c5b174b8b8ad513753b832caf230000/78/1d27800a/CompiledBinding.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d2bd0019d12446a98ba76219aadccdef314938/7a/f0b6e048/DbConnection.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ef7eb68894584c62b1d42863efc2ef251046510/89/d8658192/Assembly.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fb2b674374ba43bead8f63cb1b24b46d230c00/3e/bb46d4f7/StandardAssetLoader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fb2b674374ba43bead8f63cb1b24b46d230c00/fd/4753d51c/StyleBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a1782254f56892832971214c3ab4a8b8b554962db6f892a035f7f5cd9faed/SvgSource.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -61,7 +92,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Project.EquipmentLibraryV2-Avalonia.executor": "Run",
+    ".NET Project.EquipmentLibraryV2-Avalonia.executor": "Debug",
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",

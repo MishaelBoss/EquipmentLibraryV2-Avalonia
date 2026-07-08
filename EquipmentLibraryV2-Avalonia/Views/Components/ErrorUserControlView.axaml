@@ -16,7 +16,7 @@
     <Border Background="#1E1E24" BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8" Padding="0,6">
         <Grid ColumnDefinitions="Auto, *, Auto" VerticalAlignment="Center">
             <Image Grid.Column="0" 
-                   Source="{SvgImage /Assets/errorDialog.svg}" 
+                   Source="{SvgImage /Assets/status/error.svg}" 
                    Width="21" Height="21"
                    VerticalAlignment="Center"
                    Margin="8,0,8,0"/>

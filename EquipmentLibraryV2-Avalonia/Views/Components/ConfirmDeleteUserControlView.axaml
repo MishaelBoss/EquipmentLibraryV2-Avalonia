@@ -8,7 +8,7 @@
              x:Class="EquipmentLibraryV2_Avalonia.Views.Components.ConfirmDeleteUserControlView">
 
     <UserControl.Styles>
-		<StyleInclude Source="/Styles/AddUserFormStyles.axaml"/>
+		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
 	</UserControl.Styles>
 
     <Grid>

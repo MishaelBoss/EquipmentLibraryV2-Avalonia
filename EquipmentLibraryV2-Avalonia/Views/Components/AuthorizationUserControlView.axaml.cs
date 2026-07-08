@@ -17,6 +17,12 @@ public partial class AuthorizationUserControlView : UserControl
     private void CloseAuthorization_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var point = e.GetCurrentPoint(this);
-        if (point.Properties.IsLeftButtonPressed) WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
+        if (point.Properties.IsLeftButtonPressed) 
+            WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
+    }
+    
+    private void BlockPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        e.Handled = true;
     }
 }
