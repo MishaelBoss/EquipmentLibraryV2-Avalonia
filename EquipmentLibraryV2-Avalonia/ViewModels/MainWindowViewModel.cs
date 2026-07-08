@@ -1,7 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -14,12 +12,9 @@ using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
-using System;
 using System.Collections.ObjectModel;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
@@ -118,8 +113,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             RightBoardViewModel = sp.GetRequiredService<RightBoardUserControlViewModel>();
             
             WeakReferenceMessenger.Default.RegisterAll(this);
-            
             _ = CheckNetworkAsync();
+            
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
         }
 
