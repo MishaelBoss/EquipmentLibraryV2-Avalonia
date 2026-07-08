@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
+        xmlns:equipmentLibraryV2Avalonia="clr-namespace:EquipmentLibraryV2_Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
         Width="1000" Height="650" MinWidth="500" MinHeight="350"
         x:Class="EquipmentLibraryV2_Avalonia.Views.MainWindow"
@@ -129,7 +130,7 @@
 						Margin="8, 0, 8, 8"
 						ClipToBounds="True">
 					<Grid>
-						<ContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
+						<equipmentLibraryV2Avalonia:FadeContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
 						<ContentControl Content="{Binding OverlayContent}" ZIndex="1"/>
 						<ScrollViewer ZIndex="999" VerticalAlignment="Bottom" HorizontalAlignment="Right"
 						              MaxHeight="300" Margin="12">
@@ -171,6 +172,11 @@
 					
 					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
 					            x:Name="RefreshIndicator" Opacity="0" IsVisible="False">
+						<StackPanel.Transitions>
+							<Transitions>
+								<DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+							</Transitions>
+						</StackPanel.Transitions>
 						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
 						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
 					</StackPanel>

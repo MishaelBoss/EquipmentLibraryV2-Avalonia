@@ -23,7 +23,8 @@
 	<Grid Margin="22" RowDefinitions="Auto, *">
 
 		<Grid Margin="2" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="0">
-			<Border CornerRadius="20" Background="#8E9198" Padding="16,8">
+			<Border CornerRadius="20" Background="#8E9198" Padding="16,8"
+			        BoxShadow="0 2 8 0 #30000000">
 				<DockPanel>
 					<TextBox Width="280" Height="38" PlaceholderText="Search"
 					         HorizontalAlignment="Center" VerticalContentAlignment="Center"
@@ -42,7 +43,20 @@
 
 		<Grid Grid.Row="1" Margin="0,10,0,0" IsVisible="{Binding !IsLoading}">
 
-			<Border CornerRadius="8" BorderBrush="#333" BorderThickness="1" ClipToBounds="True">
+			<Border CornerRadius="8" BorderBrush="#333" BorderThickness="1"
+			        BoxShadow="0 4 16 0 #30000000" IsVisible="{Binding IsEmpty}">
+				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+					<Border Width="56" Height="56" CornerRadius="28" Background="#252525" HorizontalAlignment="Center">
+						<TextBlock Text="!" FontSize="28" FontWeight="Bold" Foreground="#555"
+						           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Border>
+					<TextBlock Text="Оборудование не найдено" FontSize="15" Foreground="#888" HorizontalAlignment="Center"/>
+					<TextBlock Text="Попробуйте изменить параметры поиска" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+				</StackPanel>
+			</Border>
+
+			<Border CornerRadius="8" BorderBrush="#333" BorderThickness="1" ClipToBounds="True"
+			        BoxShadow="0 4 16 0 #30000000" IsVisible="{Binding !IsEmpty}">
 				<Grid RowDefinitions="Auto, *">
 
 					<Border Grid.Row="0" Background="#1E1E1E" Padding="0" CornerRadius="8,8,0,0">

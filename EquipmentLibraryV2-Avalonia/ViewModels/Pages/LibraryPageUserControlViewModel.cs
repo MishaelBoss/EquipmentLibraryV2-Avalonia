@@ -22,8 +22,18 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
     [ObservableProperty] public partial ObservableCollection<EquipmentItem> EquipmentItems { get; set; } = [];
     [ObservableProperty] public partial ObservableCollection<EquipmentType> EquipmentTypes { get; set; } = [];
     [ObservableProperty] public partial bool IsLoading { get; set; }
+    
+    public bool IsEmpty => EquipmentItems.Count == 0 && !IsLoading;
+
+    partial void OnIsLoadingChanged(bool value) => OnPropertyChanged(nameof(IsEmpty));
 
     private CancellationTokenSource _debounceCts = new();
+    
+    partial void OnEquipmentItemsChanged(ObservableCollection<EquipmentItem> value)
+    {
+        value.CollectionChanged += (_, _) => OnPropertyChanged(nameof(IsEmpty));
+        OnPropertyChanged(nameof(IsEmpty));
+    }
 
     partial void OnSearchTextChanged(string? value) => _ = DebounceFilterChanged();
     partial void OnSelectedEquipmentTypeChanged(EquipmentType? value) => _ = DebounceFilterChanged();

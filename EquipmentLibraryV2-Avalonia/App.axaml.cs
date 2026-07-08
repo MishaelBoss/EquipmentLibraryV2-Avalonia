@@ -43,10 +43,12 @@ namespace EquipmentLibraryV2_Avalonia
 
                 var viewModel = new MainWindowViewModel();
 
-                desktop.MainWindow = new MainWindow
+                var mainWindow = new MainWindow
                 {
-                    DataContext = viewModel,
+                    DataContext = AppServices.Get<MainWindowViewModel>(),
                 };
+                desktop.MainWindow = mainWindow;
+                mainWindow.Show();
 
                 Task.Run(async () => await viewModel.InitializeAsync());
             }

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
+             xmlns:converters="clr-namespace:EquipmentLibraryV2_Avalonia.Converters"
              x:DataType="vm:ErrorUserControlViewModel"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="50"
              MinHeight="50" MaxWidth="450" 
@@ -13,7 +14,16 @@
         <StyleInclude Source="/Styles/ConnectionErrorStyles.axaml"/>
     </UserControl.Styles>
     
-    <Border Background="#1E1E24" BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8" Padding="0,6">
+    <UserControl.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+    </UserControl.Resources>
+    
+    <Border Background="#1E1E24" BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8" Padding="0,6"  Opacity="{Binding IsClosing, Converter={StaticResource BoolToOpacityConverter}}">
+        <Border.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+            </Transitions>
+        </Border.Transitions>
         <Grid ColumnDefinitions="Auto, *, Auto" VerticalAlignment="Center">
             <Image Grid.Column="0" 
                    Source="{SvgImage /Assets/status/error.svg}" 

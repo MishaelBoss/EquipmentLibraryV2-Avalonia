@@ -20,6 +20,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
@@ -50,22 +51,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         private string _releaseNotes = string.Empty;
         private string _releaseDate = string.Empty;
 
-        private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel = new(() =>
-            new AdminPanelPageUserControlViewModel());
-        
-        private readonly Lazy<LibraryPageUserControlViewModel> _library = new(() =>
-            new LibraryPageUserControlViewModel());
-        
-        private readonly Lazy<WorkAreaUserControlViewModel> _workArea = new(() => 
-            new WorkAreaUserControlViewModel());
-        
-        private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister =
-            new(() => new MeasurementRegisterPageUserControlViewModel());
+        private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel;
+        private readonly Lazy<LibraryPageUserControlViewModel> _library;
+        private readonly Lazy<WorkAreaUserControlViewModel> _workArea;
+        private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister;
+        private readonly Lazy<RegisterOfTestingEquipmentPageUserControlViewModel> _registerOfTestingEquipment;
 
-        private readonly Lazy<RegisterOfTestingEquipmentPageUserControlViewModel> _registerOfTestingEquipment =
-            new(() => new RegisterOfTestingEquipmentPageUserControlViewModel());
-
-        private readonly AuthorizationUserControlViewModel _authorization = new();
+        private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel;
 
         public RightBoardUserControlViewModel RightBoardViewModel { get; }
 
@@ -110,12 +102,25 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         
         public MainWindowViewModel()
         {
+            var sp = AppServices.Provider;
+            
+            _adminPanel = new Lazy<AdminPanelPageUserControlViewModel>(() => sp.GetRequiredService<AdminPanelPageUserControlViewModel>());
+            _library = new Lazy<LibraryPageUserControlViewModel>(() => sp.GetRequiredService<LibraryPageUserControlViewModel>());
+            _workArea = new Lazy<WorkAreaUserControlViewModel>(() => sp.GetRequiredService<WorkAreaUserControlViewModel>());
+            _measurementRegister = new Lazy<MeasurementRegisterPageUserControlViewModel>(() => sp.GetRequiredService<MeasurementRegisterPageUserControlViewModel>());
+            _registerOfTestingEquipment = new Lazy<RegisterOfTestingEquipmentPageUserControlViewModel>(() => sp.GetRequiredService<RegisterOfTestingEquipmentPageUserControlViewModel>());
+            
+            _authorizationUserControlViewModel = sp.GetRequiredService<AuthorizationUserControlViewModel>();
+
             IsLoading = true;
             CurrentPage = _library.Value;
             _settings = AppSettings.Load();
-
+            RightBoardViewModel = sp.GetRequiredService<RightBoardUserControlViewModel>();
+            
             WeakReferenceMessenger.Default.RegisterAll(this);
-            RightBoardViewModel = new RightBoardUserControlViewModel();
+            
+            _ = CheckNetworkAsync();
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
         }
 
         public async Task InitializeAsync()
@@ -268,26 +273,30 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         public void Receive(LogoutMessage message)
         {
             CurrentPage = _library.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
         }
 
         public void Receive(OpenAdminPanelMessage message)
         {
             CurrentPage = _adminPanel.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.AdminPanel));
         }
 
         public void Receive(OpenLibraryMessage message)
         {
             CurrentPage = _library.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
         }
 
         public void Receive(OpenWorkAreaMessage message)
         {
             CurrentPage = _workArea.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.WorkArea));
         }
 
         public void Receive(OpenOrCloseAuthorizationMessage message)
         {
-            OverlayContent = OverlayContent == null ? _authorization : null;
+            OverlayContent = OverlayContent == null ? _authorizationUserControlViewModel : null;
         }
 
         public void Receive(OpenOrCloseAddOrEditUserMessage message)
@@ -322,11 +331,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         public void Receive(OpenMeasurementRegisterMessage message)
         {
             CurrentPage = _measurementRegister.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.MeasurementRegister));
         }
 
         public void Receive(OpenRegisterOfTestingEquipmentMessage message)
         {
             CurrentPage = _registerOfTestingEquipment.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.RegisterOfTestingEquipment));
         }
 
         public void Dispose()
