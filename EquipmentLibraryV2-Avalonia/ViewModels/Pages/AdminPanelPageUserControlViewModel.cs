@@ -18,8 +18,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
         [ObservableProperty] public partial bool ShowActiveUsers { get; set; } = true;
         [ObservableProperty] public partial bool ShowInactiveUsers { get; set; } = true;
         [ObservableProperty] public partial bool IsLoading { get; set; }
-
-        [ObservableProperty] private ObservableCollection<CartUserViewModel> _userList = [];
+        [ObservableProperty] public partial ObservableCollection<CartUserViewModel> UserList { get; set; } = [];
 
         partial void OnSearchTextChanged(string value) => _ = ScheduleSearchAsync();
         partial void OnShowActiveUsersChanged(bool value) => _ = ScheduleSearchAsync();
