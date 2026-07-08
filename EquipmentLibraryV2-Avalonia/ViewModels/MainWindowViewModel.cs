@@ -19,6 +19,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using EquipmentLibraryV2_Avalonia.Services.Interfaces;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
@@ -45,6 +46,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         [ObservableProperty] public partial string StatusNetwork { get; set; } = "Проверка...";
         [ObservableProperty] public partial bool IsConnected { get; set; }
         [ObservableProperty] public partial bool IsNewVerion { get; set; } = false;
+        private string _newVersion = string.Empty;
+        private string _releaseNotes = string.Empty;
+        private string _releaseDate = string.Empty;
 
         private readonly AdminPanelPageUserControlViewModel _adminPanelPageUserControlViewModel = new();
         private readonly LibraryPageUserControlViewModel _libraryPageUserControlView = new();
@@ -81,11 +85,18 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         }
 
         [RelayCommand]
-        public async Task Update(Visual visualContext) {
-            var topLevel = TopLevel.GetTopLevel(visualContext);
+        public async Task Update(Visual visualContext)
+        {
+            var data = new DetailUpdateDialog(_newVersion, _releaseNotes, _releaseDate);
+            var dialog = new DetailUpdateDialogWindow
+            {
+                DataContext = new DetailUpdateDialogWindowViewModel(data)
+            };
 
-            if (topLevel?.Launcher is { } launcher)
-                await launcher.LaunchUriAsync(new Uri("https://github.com/MishaelBoss/EquipmentLibraryV2-Avalonia"));
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            {
+                await dialog.ShowDialog(mainWindow);
+            }
         }
         
         public MainWindowViewModel()
@@ -150,32 +161,49 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
                 var recommended = jsonNode["promos"]?["recommended"]?.ToString();
 
                 Log.Information("Remote versions loaded. Latest: {Latest}, Recommended: {Recommended}", latest, recommended);
-
+                
                 var currentVersion = AppConfig.Version;
                 var targetVersion = _settings.CheckLatestUpdates ? latest : recommended;
-
+                var targetVersionDetail = string.Empty;
+                var targetVersionDate = string.Empty;
+                
+                var detailObject = jsonNode["detail"]?.AsObject();
+                if (detailObject != null && !string.IsNullOrWhiteSpace(targetVersion))
+                {
+                    var versionInfoNode = detailObject[targetVersion]?.AsObject();
+                    
+                    if (versionInfoNode != null)
+                    {
+                        targetVersionDetail = versionInfoNode["description"]?.ToString() ?? string.Empty;
+                        targetVersionDate = versionInfoNode["date"]?.ToString() ?? string.Empty;
+                        
+                        Log.Debug("Found detail for {TargetVersion}. Date: {Date}, Detail: {Detail}", 
+                            targetVersion, targetVersionDate, targetVersionDetail);
+                    }
+                    else
+                    {
+                        Log.Debug("No detail found in manifest for target version {TargetVersion}", targetVersion);
+                    }
+                }
+                
                 if (!string.IsNullOrWhiteSpace(targetVersion) &&
                     VersionHelper.IsNewerVersion(currentVersion, targetVersion))
                 {
                     IsNewVerion = true;
                     Version = $"EquipmentLibrary v2: {targetVersion}";
-                    Log.Information("Update found: {Version}", targetVersion);
+                    _newVersion = $"EquipmentLibrary v2: {targetVersion}";
+                    _releaseNotes = string.IsNullOrEmpty(targetVersionDetail) 
+                        ? "There are no change logs for this version."
+                        : targetVersionDetail;
+                    _releaseDate = targetVersionDate;
+                    
+                    Log.Information("Update found: {Version}. Description: {Description}", targetVersion, targetVersionDetail);
                 }
                 else
                 {
                     IsNewVerion = false;
                     Version = AppConfig.DisplayVersion;
                     Log.Information("No update available for current version {CurrentVersion}", currentVersion);
-                }
-
-                var detailObject = jsonNode["detail"]?.AsObject();
-                if (detailObject != null)
-                {
-                    Log.Debug("Version details loaded: {Count} entries", detailObject.Count);
-                    foreach (var property in detailObject)
-                    {
-                        Log.Debug("Detail {VersionKey}: {Description}", property.Key, property.Value?.ToString() ?? "");
-                    }
                 }
             }
             catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)

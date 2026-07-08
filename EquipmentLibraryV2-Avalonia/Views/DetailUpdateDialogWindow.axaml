@@ -4,53 +4,101 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
              x:DataType="vm:DetailUpdateDialogWindowViewModel"
-             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="320"
-             Width="450" Height="320"
-             CanResize="False"
+             mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="480"
+             MinWidth="510" MaxWidth="580"
+             MinHeight="320" MaxHeight="500"
+             Width="520" Height="380"
              WindowStartupLocation="CenterOwner"
              ShowInTaskbar="False"
              ExtendClientAreaToDecorationsHint="True"
              ExtendClientAreaTitleBarHeightHint="-1"
              Background="#1E1E24"
              x:Class="EquipmentLibraryV2_Avalonia.Views.DetailUpdateDialogWindow">
-    <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8">
-        <Grid RowDefinitions="*, Auto" Margin="24">
-            
-            <StackPanel Grid.Row="0" Spacing="8" VerticalAlignment="Center">
-                <TextBlock Text="Выход из профиля" 
-                           Foreground="White" 
-                           FontSize="18" 
-                           FontWeight="SemiBold"/>
-                <TextBlock Text="Вы уверены, что хотите выйти из учетной записи?" 
-                           Foreground="#9E9EB0" 
-                           FontSize="14" 
-                           TextWrapping="Wrap"/>
+    <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8"
+            BoxShadow="0 0 24 0 #50000000">
+        <Grid RowDefinitions="Auto, *, Auto" Margin="28,24,28,20">
+            <StackPanel Grid.Row="0" Spacing="16">
+                <Grid ColumnDefinitions="Auto, *" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Border Width="48" Height="48" CornerRadius="24" Background="#1E3A5F" VerticalAlignment="Center">
+                        <Image Source="{SvgImage /Assets/informationDialog.svg}" Width="28" Height="28"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Spacing="4">
+                        <TextBlock Text="Доступно обновление" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="{Binding CurrentVersion}" Foreground="#888" FontSize="13"/>
+                            <Path Fill="#888" Width="16" Height="16" Data="M4,12H20M20,12L14,6M20,12L14,18" Stretch="Uniform"/>
+                            <TextBlock Text="{Binding NewVersion}" Foreground="#6CB4EE" FontSize="13" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Border Height="1" Background="#2A2A2A"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" 
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Right" 
-                        Spacing="12" 
-                        Margin="0,16,0,0">
-                
-                <Button Content="Закрыть" 
-                        Name="CancelButton"
-                        Command="{Binding CloseCommand}"
-                        CommandParameter="{Binding $parent[Window]}"
-                        Background="Transparent" 
-                        Foreground="#9E9EB0" 
-                        BorderBrush="#3D3D45"
-                        BorderThickness="1"
-                        Padding="20,8"
-                        CornerRadius="6">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#2D2D35"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Style>
-                    </Button.Styles>
-                </Button>
-            </StackPanel>
+            <ScrollViewer Grid.Row="1" Margin="0,16,0,0">
+                <StackPanel Spacing="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Дата выпуска" Foreground="#888" FontSize="11"/>
+                        <TextBlock Text="{Binding ReleaseDate}" Foreground="#CED0D6" FontSize="13"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Что нового" Foreground="#888" FontSize="11"/>
+                        <TextBlock Text="{Binding ReleaseNotes}" Foreground="#CED0D6" FontSize="13"
+                                   TextWrapping="Wrap" LineHeight="20"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" Margin="0,16,0,0" Background="#1A1A1A" CornerRadius="8" Padding="16,12">
+                <Grid ColumnDefinitions="*, Auto, Auto" VerticalAlignment="Center">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Ellipse Width="8" Height="8" Fill="#28A745"/>
+                        <TextBlock Text="Рекомендуется установить" Foreground="#AAA" FontSize="12"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" Content="Все изменения"
+                            Command="{Binding OpenAllChangesCommand}"
+                            CommandParameter="{Binding $self}"
+                            Background="Transparent"
+                            Foreground="#6CB4EE"
+                            BorderBrush="#3D3D45"
+                            BorderThickness="1"
+                            Padding="16,8"
+                            CornerRadius="6"
+                            Margin="0,0,10,0"
+                            FontSize="13"
+                            Cursor="Hand">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#1E3A5F"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+
+                    <Button Grid.Column="2" Content="Закрыть"
+                            Command="{Binding CloseCommand}"
+                            CommandParameter="{Binding $parent[Window]}"
+                            Background="#28A745"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Padding="20,8"
+                            CornerRadius="6"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Cursor="Hand">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#218838"/>
+                            </Style>
+                            <Style Selector="Button:pressed /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#19721F"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                </Grid>
+            </Border>
         </Grid>
     </Border>
 </Window>

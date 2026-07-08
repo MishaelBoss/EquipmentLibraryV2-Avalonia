@@ -186,8 +186,7 @@
 
 						<Button Background="Transparent" 
 								IsVisible="{Binding IsNewVerion}" 
-								Command="{Binding UpdateCommand}"
-								CommandParameter="{Binding $self}">
+								Command="{Binding UpdateCommand}">
 							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
 								<Image Source="{SvgImage /Assets/update.svg}" Width="12" Height="12"/>
 								<TextBlock VerticalAlignment="Center"
