@@ -2,19 +2,23 @@
     "detail": {
         "1.0.0": {
             "description": "Project added beta",
-            "date": "2023-10-01"
+            "date": "2026-07-07"
         },
         "1.1.0": {
             "description": "We've added information about the app, updated the update check screen, and improved internet connection control.",
-            "date": "2023-10-15"
+            "date": "2026-07-07"
         },
         "1.1.1": {
             "description": "Fixed icon update",
-            "date": "2023-11-02"
-        }
+            "date": "2026-07-08"
+        },
+		"1.2.0": {
+			"description": "A preview window about the new version has been added",
+			"date": "2026-07-08"
+		}
     },
     "promos": {
-        "latest": "1.1.1",
-        "recommended": "1.1.1"
+        "latest": "1.2.0",
+        "recommended": "1.2.0"
     }
 }
