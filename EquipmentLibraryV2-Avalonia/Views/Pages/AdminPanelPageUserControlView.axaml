@@ -59,10 +59,8 @@
 				<Grid RowDefinitions="Auto, Auto, *">
 					<Grid Grid.Row="0" 
 						   HorizontalAlignment="Center" 
-						   VerticalAlignment="Top" 
-						   ColumnDefinitions="Auto, Auto">
-						<Border Grid.Column="0"
-								CornerRadius="20"
+						   VerticalAlignment="Top" >
+						<Border CornerRadius="20"
 						        Background="#8E9198"
 						        Padding="20,12">
 							<StackPanel Orientation="Vertical"
@@ -105,27 +103,9 @@
 								</StackPanel>
 							</StackPanel>
 						</Border>
-						
-						<StackPanel Grid.Column="1"
-						            Orientation="Horizontal"
-						            HorizontalAlignment="Center"
-						            Margin="10,0,0,0">
-
-							<Button Margin="10,0,0,0"
-							        Width="32"
-							        Height="32">
-								<Image Source="{SvgImage  /Assets/download_dark.svg}"/>
-							</Button>
-
-							<Button Margin="10,0,0,0"
-							        Width="32"
-							        Height="32">
-								<Image Source="{SvgImage /Assets/refresh_dark.svg}"/>
-							</Button>
-						</StackPanel>
 					</Grid>
 					<Grid Grid.Row="2">
-						<ScrollViewer Margin="10" Grid.Row="2">
+						<ScrollViewer Margin="10">
 							<ItemsControl ItemsSource="{Binding UserList}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
