@@ -1,7 +1,9 @@
 ﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
-public partial class LibraryPageUserControlViewModel : ViewModelBase
+public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient<RefreshDataMessage>
 {
     [ObservableProperty] public partial string? SearchText { get; set; }
     [ObservableProperty] public partial EquipmentType? SelectedEquipmentType { get; set; }
@@ -22,6 +24,17 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase
 
     partial void OnSearchTextChanged(string? value) => _ = FilterChanged();
     partial void OnSelectedEquipmentTypeChanged(EquipmentType? value) => _ = FilterChanged();
+    public async void Receive(RefreshDataMessage message)
+    {
+        try
+        {
+            await RefreshDataAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+        }
+    }
 
     public LibraryPageUserControlViewModel()
     {
@@ -129,4 +142,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase
             await Dispatcher.UIThread.InvokeAsync(() => IsLoading = false);
         }
     }
+
+    public void Dispose() 
+        => WeakReferenceMessenger.Default.UnregisterAll(this);
 }

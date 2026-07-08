@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -318,9 +320,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             CurrentPage = _registerOfTestingEquipmentPageUserControlViewModel;
         }
 
-        ~MainWindowViewModel() 
-        {
-            WeakReferenceMessenger.Default.UnregisterAll(this);
-        }
+        public void Dispose()
+            => WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }

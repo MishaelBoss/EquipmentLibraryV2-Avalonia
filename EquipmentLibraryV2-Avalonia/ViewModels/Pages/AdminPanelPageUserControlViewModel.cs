@@ -15,7 +15,7 @@ using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 {
-    public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipient<RefreshUserListMessage>
+    public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipient<RefreshUserListMessage>, IRecipient<RefreshDataMessage>
     {
         [ObservableProperty] public partial string SearchText { get; set; } = string.Empty;
         [ObservableProperty] public partial bool ShowActiveUsers { get; set; } = true;
@@ -43,6 +43,18 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
         }
 
         public async void Receive(RefreshUserListMessage message)
+        {
+            try
+            {
+                await LoadUsersWithResetAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
+        }
+
+        public async void Receive(RefreshDataMessage message)
         {
             try
             {
@@ -258,9 +270,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
             }
         }
 
-        ~AdminPanelPageUserControlViewModel() 
-        {
-            WeakReferenceMessenger.Default.Unregister<RefreshUserListMessage>(this);
-        }
+        public void Dispose()
+                => WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }
