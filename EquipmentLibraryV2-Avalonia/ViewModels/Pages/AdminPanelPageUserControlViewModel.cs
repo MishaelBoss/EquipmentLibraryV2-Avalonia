@@ -213,7 +213,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                     parameters[i] = new NpgsqlParameter(paramNames[i], userIds[i]);
                 }
 
-                var sql = $@"SELECT id, user_type_id, login, first_name, last_name, middle_name, is_active, date_joined FROM public.users WHERE id IN ({string.Join(", ", paramNames)}) ORDER BY last_name, first_name";
+                var sql = $@"SELECT id, user_type_id, login, first_name, last_name, middle_name, password, is_active, date_joined FROM public.users WHERE id IN ({string.Join(", ", paramNames)}) ORDER BY last_name, first_name";
 
                 await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
                 await connection.OpenAsync(cancellationToken);
@@ -241,8 +241,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                         FirstName = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                         LastName = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
                         MiddleName = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
-                        IsActive = !reader.IsDBNull(6) && reader.GetBoolean(6),
-                        DateJoined = reader.IsDBNull(7) ? string.Empty : reader.GetDateTime(7).ToString("yyyy-MM-dd"),
+                        Password = reader.IsDBNull(6) ? string.Empty : reader.GetString(6),
+                        IsActive = !reader.IsDBNull(7) && reader.GetBoolean(7),
+                        DateJoined = reader.IsDBNull(8) ? string.Empty : reader.GetDateTime(8).ToString("yyyy-MM-dd"),
                     };
 
                     newUsers.Add(userViewModel);

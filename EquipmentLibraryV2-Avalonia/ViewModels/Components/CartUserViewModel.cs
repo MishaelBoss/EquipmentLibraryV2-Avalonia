@@ -17,10 +17,17 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         public int UserRole { get; init; }
         [ObservableProperty] public partial string Login { get; set; } = string.Empty;
         [ObservableProperty] public partial string MiddleName { get; set; } = string.Empty;
+        [ObservableProperty] public partial string Password { get; set; } = string.Empty;
         [ObservableProperty] public partial string FirstName { get; set; } = string.Empty;
         [ObservableProperty] public partial string LastName { get; set; } = string.Empty;
         [ObservableProperty] public partial string DateJoined { get; set; } = string.Empty;
         [ObservableProperty] public partial bool? IsActive { get; set; }
+
+        [RelayCommand]
+        public void CopyPassword()
+        {
+            TextCopy.ClipboardService.SetText(Password);
+        }
 
         [RelayCommand]
         public void Edit()
