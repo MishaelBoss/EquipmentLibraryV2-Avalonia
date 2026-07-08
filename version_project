@@ -1,10 +1,10 @@
 {
     "detail": {
         "1.0.0": "Project added beta",
-        "1.0.1": "We've added information about the app, updated the update check screen, and improved internet connection control."
+        "1.1.0": "We've added information about the app, updated the update check screen, and improved internet connection control."
     },
     "promos": {
-        "latest": "1.0.2",
-        "recommended": "1.0.1"
+        "latest": "1.1.0",
+        "recommended": "1.1.0"
     }
 }
