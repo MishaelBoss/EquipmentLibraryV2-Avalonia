@@ -10,7 +10,7 @@
     <AssemblyTitle>EquipmentLibraryV2_Avalonia</AssemblyTitle>
     <AssemblyName>EquipmentLibraryV2_Avalonia</AssemblyName>
     <ApplicationIcon>Assets\Logo\logo.ico</ApplicationIcon>
-    <Version>1.3.1</Version>
+    <Version>1.3.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
