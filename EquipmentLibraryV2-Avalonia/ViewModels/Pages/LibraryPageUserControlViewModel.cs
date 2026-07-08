@@ -89,7 +89,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
     {
         try
         {
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             const string sql = "SELECT id, type FROM public.equipment_type ORDER BY type";
 
             var data = (await connection.QueryAsync<EquipmentType>(sql)).ToList();
@@ -119,7 +119,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
 
         try
         {
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
 
             var sql = @"SELECT e.id, e.title, e.serial_number AS SerialNumber, e.model, e.inv_num AS InvNum,
                                e.equipment_type_id AS EquipmentTypeId, et.type AS EquipmentTypeName,

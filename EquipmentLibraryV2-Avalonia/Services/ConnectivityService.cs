@@ -13,81 +13,59 @@ namespace EquipmentLibraryV2_Avalonia.Services;
 
 internal static class ConnectivityService
 {
-    private static bool IsConfigInvalid() =>
-        string.IsNullOrWhiteSpace(AppConfig.Ip) ||
-        string.IsNullOrWhiteSpace(AppConfig.Port) ||
-        string.IsNullOrWhiteSpace(AppConfig.Database) ||
-        string.IsNullOrWhiteSpace(AppConfig.User) ||
-        string.IsNullOrWhiteSpace(AppConfig.Password);
-
     public static async Task<bool> ConnectivityChecker()
     {
         try
         {
-            if (IsConfigInvalid())
+            var ip = AppConfig.Ip;
+            if (string.IsNullOrWhiteSpace(ip))
             {
-                Log.Error("Database connection data is incomplete {PropertyValue0}", AppConfig.Database);
+                Log.Error("Database IP is not configured");
                 return false;
             }
 
-            using var ping = new Ping();
-            const string? hostName = AppConfig.Ip;
-            if (string.IsNullOrEmpty(hostName))
-            {
-                Log.Warning("Ping failed: Host name or IP address is empty.");
+            if (!await PingHostAsync(ip))
                 return false;
-            }
 
-            var reply = ping.Send(hostName, 3000);
-
-            Log.Information($"Ping status for ({hostName}): {reply.Status}");
-
-            if (reply is not { Status: IPStatus.Success })
-            {
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
-                return false;
-            }
-            
-            Log.Information($"Address: {reply.Address}");
-            Log.Information($"Roundtrip time: {reply.RoundtripTime}");
-            Log.Information($"Time to live: {reply.Options?.Ttl}");
             return await TestPostgreSqlConnection();
-
-        }
-        catch (PingException ex)
-        {
-            Log.Warning($"Ping failed: {ex.Message}");
-            return false;
         }
         catch (Exception ex)
         {
-            Log.Warning($"Ping failed: {ex.Message}");
+            Log.Warning(ex, "Connectivity check failed");
+            return false;
+        }
+    }
+
+    private static async Task<bool> PingHostAsync(string host)
+    {
+        try
+        {
+            using var ping = new Ping();
+            var reply = await ping.SendPingAsync(host, 3000);
+
+            if (reply is not { Status: IPStatus.Success })
+            {
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance,
+                        ("Сервер недоступен", 503L)));
+                return false;
+            }
+
+            return true;
+        }
+        catch (PingException ex)
+        {
+            Log.Warning("Ping failed for {Host}: {Message}", host, ex.Message);
             return false;
         }
     }
 
     private static async Task<bool> TestPostgreSqlConnection()
     {
-        #if DEBUG
-        const string connString = $"Server={AppConfig.Ip};" +
-                                  $"Port={AppConfig.Port};" +
-                                  $"Database={AppConfig.Database};" +
-                                  $"User Id={AppConfig.User};" +
-                                  $"Password={AppConfig.Password};" +
-                                  $"Timeout=5;" +
-                                  $"CommandTimeout=5;" +
-                                  $"SslMode=Disable"; 
-        #else
-        const string connString = $"Server={AppConfig.Ip};" +
-                                  $"Port={AppConfig.Port};" +
-                                  $"Database={AppConfig.Database};" +
-                                  $"User Id={AppConfig.User};" +
-                                  $"Password={AppConfig.Password};" +
-                                  $"Timeout=5;" +
-                                  $"CommandTimeout=5;" +
-                                  $"SslMode=Require"; 
-        #endif
-        
+        var connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
+                         $"User Id={AppConfig.User};Password={AppConfig.Password};" +
+                         $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5";
+
         try
         {
             await using var connection = new NpgsqlConnection(connString);
@@ -96,14 +74,24 @@ internal static class ConnectivityService
             await using var cmd = new NpgsqlCommand("SELECT 1", connection);
             var result = await cmd.ExecuteScalarAsync();
 
-            Log.Information($"PostgreSQL connection test successful, result {result}");
+            Log.Information("PostgreSQL connection test OK, result={Result}", result);
             return true;
         }
         catch (Exception ex)
         {
-            Log.Warning($"PostgreSQL connection failed: {ex.Message}");
-            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
+            Log.Warning("PostgreSQL connection failed: {Message}", ex.Message);
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance,
+                    ("База данных недоступна", 504L)));
             return false;
         }
+    }
+
+    public static NpgsqlConnection CreateConnection()
+    {
+        var conn = new NpgsqlConnection($"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
+                                        $"User Id={AppConfig.User};Password={AppConfig.Password};" +
+                                        $"SslMode=Disable;Pooling=true;MaxPoolSize=20;Timeout=10;CommandTimeout=10");
+        return conn;
     }
 }

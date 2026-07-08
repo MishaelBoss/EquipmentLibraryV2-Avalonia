@@ -119,7 +119,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                     SelectUserRole!.Id,
                     isNew ? "INSERT" : "UPDATE");
 
-                await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+                await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
                 await connection.OpenAsync();
                 await using var command = new NpgsqlCommand(sql, connection);
                 Log.Debug("Database connection opened for Confirm. Id={Id}", _id);
@@ -190,7 +190,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         private async Task LoadUserRoles() 
         {
             const string sql = "SELECT * FROM public.user_type";
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             var result = await connection.QueryAsync<UserRole>(sql);
 
             UserRoles.Clear();

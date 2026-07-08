@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
+using EquipmentLibraryV2_Avalonia.Helpers;
 using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
@@ -28,7 +29,7 @@ public static class AuthService
                 return false;
             }
 
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             await connection.OpenAsync();
 
             const string sql = "SELECT id AS Id, login AS Login, user_type_id AS UserRole FROM public.users WHERE login = @u AND password = crypt(@p, password) AND is_active = true";
@@ -69,8 +70,6 @@ public static class AuthService
 
         try
         {
-            if (!Directory.Exists(AppPaths.UserDataDir)) Directory.CreateDirectory(AppPaths.UserDataDir);
-
             var data = new
             {
                 Id = id,
@@ -79,8 +78,9 @@ public static class AuthService
                 Expires = expires
             };
 
-            await File.WriteAllTextAsync(CookiePath, JsonSerializer.Serialize(data));
-            Log.Information("Login cookie saved for user {Login}", login);
+            CookieHelper.WriteEncrypted(CookiePath, data);
+
+            Log.Information("Login cookie saved (encrypted) for user {Login}", login);
         }
         catch (Exception ex)
         {
@@ -95,19 +95,16 @@ public static class AuthService
         
         try
         {
-            if (!File.Exists(CookiePath))
-            {
-                Log.Warning("Auto-login cookie not found at {CookiePath}", CookiePath);
-                return false;
-            }
-
-            var json = await File.ReadAllTextAsync(CookiePath);
-            var data = JsonSerializer.Deserialize<CookieData>(json);
+            var data = CookieHelper.ReadEncrypted<CookieData>(CookiePath);
 
             if (data == null)
             {
-                Log.Warning("Auto-login cookie deserialization returned null");
-                return false;
+                data = TryMigratePlaintextCookie();
+                if (data == null)
+                {
+                    Log.Warning("Auto-login cookie not found or invalid at {CookiePath}", CookiePath);
+                    return false;
+                }
             }
 
             if (data.Expires <= DateTime.Now)
@@ -134,6 +131,33 @@ public static class AuthService
         }
     }
 
+    private static CookieData? TryMigratePlaintextCookie()
+    {
+        try
+        {
+            if (!File.Exists(CookiePath))
+                return null;
+
+            var json = File.ReadAllText(CookiePath);
+            var data = JsonSerializer.Deserialize<CookieData>(json);
+            if (data is null)
+            {
+                Log.Warning("Plaintext cookie deserialization failed");
+                return null;
+            }
+
+            Log.Information("Migrating plaintext cookie to encrypted format for user {Login}", data.Login);
+            CookieHelper.WriteEncrypted(CookiePath, data);
+            Log.Information("Cookie migration completed for user {Login}", data.Login);
+            return data;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to migrate plaintext cookie");
+            return null;
+        }
+    }
+
     private static async Task<bool> VerifySessionInDbAsync(CookieData data)
     {
         Log.Debug("Verifying auto-login session in database for user {Login}", data.Login);
@@ -142,7 +166,7 @@ public static class AuthService
         {
             const string sql = "SELECT id, login, user_type_id FROM public.users WHERE id = @id AND is_active = true";
 
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             await connection.OpenAsync();
 
             await using var cmd = new NpgsqlCommand(sql, connection);
@@ -187,11 +211,7 @@ public static class AuthService
 
         try
         {
-            if (File.Exists(CookiePath))
-            {
-                File.Delete(CookiePath);
-                Log.Debug("Login cookie deleted at {CookiePath}", CookiePath);
-            }
+            CookieHelper.Delete(CookiePath);
             CurrentSession = null;
             WeakReferenceMessenger.Default.Send(new LogoutMessage());
             

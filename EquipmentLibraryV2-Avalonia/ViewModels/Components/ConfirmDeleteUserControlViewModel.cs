@@ -28,7 +28,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         {
             try
             {
-                await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+                await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
                 await connection.OpenAsync();
 
                 NpgsqlTransaction? transaction = null;

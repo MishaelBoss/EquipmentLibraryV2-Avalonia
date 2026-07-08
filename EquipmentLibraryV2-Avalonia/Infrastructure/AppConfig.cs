@@ -1,14 +1,12 @@
-﻿using EquipmentLibraryV2_Avalonia.Services;
-using System.Diagnostics;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using Serilog;
 
-namespace EquipmentLibraryV2_Avalonia.Infrastructure 
+namespace EquipmentLibraryV2_Avalonia.Infrastructure
 {
     public abstract class AppConfig
     {
-        public static readonly string ApplicationNames = Process.GetCurrentProcess().ProcessName;
         private static readonly Assembly ApplicationAssembly = Assembly.GetEntryAssembly() ?? typeof(App).Assembly;
+
         public static string Version =>
             ApplicationAssembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
@@ -19,39 +17,47 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
 
         public static string DisplayVersion => $"EquipmentLibrary v2: {Version}";
 
-        #region DB
+        private static DbCredentials? _cachedCredentials;
+        private static readonly object _credLock = new();
 
-        public const string? Ip = "localhost";
-        public const string? Port = "5432";
-        public const string? Database = "ELA_V2";
-        public const string? User = "postgres";
-        public const string? Password = "cr2032";
+        public static string Ip => GetCredentials().Ip;
+        public static string Port => GetCredentials().Port;
+        public static string Database => GetCredentials().Database;
+        public static string User => GetCredentials().User;
+        public static string Password => GetCredentials().Password;
+
+        private static DbCredentials GetCredentials()
+        {
+            if (_cachedCredentials is not null)
+                return _cachedCredentials;
+
+            lock (_credLock)
+            {
+                _cachedCredentials ??= DbCredentials.Load();
+            }
+
+            return _cachedCredentials;
+        }
+
+        public static void ReloadCredentials()
+        {
+            lock (_credLock)
+            {
+                _cachedCredentials = DbCredentials.Load();
+                _connectionString = null;
+            }
+        }
 
         private static string? _connectionString;
 
-        public static async Task<string> ConnectionAsync()
+        public static string ConnectionString()
         {
             if (!string.IsNullOrEmpty(_connectionString))
                 return _connectionString;
 
-            
-            var hasConnectionData = !string.IsNullOrWhiteSpace(Ip) &&
-                                    !string.IsNullOrWhiteSpace(Port) &&
-                                    !string.IsNullOrWhiteSpace(Database) &&
-                                    !string.IsNullOrWhiteSpace(User) &&
-                                    !string.IsNullOrWhiteSpace(Password);
+            var conn = $"Server={Ip};Port={Port};Database={Database};User Id={User};Password={Password};SslMode=Disable;Pooling=true;MaxPoolSize=20;Timeout=10;CommandTimeout=10";
 
-            var baseConnection = $"Server={Ip};Port={Port};Database={Database};User Id={User};Password={Password};SslMode=Disable";
-            
-            if (!hasConnectionData)
-            {
-                _connectionString = await ConnectivityService.ConnectivityChecker() ? baseConnection : string.Empty;
-            }
-            else
-            {
-                _connectionString = baseConnection;
-            }
-
+            _connectionString = conn;
             return _connectionString;
         }
 
@@ -59,6 +65,5 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
         {
             _connectionString = null;
         }
-        #endregion
     }
 }

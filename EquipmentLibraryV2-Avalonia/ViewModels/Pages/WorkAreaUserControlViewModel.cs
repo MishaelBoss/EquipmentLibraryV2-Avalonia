@@ -74,7 +74,7 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
         
         try
         {
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             const string sql = "SELECT id, type FROM public.equipment_type";
             
             Log.Debug("Executing SQL to load equipment types: {Sql}", sql);
@@ -103,7 +103,7 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
         
         try
         {
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             const string sql = "SELECT COUNT(*) FROM public.equipment";
             
             Log.Debug("Executing SQL to count equipment: {Sql}", sql);
@@ -142,7 +142,7 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
         
         try
         {
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await using var connection = new NpgsqlConnection(AppConfig.ConnectionString());
             const string sql = "INSERT INTO public.equipment (title, user_id, equipment_type_id, serial_number, model, inv_num) VALUES (@title, @user_id, @equipment_type_id, @serial_number, @model, @inv_num)";
             await connection.OpenAsync();
             await using var command = new NpgsqlCommand(sql, connection);
