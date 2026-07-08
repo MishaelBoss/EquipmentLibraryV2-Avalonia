@@ -1,6 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 using System.Windows.Input;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;

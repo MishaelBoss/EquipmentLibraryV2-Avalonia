@@ -7,11 +7,7 @@ using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 

@@ -3,8 +3,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentLibraryV2_Avalonia.Models;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels;

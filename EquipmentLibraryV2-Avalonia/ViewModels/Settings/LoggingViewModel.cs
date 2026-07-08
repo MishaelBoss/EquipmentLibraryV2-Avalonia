@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 

@@ -6,10 +6,7 @@ using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.Messages;
 using Npgsql;
 using Serilog;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
@@ -48,7 +45,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
             && !string.IsNullOrEmpty(Password)
             && SelectUserRole != null;
 
-        public AddOrEditUserUserControlViewModel(long? id = null, string? login = null, string? firstName = null, string? lastName = null, string? password = null, int? userRole = null)
+        public AddOrEditUserUserControlViewModel(
+            long? id = null, 
+            string? login = null, 
+            string? firstName = null, 
+            string? lastName = null, 
+            string? password = null, 
+            int? userRole = null)
         {
             _id = id ?? 0;
             Login = login ?? string.Empty;
