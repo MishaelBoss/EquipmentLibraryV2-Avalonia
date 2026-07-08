@@ -17,6 +17,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         public long UserId { get; init; }
         public int UserRole { get; init; }
         [ObservableProperty] public partial string Login { get; set; } = string.Empty;
+
+        partial void OnLoginChanged(string value)
+        {
+            OnPropertyChanged(nameof(AvatarChar));
+        }
+
+        public string AvatarChar => string.IsNullOrEmpty(Login) ? "?" : Login[0].ToString();
         [ObservableProperty] public partial string MiddleName { get; set; } = string.Empty;
         [ObservableProperty] public partial string Password { get; set; } = string.Empty;
         [ObservableProperty] public partial string FirstName { get; set; } = string.Empty;

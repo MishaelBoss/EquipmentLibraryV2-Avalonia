@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
              x:DataType="vm:DetailUpdateDialogWindowViewModel"
-             mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="480"
-             MinWidth="510" MaxWidth="580"
+             mc:Ignorable="d" d:DesignWidth="530" d:DesignHeight="380"
+             MinWidth="530" MaxWidth="580"
              MinHeight="320" MaxHeight="500"
-             Width="520" Height="380"
+             Width="530" Height="380"
              WindowStartupLocation="CenterOwner"
              ShowInTaskbar="False"
              ExtendClientAreaToDecorationsHint="True"
@@ -57,7 +57,7 @@
                         <TextBlock Text="Рекомендуется установить" Foreground="#AAA" FontSize="12"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" Content="Все изменения"
+                    <Button Grid.Column="1"
                             Command="{Binding OpenAllChangesCommand}"
                             CommandParameter="{Binding $self}"
                             Background="Transparent"
@@ -75,6 +75,10 @@
                                 <Setter Property="Foreground" Value="White"/>
                             </Style>
                         </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Image Source="{SvgImage /Assets/github.svg}"/>
+                            <TextBlock Text="Все изменения"/>
+                        </StackPanel>
                     </Button>
 
                     <Button Grid.Column="2" Content="Закрыть"

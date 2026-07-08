@@ -109,7 +109,7 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
             Log.Debug("Executing SQL to count equipment: {Sql}", sql);
             await connection.OpenAsync();
             var count = await connection.ExecuteScalarAsync<int>(sql);
-            TotalObjects = count;
+            await Dispatcher.UIThread.InvokeAsync(() => TotalObjects = count);
             
             Log.Information("Total equipment objects count updated: {TotalObjects}", TotalObjects);
         }

@@ -122,17 +122,15 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                     await LoadUserByIdsAsync(userIds, cancellationToken);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                Log.Information("LoadUsersWithResetAsync cancelled");
+            }
             catch (Exception ex)
             {
-                Log.Error($"Error loading users {ex.Message}");
-                
-                cancellationToken.ThrowIfCancellationRequested();
-                
+                Log.Error(ex, "Error loading users");
                 await Dispatcher.UIThread.InvokeAsync(() => IsLoading = true);
-                
                 UserList.Clear();
-                
-                await GetFilteredUserIdsAsync(cancellationToken);
             }
             finally
             {

@@ -9,8 +9,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/github.svg" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/github.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/gray-show-left-side-panel-64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/WorkAreaUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/WorkAreaUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogWindow.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

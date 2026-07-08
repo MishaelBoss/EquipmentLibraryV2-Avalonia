@@ -84,11 +84,19 @@ namespace EquipmentLibraryV2_Avalonia.Views
                     WeakReferenceMessenger.Default.Send(new RefreshDataMessage());
                     e.Handled = true;
 
-                    RefreshIndicator.IsVisible = true;
-                    RefreshIndicator.Opacity = 1;
-                    await Task.Delay(2000);
-                    RefreshIndicator.Opacity = 0;
-                    RefreshIndicator.IsVisible = false;
+                    try
+                    {
+                        RefreshIndicator.IsVisible = true;
+                        RefreshIndicator.Opacity = 1;
+                        await Task.Delay(2000);
+                        RefreshIndicator.Opacity = 0;
+                        RefreshIndicator.IsVisible = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        RefreshIndicator.IsVisible = false;
+                        Serilog.Log.Warning(ex, "F5 refresh indicator animation failed");
+                    }
                     break;
             }
         }

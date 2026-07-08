@@ -116,7 +116,7 @@
 														CornerRadius="21"
 														Background="#28A745"
 														VerticalAlignment="Center">
-													<TextBlock Text="{Binding Login[0]}" 
+													<TextBlock Text="{Binding AvatarChar}" 
 															   Foreground="White"
 															   FontSize="18"
 															   FontWeight="Bold"
@@ -133,7 +133,7 @@
 														</StackPanel>
 	            
 														<TextBlock Text="{Binding FirstName}" Foreground="#AAA" FontSize="12"/>
-														<TextBlock Text="{Binding DateJoined, StringFormat='Joined: {0:d}'}" Foreground="#666" FontSize="11"/>
+														<TextBlock Text="{Binding DateJoined, StringFormat='Joined: {0}'}" Foreground="#666" FontSize="11"/>
 													</StackPanel>
 
 													<Border Grid.Column="2" 
