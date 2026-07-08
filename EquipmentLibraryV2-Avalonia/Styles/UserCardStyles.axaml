@@ -12,22 +12,49 @@
             </Transitions>
         </Setter>
     </Style>
+    
     <Style Selector="Border.UserCard:pointerover">
         <Setter Property="Background" Value="#3D3D3D"/>
         <Setter Property="BorderBrush" Value="#28A745"/>
     </Style>
-
-    <Style Selector="Button.IconButton">
+    
+    <Style Selector="Button.action, ToggleButton.action">
         <Setter Property="Width" Value="34"/>
         <Setter Property="Height" Value="34"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="6"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
-    <Style Selector="Button.IconButton Image">
+    
+    <Style Selector="ToggleButton.isActive">
+        <Setter Property="Background" Value="#007aff"/>
+    </Style>
+    
+    <Style Selector="ToggleButton.isActive:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#007aff"/>
+    </Style>
+    
+    <Style Selector="Button.edit">
+        <Setter Property="Background" Value="#34C759"/>
+    </Style>
+    
+    <Style Selector="Button.delete">
+        <Setter Property="Background" Value="#FF3B30"/>
+    </Style>
+    
+    <Style Selector="Button.action Image, ToggleButton.action:pointerover Image">
         <Setter Property="Opacity" Value="0.8"/>
     </Style>
-    <Style Selector="Button.IconButton:pointerover Image">
+    
+    <Style Selector="Button.action:pointerover Image, ToggleButton.action:pointerover Image">
         <Setter Property="Opacity" Value="1"/>
+    </Style>
+    
+    <Style Selector="Button.edit:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#34C759"/>
+    </Style>
+    
+    <Style Selector="Button.delete:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#FF3B30"/>
     </Style>
 </Styles>

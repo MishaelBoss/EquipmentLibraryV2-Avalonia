@@ -61,11 +61,15 @@
                     </StackPanel>
                 </UniformGrid>
 
-                <Button Classes="PrimaryButton" 
-                        Command="{Binding ConfirmCommand}" 
-                        Content="Confirm and Save"
+                <Button Classes="primary" Height="45"
+                        Command="{Binding ConfirmCommand}"
                         Margin="0,10,0,0"
-                        IsEnabled="{Binding IsActiveConfirmButton}"/>
+                        IsEnabled="{Binding IsActiveConfirmButton}">
+                    <StackPanel Spacing="5" Orientation="Horizontal">
+                        <Image Source="{SvgImage /Assets/save_dark.svg}" Width="21" Height="21"/>
+                        <TextBlock Text="Confirm and Save"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Border>
     </Grid>

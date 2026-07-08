@@ -19,7 +19,7 @@
         <Setter Property="BorderBrush" Value="#8D8D9A"/>
         <Setter Property="BorderThickness" Value="2"/>
     </Style>
-
+    
     <Style Selector="Button.Ok">
         <Setter Property="Background" Value="#1F2023"/>
         <Setter Property="BorderBrush" Value="#3D3D42"/>
@@ -86,5 +86,10 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="#3D3D42"/>
         <Setter Property="Foreground" Value="#9E9EB0"/>
+    </Style>
+    
+    <Style Selector="CheckBox">
+        <Setter Property="Background" Value="#3D3D42"/>
+        <Setter Property="BorderThickness" Value="1"/>
     </Style>
 </Styles>

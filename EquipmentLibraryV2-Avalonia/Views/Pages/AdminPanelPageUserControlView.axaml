@@ -158,18 +158,17 @@
 													<StackPanel Orientation="Horizontal" Spacing="10">
 														<TextBlock Text="••••••••" Foreground="#888" VerticalAlignment="Center" FontSize="12"/>
 														<Button Command="{Binding CopyPasswordCommand}" 
-																Classes="IconButton" Background="Transparent" Width="24" Height="24">
+																Classes="action" Background="Transparent" Width="24" Height="24">
 															<Image Source="/Assets/copy-64.png"/>
 														</Button>
 													</StackPanel>
 												</Border>
 
 												<StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-            
 													<ToggleButton IsChecked="{Binding IsActive}"
 																  IsVisible="{Binding IsAdministrator}"
 																  Command="{Binding ChangeActiveUserCommand}"
-																  Background="Transparent" BorderThickness="0">
+																  Classes="action isActive">
 														<Panel>
 															<Image Source="/Assets/toggle-on-64.png" Width="20" IsVisible="{Binding IsActive}"/>
 															<Image Source="/Assets/toggle-off-64.png" Width="20" IsVisible="{Binding !IsActive}"/>
@@ -177,13 +176,13 @@
 													</ToggleButton>
 
 													<Button Command="{Binding EditCommand}"
-															Classes="IconButton" Background="#34C759"
+															Classes="action edit" Background="#34C759"
 															IsVisible="{Binding IsAdministrator}">
 														<Image Source="/Assets/edit-user-64.png"/>
 													</Button>
 
 													<Button Command="{Binding DeleteCommand}"
-															Classes="IconButton" Background="#FF3B30"
+															Classes="action delete" Background="#FF3B30"
 															IsVisible="{Binding IsAdministrator}">
 														<Image Source="/Assets/remove-64.png"/>
 													</Button>

@@ -55,19 +55,21 @@
         <Setter Property="BorderBrush" Value="#555"/>
     </Style>
 
-    <Style Selector="Button.PrimaryButton">
+    <Style Selector="Button.primary">
         <Setter Property="Background" Value="#28A745"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Height" Value="45"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    
+    <Style Selector="Button.primary TextBlock">
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="16"/>
     </Style>
     
-    <Style Selector="Button.PrimaryButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#218838"/>
     </Style>
 </Styles>
