@@ -87,9 +87,4 @@
         <Setter Property="BorderBrush" Value="#3D3D42"/>
         <Setter Property="Foreground" Value="#9E9EB0"/>
     </Style>
-    
-    <Style Selector="CheckBox">
-        <Setter Property="Background" Value="#3D3D42"/>
-        <Setter Property="BorderThickness" Value="1"/>
-    </Style>
 </Styles>
