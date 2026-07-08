@@ -67,19 +67,29 @@ namespace EquipmentLibraryV2_Avalonia.Views
             Closing += (s, e) => SaveWindowSettings();
         }
 
-        private async void OnKeyDown(object? sender, KeyEventArgs e) {
+        private async void OnKeyDown(object? sender, KeyEventArgs e)
+        {
             if (DataContext is not ViewModels.MainWindowViewModel vm)
                 return;
 
-            if (e.Key == Key.F5) {
-                WeakReferenceMessenger.Default.Send(new RefreshDataMessage());
-                e.Handled = true;
+            switch (e.Key)
+            {
+                case Key.Escape:
+                {
+                    if (vm.TopOverlayContent is not null) 
+                        vm.TopOverlayContent = null;
+                    break;
+                }
+                case Key.F5:
+                    WeakReferenceMessenger.Default.Send(new RefreshDataMessage());
+                    e.Handled = true;
 
-                RefreshIndicator.IsVisible = true;
-                RefreshIndicator.Opacity = 1;
-                await Task.Delay(2000);
-                RefreshIndicator.Opacity = 0;
-                RefreshIndicator.IsVisible = false;
+                    RefreshIndicator.IsVisible = true;
+                    RefreshIndicator.Opacity = 1;
+                    await Task.Delay(2000);
+                    RefreshIndicator.Opacity = 0;
+                    RefreshIndicator.IsVisible = false;
+                    break;
             }
         }
 

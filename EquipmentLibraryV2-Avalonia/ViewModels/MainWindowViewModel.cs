@@ -34,7 +34,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         [ObservableProperty] public partial bool IsLoading { get; set; }
 
         [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
-        [ObservableProperty] public partial ViewModelBase? OverlayContent { get; set; }
+        // [ObservableProperty] public partial ViewModelBase? OverlayContent { get; set; }
         [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
         public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 
@@ -291,7 +291,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(OpenOrCloseAuthorizationMessage message)
         {
-            OverlayContent = OverlayContent == null ? _authorizationUserControlViewModel : null;
+            TopOverlayContent = TopOverlayContent == null ? _authorizationUserControlViewModel : null;
         }
 
         public void Receive(OpenOrCloseAddOrEditUserMessage message)
