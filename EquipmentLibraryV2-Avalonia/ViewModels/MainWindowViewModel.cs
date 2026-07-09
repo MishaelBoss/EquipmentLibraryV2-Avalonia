@@ -34,7 +34,6 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         [ObservableProperty] public partial bool IsLoading { get; set; }
 
         [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
-        // [ObservableProperty] public partial ViewModelBase? OverlayContent { get; set; }
         [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
         public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 

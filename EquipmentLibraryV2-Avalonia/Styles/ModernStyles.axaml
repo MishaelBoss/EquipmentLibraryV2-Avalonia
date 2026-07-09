@@ -73,6 +73,28 @@
         <Setter Property="Background" Value="#218838"/>
     </Style>
     
+    <Style Selector="Button.modernClosed">
+        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="Button.modernClosed Image.normal">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="Button.modernClosed Image.hover">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+
+    <Style Selector="Button.modernClosed:pointerover Image.normal">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.modernClosed:pointerover Image.hover">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+
+    
     <Style Selector="FlyoutPresenter">
         <Setter Property="Background" Value="#252525"/>
         <Setter Property="BorderBrush" Value="#3A3A3A"/>

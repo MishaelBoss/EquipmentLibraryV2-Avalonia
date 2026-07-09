@@ -19,16 +19,20 @@
             
                 <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,10">
                     <TextBlock Text="{Binding Text}" Foreground="White" FontSize="22" FontWeight="SemiBold"/>
-                    <Button Grid.Column="1" Command="{Binding CloseCommand}" Background="Transparent">
-                        <Image Source="/Assets/close-64.png" Width="18" Height="18"/>
+                    <Button Grid.Column="1" Command="{Binding CloseCommand}" Classes="modernClosed">
+                        <Panel Width="18" Height="18">
+                            <Image Classes="normal" Source="{SvgImage /Assets/closeSmall.svg}"/>
+                            <Image Classes="hover" Source="{SvgImage /Assets/closeSmallHovered.svg}"/>
+                        </Panel>
                     </Button>
                 </Grid>
 
                 <Button Classes="modernPrimary" 
-                        Command="{Binding ConfirmCommand}" 
-                        Content="Confirm"
+                        Command="{Binding ConfirmCommand}"
                         Height="45"
-                        Margin="0,10,0,0"/>
+                        Margin="0,10,0,0">
+                    <TextBlock Text="Confirm"/>
+                </Button>
             </StackPanel>
         </Border>
     </Grid>
