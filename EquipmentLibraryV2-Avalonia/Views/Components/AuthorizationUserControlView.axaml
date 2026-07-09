@@ -34,15 +34,10 @@
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Button Grid.Column="1"
-                            Width="30" Height="30"
-                            Command="{Binding CloseCommand}"
-                            VerticalAlignment="Center">
-                        <Panel Width="14" Height="14">
-                            <Line StartPoint="1,1" EndPoint="13,13"
-                                  Stroke="#888" StrokeThickness="1.5"/>
-                            <Line StartPoint="13,1" EndPoint="1,13"
-                                  Stroke="#888" StrokeThickness="1.5"/>
+                    <Button Grid.Column="1" Command="{Binding CloseCommand}" Classes="modernClosed">
+                        <Panel Width="18" Height="18">
+                            <Image Classes="normal" Source="{SvgImage /Assets/close.svg}" Width="18" Height="18"/>
+                            <Image Classes="hover" Source="{SvgImage /Assets/close_dark.svg}" Width="18" Height="18"/>
                         </Panel>
                     </Button>
                 </Grid>

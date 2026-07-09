@@ -19,10 +19,11 @@
                                Foreground="White" 
                                FontSize="22" 
                                FontWeight="SemiBold"/>
-                    <Button Grid.Column="1" 
-                            Command="{Binding CloseCommand}" 
-                            Background="Transparent">
-                        <Image Source="/Assets/close-64.png" Width="18" Height="18"/>
+                    <Button Grid.Column="1" Command="{Binding CloseCommand}" Classes="modernClosed">
+                        <Panel Width="18" Height="18">
+                            <Image Classes="normal" Source="{SvgImage /Assets/close.svg}" Width="18" Height="18"/>
+                            <Image Classes="hover" Source="{SvgImage /Assets/close_dark.svg}" Width="18" Height="18"/>
+                        </Panel>
                     </Button>
                 </Grid>
             

@@ -93,6 +93,10 @@
     <Style Selector="Button.modernClosed:pointerover Image.hover">
         <Setter Property="IsVisible" Value="True"/>
     </Style>
+    
+    <Style Selector="Button.modernClosed:pointerover">
+        <Setter Property="Cursor" Value="hand"/>
+    </Style>
 
     
     <Style Selector="FlyoutPresenter">
