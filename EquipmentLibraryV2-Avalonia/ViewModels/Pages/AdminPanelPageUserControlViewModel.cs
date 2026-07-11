@@ -202,7 +202,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                 var parameters = new NpgsqlParameter[userIds.Count];
                 var paramNames = new string[userIds.Count];
 
-                for (int i = 0; i < userIds.Count; i++)
+                for (var i = 0; i < userIds.Count; i++)
                 {
                     paramNames[i] = $"@id{i}";
                     parameters[i] = new NpgsqlParameter(paramNames[i], userIds[i]);

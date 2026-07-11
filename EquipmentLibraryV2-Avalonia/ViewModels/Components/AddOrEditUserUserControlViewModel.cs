@@ -107,9 +107,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
             try
             {
                 const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
-                                          "VALUES (@login, @first_name, @last_name, @password, @user_type_id, now())";
+                                          "VALUES (@login, @first_name, @last_name, crypt(@password, gen_salt('bf')), @user_type_id, now())";
 
-                const string updateUserSql = @"UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = @password, user_type_id = @user_type_id WHERE id = @id";
+                const string updateUserSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf')), user_type_id = @user_type_id WHERE id = @id";
 
                 var isNew = _id == 0;
                 var sql = isNew ? addUserSql : updateUserSql;
