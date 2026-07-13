@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EquipmentLibraryV2_Avalonia.Messages;
+﻿namespace EquipmentLibraryV2_Avalonia.Messages;
 
 public record OpenOrCloseConfirmDeleteMessage(long? id = null, string? title = null, string? deleteSql = null, Action? onSuccessCallback = null, string[]? additionalQueries = null)
 {

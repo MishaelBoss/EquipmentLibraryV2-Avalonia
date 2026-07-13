@@ -22,18 +22,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 
         public string AvatarChar => string.IsNullOrEmpty(Login) ? "?" : Login[0].ToString();
         [ObservableProperty] public partial string MiddleName { get; set; } = string.Empty;
-        [ObservableProperty] public partial string Password { get; set; } = string.Empty;
+        [ObservableProperty] public partial string Password { get; set; } = "********";
         [ObservableProperty] public partial string FirstName { get; set; } = string.Empty;
         [ObservableProperty] public partial string LastName { get; set; } = string.Empty;
         [ObservableProperty] public partial string DateJoined { get; set; } = string.Empty;
         [ObservableProperty] public partial bool? IsActive { get; set; }
-
-        [RelayCommand]
-        public void CopyPassword()
-        {
-            TextCopy.ClipboardService.SetText(Password);
-        }
-
+        
         [RelayCommand]
         public void Edit()
         {
@@ -44,6 +38,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         public void Delete()
         {
             WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage(UserId, Login, "DELETE FROM public.users WHERE id = @id", () => WeakReferenceMessenger.Default.Send(new RefreshUserListMessage())));
+        }
+
+        [RelayCommand]
+        public void PasswordReset()
+        {
+            WeakReferenceMessenger.Default.Send(new OpenOrClosePasswordResetMessage(UserId, Login));
         }
 
         [RelayCommand]

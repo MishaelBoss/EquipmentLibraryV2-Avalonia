@@ -29,7 +29,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         IRecipient<OpenOrCloseAddOrEditUserMessage>,
         IRecipient<OpenOrCloseConfirmDeleteMessage>,
         IRecipient<OpenMeasurementRegisterMessage>,
-        IRecipient<OpenRegisterOfTestingEquipmentMessage>
+        IRecipient<OpenRegisterOfTestingEquipmentMessage>,
+        IRecipient<OpenOrClosePasswordResetMessage>
     {
         [ObservableProperty] public partial bool IsLoading { get; set; }
 
@@ -332,6 +333,17 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         {
             CurrentPage = _registerOfTestingEquipment.Value;
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.RegisterOfTestingEquipment));
+        }
+        
+        public void Receive(OpenOrClosePasswordResetMessage message)
+        {
+            Log.Debug(
+                "Received OpenPasswordReset message. Id={Id}, Title={Title}",
+                message.UserId,
+                message.Login
+            );
+            
+            TopOverlayContent = TopOverlayContent == null ? new PasswordResetUserControlViewModel(message.UserId, message.Login) : null;
         }
 
         public void Dispose()

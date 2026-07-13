@@ -21,6 +21,9 @@
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/ConfirmDeleteUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/ConnectionErrorUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/ErrorUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserContro.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />

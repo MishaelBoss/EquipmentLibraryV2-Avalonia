@@ -8,8 +8,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/OpenOrClosePasswordResetMessage.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/PasswordResetUserControlViewModel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/avalonia.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/avalonia.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/OpenOrCloseConfirmDeleteMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/OpenOrCloseConfirmDeleteMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/UserCardStyles.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/UserCardStyles.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +42,7 @@
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/SettingsStyles.axaml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/WorkAreaUserControlStyles.axaml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/settings/LogginStyles.axaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/PasswordResetUserControlViewModel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/DetailUpdateDialogWindowViewModel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Settings/LoggingViewModel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Settings/UpdatesUserControlViewModel.cs" root0="FORCE_HIGHLIGHTING" />
@@ -56,23 +68,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.EquipmentLibraryV2-Avalonia.executor&quot;: &quot;Debug&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.EquipmentLibraryV2-Avalonia.executor": "Debug",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="EquipmentLibraryV2-Avalonia" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/bin/Debug/net10.0/EquipmentLibraryV2_Avalonia" />
