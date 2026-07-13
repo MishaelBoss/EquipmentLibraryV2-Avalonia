@@ -5,11 +5,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
-using System;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace EquipmentLibraryV2_Avalonia.Views
 {

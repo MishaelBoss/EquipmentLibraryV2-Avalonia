@@ -9,10 +9,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/App.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/App.axaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Infrastructure/AppPaths.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Infrastructure/AppPaths.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Infrastructure/UserSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Infrastructure/UserSession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +21,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "MishaelBoss"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/MishaelBoss/EquipmentLibraryV2-Avalonia.git",
+    "accountId": "11523ea6-fd4a-46e2-ba43-76809edff34b"
+  }
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Converters/BoolToColorConverter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Converters/BoolToOpacityConverter.cs" root0="FORCE_HIGHLIGHTING" />
@@ -116,9 +127,9 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Update Test" />
-    <MESSAGE value="Update" />
     <MESSAGE value="Update and loggers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update and loggers" />
+    <MESSAGE value="Update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

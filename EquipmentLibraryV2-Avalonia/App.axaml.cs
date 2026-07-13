@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -5,6 +6,7 @@ using EquipmentLibraryV2_Avalonia.ViewModels;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using Serilog.Debugging;
 
 namespace EquipmentLibraryV2_Avalonia
 {
@@ -17,8 +19,8 @@ namespace EquipmentLibraryV2_Avalonia
 
         public override void OnFrameworkInitializationCompleted()
         {
-            SetupGlobalExceptionHandlers();
             SetupSerilog();
+            SetupGlobalExceptionHandlers();
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -45,6 +47,12 @@ namespace EquipmentLibraryV2_Avalonia
                 AppPaths.UserDataDir,
                 "logs",
                 $"launcher-log-{datePart}.txt");
+            
+            SelfLog.Enable(msg => 
+            {
+                Debug.WriteLine(msg);
+                Console.Error.WriteLine(msg);
+            });
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
