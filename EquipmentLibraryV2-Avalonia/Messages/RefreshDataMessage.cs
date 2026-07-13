@@ -1,3 +1,3 @@
 ﻿namespace EquipmentLibraryV2_Avalonia.Messages;
 
-public record RefreshDataMessage();
+public record RefreshDataMessage;

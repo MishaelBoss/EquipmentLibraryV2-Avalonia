@@ -1,12 +1,5 @@
-namespace EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
 
-public enum PageType
-{
-    WorkArea,
-    Library,
-    AdminPanel,
-    MeasurementRegister,
-    RegisterOfTestingEquipment
-}
+namespace EquipmentLibraryV2_Avalonia.Messages;
 
 public record PageChangedMessage(PageType Page);

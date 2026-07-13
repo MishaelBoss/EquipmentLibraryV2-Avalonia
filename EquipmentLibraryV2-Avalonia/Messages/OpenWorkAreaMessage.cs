@@ -1,6 +1,3 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Messages
-{
-    public record OpenWorkAreaMessage
-    {
-    }
-}
+﻿namespace EquipmentLibraryV2_Avalonia.Messages;
+
+public record OpenWorkAreaMessage;

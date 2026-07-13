@@ -7,12 +7,12 @@ using EquipmentLibraryV2_Avalonia.Infrastructure;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {
-    public partial class ConfirmDeleteUserControlViewModel(long id, string title, string deleteSql, Action onSuccessCallback, string[]? additionalQueries = null) : ViewModelBase
+    public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, string? deleteSql, Action onSuccessCallback, string[]? additionalQueries = null) : ViewModelBase
     {
         public string Text { get; set; } = $"Delete: {title}";
 
         private readonly Action _onSuccessCallback = onSuccessCallback;
-        private readonly string _deleteSql = deleteSql;
+        private readonly string? _deleteSql = deleteSql;
         private readonly string[]? _additionalQueries = additionalQueries;
 
         [RelayCommand]
@@ -24,6 +24,11 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         [RelayCommand]
         public async Task Confirm() 
         {
+            if (id == null)
+            {
+                return;
+            }
+            
             try
             {
                 await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
@@ -70,7 +75,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                         mainCommand.Parameters.AddWithValue("@id", id);
                         var mainRows = await mainCommand.ExecuteNonQueryAsync();
                         totalRowsAffected += mainRows;
-
+                            
                         Log.Debug($"Main query executed: {_deleteSql}, rows affected: {mainRows}");
                     }
 

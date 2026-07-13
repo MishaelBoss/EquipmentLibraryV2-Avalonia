@@ -1,3 +1,3 @@
 ﻿namespace EquipmentLibraryV2_Avalonia.Messages;
 
-public record OpenLibraryMessage();
+public record OpenLibraryMessage;
