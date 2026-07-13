@@ -6,6 +6,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
@@ -15,6 +16,9 @@ namespace EquipmentLibraryV2_Avalonia.Services;
 public static class AuthService
 {
     public static UserSession? CurrentSession { get; private set; }
+
+    private static CancellationTokenSource? _healthCheckCts;
+    private static Task? _healthCheckTask;
 
     private static string CookiePath => Path.Combine(AppPaths.UserDataDir, "login.cookie");
 
@@ -53,6 +57,8 @@ public static class AuthService
             await SaveLoginCookieAsync(CurrentSession.Id, CurrentSession.Login, Guid.NewGuid().ToString(), DateTime.Now.AddDays(7));
 
             WeakReferenceMessenger.Default.Send(new LoginMessage());
+
+            StartSessionHealthCheck();
             
             return true;
         }
@@ -171,6 +177,8 @@ public static class AuthService
             
             Log.Information("Auto-login successful for user {Login}, session id {UserId}, role {UserRole}",
                 loginInDb, CurrentSession.Id, CurrentSession.UserRole);
+
+            StartSessionHealthCheck();
             
             return true;
         }
@@ -184,6 +192,8 @@ public static class AuthService
     public static void Logout()
     {
         Log.Information("Logout started");
+
+        StopSessionHealthCheck();
 
         try
         {
@@ -200,6 +210,52 @@ public static class AuthService
         catch (Exception ex)
         {
             Log.Error(ex, "Logout failed");
+        }
+    }
+
+    public static void StartSessionHealthCheck()
+    {
+        StopSessionHealthCheck();
+        _healthCheckCts = new CancellationTokenSource();
+        _healthCheckTask = SessionHealthCheckLoopAsync(_healthCheckCts.Token);
+    }
+
+    public static void StopSessionHealthCheck()
+    {
+        _healthCheckCts?.Cancel();
+        _healthCheckCts?.Dispose();
+        _healthCheckCts = null;
+    }
+
+    private static async Task SessionHealthCheckLoopAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10), ct);
+                if (CurrentSession is null)
+                    continue;
+
+                await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+                const string sql = "SELECT is_active FROM public.users WHERE id = @id";
+                var isActive = await connection.ExecuteScalarAsync<bool?>(sql, new { id = CurrentSession.Id });
+
+                if (isActive == false)
+                {
+                    Log.Warning("Session {UserId} deactivated by admin. Forcing logout.", CurrentSession.Id);
+                    Logout();
+                    break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Session health check error");
+            }
         }
     }
 }
