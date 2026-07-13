@@ -199,22 +199,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 
             try
             {
-                var parameters = new NpgsqlParameter[userIds.Count];
-                var paramNames = new string[userIds.Count];
-
-                for (var i = 0; i < userIds.Count; i++)
-                {
-                    paramNames[i] = $"@id{i}";
-                    parameters[i] = new NpgsqlParameter(paramNames[i], userIds[i]);
-                }
-
-                var sql = $@"SELECT DISTINCT * FROM public.users WHERE id IN ({string.Join(", ", paramNames)}) ORDER BY last_name, first_name";
+                const string sql = "SELECT DISTINCT * FROM public.users WHERE id = ANY(@ids) ORDER BY last_name, first_name";
 
                 await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
                 await connection.OpenAsync(cancellationToken);
 
                 await using var command = new NpgsqlCommand(sql, connection);
-                command.Parameters.AddRange(parameters);
+                command.Parameters.AddWithValue("@ids", userIds);
 
                 await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
