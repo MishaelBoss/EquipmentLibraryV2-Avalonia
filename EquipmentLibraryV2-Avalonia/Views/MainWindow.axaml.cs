@@ -37,30 +37,35 @@ namespace EquipmentLibraryV2_Avalonia.Views
             var isWindows = OperatingSystem.IsWindows();
             var isMac = OperatingSystem.IsMacOS();
             var isLinux = OperatingSystem.IsLinux();
-
-            if (isWindows && !_isWindows11)
+            
+            switch (isWindows)
             {
-                WindowDecorations = WindowDecorations.None;
-                Serilog.Log.Debug(
-                    "Window decorations disabled for non‑Windows 11. IsWindows11={IsWindows11}",
-                    _isWindows11);
-            }
-            else if (isWindows && _isWindows11)
-            {
-                Serilog.Log.Debug("Running on Windows 11. Keeping default window decorations.");
-            }
-            else if (isMac)
-            {
-                Serilog.Log.Information("Running on macOS. Using platform default window decorations.");
-            }
-            else if (isLinux)
-            {
-                Serilog.Log.Information("Running on Linux. Using platform default window decorations.");
-            }
-            else
-            {
-                Serilog.Log.Warning("Running on unknown OS platform. IsWindows={IsWindows}, IsMac={IsMac}, IsLinux={IsLinux}",
-                    isWindows, isMac, isLinux);
+                case true when !_isWindows11:
+                    WindowDecorations = WindowDecorations.None;
+                    Serilog.Log.Debug(
+                        "Window decorations disabled for non‑Windows 11. IsWindows11={IsWindows11}",
+                        _isWindows11);
+                    break;
+                case true when _isWindows11:
+                    Serilog.Log.Debug("Running on Windows 11. Keeping default window decorations.");
+                    break;
+                default:
+                {
+                    if (isMac)
+                    {
+                        Serilog.Log.Information("Running on macOS. Using platform default window decorations.");
+                    } else if (isLinux)
+                    {
+                        Serilog.Log.Information("Running on Linux. Using platform default window decorations.");
+                    }
+                    else
+                    {
+                        Serilog.Log.Warning("Running on unknown OS platform. IsWindows={IsWindows}, IsMac={IsMac}, IsLinux={IsLinux}",
+                            isWindows, isMac, isLinux);
+                    }
+                    
+                    break;
+                }
             }
 
             if (OperatingSystem.IsWindows())
