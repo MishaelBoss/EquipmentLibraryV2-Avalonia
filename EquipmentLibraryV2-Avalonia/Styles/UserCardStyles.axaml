@@ -46,6 +46,7 @@
     
     <Style Selector="Button.passwordReset">
         <Setter Property="Background" Value="#FF3B30"/>
+        <Setter Property="Foreground" Value="White"/>
     </Style>
     
     <Style Selector="Button.action Image, ToggleButton.action:pointerover Image">
@@ -66,5 +67,6 @@
     
     <Style Selector="Button.passwordReset:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#FF3B30"/>
+        <Setter Property="Foreground" Value="White"/>
     </Style>
 </Styles>

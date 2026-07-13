@@ -8,19 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/OpenOrClosePasswordResetMessage.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/PasswordResetUserControlViewModel.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/avalonia.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/avalonia.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/OpenOrCloseConfirmDeleteMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Messages/OpenOrCloseConfirmDeleteMessage.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/UserCardStyles.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Styles/UserCardStyles.axaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/CartUserViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/PasswordResetUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/PasswordResetUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +114,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update" />
+    <MESSAGE value="Update Test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

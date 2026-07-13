@@ -3,6 +3,7 @@ using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Dapper;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using Npgsql;
@@ -29,11 +30,17 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
     }
 
     [RelayCommand]
-    public void ConfirmAndCopyPassword()
+    public void CloseAndCopyPassword()
     {
         if (GeneratedPassword != null) TextCopy.ClipboardService.SetText(GeneratedPassword);
         
         WeakReferenceMessenger.Default.Send(new OpenOrClosePasswordResetMessage());
+    }
+
+    [RelayCommand]
+    public void CopyPassword()
+    {
+        if (GeneratedPassword != null) TextCopy.ClipboardService.SetText(GeneratedPassword);
     }
 
     private async Task GeneratePassword(int length = 16)
@@ -76,13 +83,7 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
             const string sql = "UPDATE public.users SET password = crypt(@password, gen_salt('bf', 10)) WHERE id = @id";
             
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
-            await connection.OpenAsync();
-            
-            await using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@id", userId);
-            command.Parameters.AddWithValue("@password", finalPasswordStr);
-            
-            await command.ExecuteNonQueryAsync();
+            await connection.ExecuteAsync(sql, new { Id = userId, Password = finalPasswordStr });
 
             GeneratedPassword = finalPasswordStr;
         }
