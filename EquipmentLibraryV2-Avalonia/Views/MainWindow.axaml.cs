@@ -134,7 +134,7 @@ namespace EquipmentLibraryV2_Avalonia.Views
                     Serilog.Log.Debug("Escape pressed. TopOverlayContent={HasTopOverlay}",
                         vm.TopOverlayContent is not null);
 
-                    if (vm.TopOverlayContent is not null)
+                    if (vm.TopOverlayContent is not null && vm.IsOverlayDismissible)
                     {
                         vm.TopOverlayContent = null;
                         Serilog.Log.Information("TopOverlayContent closed by Escape key.");

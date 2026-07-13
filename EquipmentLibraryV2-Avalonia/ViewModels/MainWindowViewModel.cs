@@ -36,6 +36,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
         [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
+        [ObservableProperty] public partial bool IsOverlayDismissible { get; set; } = true;
         public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 
         [ObservableProperty] public partial string Version { get; set; } = AppConfig.Version;
@@ -296,7 +297,16 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(OpenOrCloseAddOrEditUserMessage message)
         {
-            TopOverlayContent = TopOverlayContent == null ? new AddOrEditUserUserControlViewModel(message.Id, message.Login, message.FirstName, message.LastName, message.Password, message.UserRole) : null;
+            if (TopOverlayContent is null)
+            {
+                TopOverlayContent = new AddOrEditUserUserControlViewModel(message.Id, message.Login, message.FirstName, message.LastName, message.Password, message.UserRole);
+                IsOverlayDismissible = message.Id is not null;
+            }
+            else
+            {
+                TopOverlayContent = null;
+                IsOverlayDismissible = true;
+            }
         }
 
         public void Receive(OpenOrCloseConfirmDeleteMessage message)
@@ -343,7 +353,16 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
                 message.Login
             );
             
-            TopOverlayContent = TopOverlayContent == null ? new PasswordResetUserControlViewModel(message.UserId, message.Login) : null;
+            if (TopOverlayContent is null)
+            {
+                TopOverlayContent = new PasswordResetUserControlViewModel(message.UserId, message.Login);
+                IsOverlayDismissible = false;
+            }
+            else
+            {
+                TopOverlayContent = null;
+                IsOverlayDismissible = true;
+            }
         }
 
         public void Dispose()

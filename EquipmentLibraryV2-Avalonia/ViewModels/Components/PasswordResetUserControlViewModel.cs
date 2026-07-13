@@ -21,7 +21,7 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
     public void Close() 
     {
         Log.Debug("Password reset dialog closed without changes. UserId={UserId}, Login={Login}", userId, Login);
-        WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
+        WeakReferenceMessenger.Default.Send(new OpenOrClosePasswordResetMessage());
     }
 
     [RelayCommand]
