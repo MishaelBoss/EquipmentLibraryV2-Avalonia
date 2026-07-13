@@ -17,6 +17,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 
         partial void OnLoginChanged(string value)
         {
+            Log.Debug("Login changed in CartUserViewModel. UserId={UserId}, NewLogin={Login}", UserId, value);
             OnPropertyChanged(nameof(AvatarChar));
         }
 
@@ -49,15 +50,35 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
         [RelayCommand]
         private async Task ChangeActiveUserAsync()
         {
+            var newIsActive = IsActive ?? true;
+
+            Log.Information(
+                "Toggle user active state requested. UserId={UserId}, Login={Login}, NewIsActive={IsActive}",
+                UserId,
+                Login,
+                newIsActive);
+            
             try
             {
                 await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
                 const string sql = "UPDATE public.users SET is_active = @is_active WHERE id = @id";
-                await connection.ExecuteScalarAsync(sql, new { id = UserId, is_active = IsActive ?? true });
+                var rows = await connection.ExecuteScalarAsync(sql, new { id = UserId, is_active = newIsActive});
+                
+                Log.Information(
+                    "User active state updated in database. UserId={UserId}, Login={Login}, NewIsActive={IsActive}, RowsAffected={RowsAffected}",
+                    UserId,
+                    Login,
+                    newIsActive,
+                    rows);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to toggle user active state for UserId={UserId}", UserId);
+                Log.Error(
+                    ex,
+                    "Failed to toggle user active state for UserId={UserId}, Login={Login}, TargetIsActive={IsActive}",
+                    UserId,
+                    Login,
+                    newIsActive);
             }
         }
     }
