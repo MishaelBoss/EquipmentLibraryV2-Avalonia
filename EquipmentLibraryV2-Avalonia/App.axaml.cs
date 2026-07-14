@@ -1,12 +1,12 @@
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.ViewModels;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
-using EquipmentLibraryV2_Avalonia.Infrastructure;
 using Serilog.Debugging;
+using System.Diagnostics;
 
 namespace EquipmentLibraryV2_Avalonia
 {

@@ -1,15 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
-using EquipmentLibraryV2_Avalonia.Models;
-using Npgsql;
-using Serilog;
-using System;
-using System.IO;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.Modelsl;
+using Npgsql;
+using Serilog;
+using System.Security.Cryptography;
+using System.Text.Json;
 
 namespace EquipmentLibraryV2_Avalonia.Services;
 
@@ -54,7 +52,11 @@ public static class AuthService
             Log.Information("User {Username} logged in successfully. Session id: {UserId}, role: {UserRole}",
                 user.Login, user.Id, user.UserRole);
 
-            await SaveLoginCookieAsync(CurrentSession.Id, CurrentSession.Login, Guid.NewGuid().ToString(), DateTime.Now.AddDays(7));
+            var refreshToken = GenerateRefreshToken();
+            var expiresAt = DateTime.UtcNow.AddDays(7);
+
+            await SaveRefreshTokenAsync(user.Id, refreshToken, expiresAt);
+            await SaveTokenToFileAsync(refreshToken, expiresAt);
 
             WeakReferenceMessenger.Default.Send(new LoginMessage());
 
@@ -69,28 +71,23 @@ public static class AuthService
         }
     }
 
-    private static async Task SaveLoginCookieAsync(double id, string login, string token, DateTime expires)
+    private static async Task SaveTokenToFileAsync(string refreshToken, DateTime expires)
     {
-        Log.Debug("Saving login cookie for user {Login}. Expires at {Expires}", login, expires);
-
         try
         {
             if (!Directory.Exists(AppPaths.UserDataDir)) Directory.CreateDirectory(AppPaths.UserDataDir);
 
             var data = new
             {
-                Id = id,
-                Login = login,
-                Token = token,
+                RefreshToken = refreshToken,
                 Expires = expires
             };
 
             await File.WriteAllTextAsync(CookiePath, JsonSerializer.Serialize(data));
-            Log.Information("Login cookie saved for user {Login}", login);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Failed to save login cookie for user {Login}", login);
+            Log.Error(ex, "Failed to save login cookie");
             throw;
         }
     }
@@ -108,7 +105,7 @@ public static class AuthService
             }
 
             var json = await File.ReadAllTextAsync(CookiePath);
-            var data = JsonSerializer.Deserialize<CookieData>(json);
+            var data = JsonSerializer.Deserialize<RefreshTokenData>(json);
 
             if (data == null)
             {
@@ -116,9 +113,8 @@ public static class AuthService
                 return false;
             }
 
-            if (data.Expires <= DateTime.Now)
+            if (data.Expires <= DateTime.UtcNow)
             {
-                Log.Warning("Auto-login cookie expired for user {Login}. Expired at {Expires}", data.Login, data.Expires);
                 return false;
             }
 
@@ -140,52 +136,47 @@ public static class AuthService
         }
     }
 
-    private static async Task<bool> VerifySessionInDbAsync(CookieData data)
+    private static async Task<bool> VerifySessionInDbAsync(RefreshTokenData data)
     {
-        Log.Debug("Verifying auto-login session in database for user {Login}", data.Login);
-        
         try
         {
-            const string sql = "SELECT id, login, user_type_id FROM public.users WHERE id = @id AND is_active = true";
+            const string sql = @"
+                            SELECT u.id, u.login, u.user_type_id
+                            FROM public.user_refresh_tokens rt
+                            JOIN public.users u on u.id = rt.user_id
+                            WHERE rt.token = @Token
+                              AND rt.expires_at > now()
+                              AND rt.revoked_at is null
+                              AND u.is_active = true
+                            LIMIT 1";
 
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             await connection.OpenAsync();
 
-            await using var cmd = new NpgsqlCommand(sql, connection);
-            cmd.Parameters.AddWithValue("@id", data.Id);
+            var row = await connection.QueryFirstOrDefaultAsync(sql, new { Token = data.RefreshToken });
 
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (!await reader.ReadAsync())
+            if (row == null)
             {
-                Log.Warning("Auto-login verification failed: user id {UserId} not found in DB", data.Id);
-                return false;
-            }
-            var loginInDb = reader.GetString(1);
-
-            if (loginInDb != data.Login)
-            {
-                Log.Warning("Auto-login verification failed: cookie login {CookieLogin} does not match DB login {DbLogin}",
-                    data.Login, loginInDb);
+                Log.Warning("Auto-login verification failed: token not found or expired");
                 return false;
             }
 
             CurrentSession = new UserSession(
-                Id: reader.GetInt64(0),
-                Login: loginInDb,
-                UserRole: reader.GetInt64(2)
+                Id: (long)row.id,
+                Login: (string)row.login,
+                UserRole: (long)row.user_type_id
             );
-            
+
             Log.Information("Auto-login successful for user {Login}, session id {UserId}, role {UserRole}",
-                loginInDb, CurrentSession.Id, CurrentSession.UserRole);
+            CurrentSession.Login, CurrentSession.Id, CurrentSession.UserRole);
 
             StartSessionHealthCheck();
-            
             return true;
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "VerifySessionInDbAsync failed for user {Login}", data.Login);
-            throw;
+            Log.Error(ex, "VerifySessionInDbAsync failed");
+            return false;
         }
     }
 
@@ -257,5 +248,25 @@ public static class AuthService
                 Log.Error(ex, "Session health check error");
             }
         }
+    }
+
+    public static string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+    }
+
+    private static async Task SaveRefreshTokenAsync(long userId, string token, DateTime expiresAt)
+    {
+        const string sql = "INSERT INTO public.user_refresh_tokens (user_id, token, expires_at) VALUES (@UserId, @Token, @ExpiresAt)";
+
+        await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+        await connection.OpenAsync();
+
+        await connection.ExecuteAsync(sql, new
+        {
+            UserId = userId,
+            Token = token,
+            ExpiresAt = expiresAt
+        });
     }
 }
