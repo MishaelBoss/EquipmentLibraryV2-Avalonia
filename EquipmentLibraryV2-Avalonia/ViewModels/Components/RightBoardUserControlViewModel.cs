@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Services;
 using System.Collections.ObjectModel;
+using Avalonia.Svg.Skia;
 using EquipmentLibraryV2_Avalonia.Views;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
@@ -111,14 +112,18 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         Buttons.Clear();
 
         var roleId = AuthService.CurrentSession?.UserRole ?? 0;
+        
+        var adminIconSource = await SvgSource.LoadAsync("/Assets/shield-check.svg", null);
+        
+        var adminIcon = new SvgImage { Source = adminIconSource };
 
         var newButtons = new List<DashboardButtonViewModel>
         {
-            new("Admin panel",OpenAdminPanelCommand,  LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/admin-panel-64.png"), () => roleId == 1),
-            new("Work area", OpenWorkAreaCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"),() => roleId is 1 or 2),
-            new("Measurement register", OpenMeasurementRegisterCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => roleId is 1 or 2),
-            new("Register of testing equipment", OpenRegisterOfTestingEquipmentCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => roleId is 1 or 2),
-            new("Library", OpenLibraryCommand, LoadBitmap("avares://EquipmentLibraryV2_Avalonia/Assets/library-64.png"), () => true),
+            new("Admin panel", OpenAdminPanelCommand, "shield-check.svg", () => roleId == 1),
+            new("Work area", OpenWorkAreaCommand, "grid-2x2.svg",() => roleId is 1 or 2),
+            new("Measurement register", OpenMeasurementRegisterCommand, "library-big.svg", () => roleId is 1 or 2),
+            new("Register of testing equipment", OpenRegisterOfTestingEquipmentCommand, "library-big.svg", () => roleId is 1 or 2),
+            new("Library", OpenLibraryCommand, "library-big.svg", () => true),
         };
 
         var visibleButtons = newButtons.Where(b => b.IsButtonVisible);
@@ -127,12 +132,6 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         {
             Buttons.Add(btn);
         }
-    }
-
-    private static Bitmap LoadBitmap(string uriString)
-    {
-        using var stream = AssetLoader.Open(new Uri(uriString));
-        return new Bitmap(stream);
     }
 
     ~RightBoardUserControlViewModel() 

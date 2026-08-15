@@ -7,11 +7,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
+    <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="1">
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/folder-open.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/grid-2x2.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/house.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/library-big.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/shield-check.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/user-round.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/AdminPanelPageUserControlViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/LibraryPageUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Pages/LibraryPageUserControlViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/SettingsDialogWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/SettingsDialogWindow.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/library-64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/open.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/open_dark.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/opened-folder-64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/save.svg" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/save.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/settings-64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/settings.svg" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/settings.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/settings_dark.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Assets/user-64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/DashboardButtonViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/DashboardButtonViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/RightBoardUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Components/RightBoardUserControlViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AddOrEditUserUserControlView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/AddOrEditUserUserControlView.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Settings/LoggingView.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/Settings/LoggingView.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +75,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fb2b674374ba43bead8f63cb1b24b46d230c00/3e/bb46d4f7/StandardAssetLoader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fb2b674374ba43bead8f63cb1b24b46d230c00/fd/4753d51c/StyleBase.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1579bf835158dd6aec6bad778df36f37e1ed9bdaa7c2b533f598f5c59bd4/StandardAssetLoader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/30ee82302bda23bf4c59bbea14e77c148cf70665b5e1d93873e5cecaf46246e/ImmutableBitmap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/80462644bd1cc7e0b229dc4f5752b48c01cb67b46ae563b1b5078cc2556b98/AvaloniaXamlLoader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a1782254f56892832971214c3ab4a8b8b554962db6f892a035f7f5cd9faed/SvgSource.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -72,23 +90,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.EquipmentLibraryV2-Avalonia.executor": "Run",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.EquipmentLibraryV2-Avalonia.executor&quot;: &quot;Run&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="EquipmentLibraryV2-Avalonia" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/bin/Debug/net10.0/EquipmentLibraryV2_Avalonia" />

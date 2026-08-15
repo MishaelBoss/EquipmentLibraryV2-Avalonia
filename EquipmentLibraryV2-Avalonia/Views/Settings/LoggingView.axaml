@@ -27,7 +27,7 @@
                         Command="{Binding OpenLogsFolderCommand}"
                         Padding="16,8">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                        <Image Source="{SvgImage /Assets/open.svg}" Width="12" Height="12"/>
+                        <Image Source="{SvgImage /Assets/folder-open.svg}" Width="12" Height="12"/>
                         <TextBlock Text="Открыть логи"/>
                     </StackPanel>
                 </Button>
