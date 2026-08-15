@@ -49,6 +49,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
     public LibraryPageUserControlViewModel()
     {
         Log.Information("LibraryPageUserControlViewModel created");
+        WeakReferenceMessenger.Default.RegisterAll(this);
 
         Task.Run(async () =>
         {

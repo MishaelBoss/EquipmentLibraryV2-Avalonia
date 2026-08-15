@@ -7,7 +7,7 @@
         xmlns:settingsVm="clr-namespace:EquipmentLibraryV2_Avalonia.ViewModels.Settings"
         x:DataType="vm:SettingsDialogWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
-        Width="1000" Height="620" MinWidth="800" MinHeight="620"
+        Width="1000" Height="620" MinWidth="800" MinHeight="420"
         WindowStartupLocation="CenterOwner"
         Background="#2D2D35"
         x:Class="EquipmentLibraryV2_Avalonia.SettingsDialogWindow"

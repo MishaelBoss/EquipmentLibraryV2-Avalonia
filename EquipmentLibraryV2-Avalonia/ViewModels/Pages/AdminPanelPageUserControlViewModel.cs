@@ -35,7 +35,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 
         public AdminPanelPageUserControlViewModel() 
         {
-            WeakReferenceMessenger.Default.Register<RefreshUserListMessage>(this);
+            WeakReferenceMessenger.Default.RegisterAll(this);
             LoadInitialUsers();
         }
 
