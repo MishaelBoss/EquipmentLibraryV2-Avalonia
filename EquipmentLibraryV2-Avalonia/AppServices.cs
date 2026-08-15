@@ -20,6 +20,7 @@ public static class AppServices
         services.AddSingleton<RightBoardUserControlViewModel>();
 
         services.AddTransient<AdminPanelPageUserControlViewModel>();
+        services.AddTransient<AnalyticsPageUserControlViewModel>();
         services.AddTransient<LibraryPageUserControlViewModel>();
         services.AddTransient<WorkAreaUserControlViewModel>();
         services.AddTransient<MeasurementRegisterPageUserControlViewModel>();

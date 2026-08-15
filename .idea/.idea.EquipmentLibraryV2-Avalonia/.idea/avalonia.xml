@@ -30,7 +30,9 @@
         <entry key="EquipmentLibraryV2-Avalonia/Views/LogoutDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/MainWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/AdminPanelPageUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/AnalyticsPageUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/LibraryPageUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/MeasurementRegisterPageUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Pages/WorkAreaUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Settings/LoggingView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Settings/UpdatesUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />

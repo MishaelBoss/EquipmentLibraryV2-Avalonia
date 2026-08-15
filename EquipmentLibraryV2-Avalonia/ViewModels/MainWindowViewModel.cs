@@ -23,6 +23,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         IRecipient<ShowOrHideNotification>,
         IRecipient<LogoutMessage>,
         IRecipient<OpenAdminPanelMessage>, 
+        IRecipient<OpenAnalyticsMessage>,
         IRecipient<OpenLibraryMessage>, 
         IRecipient<OpenWorkAreaMessage>, 
         IRecipient<OpenOrCloseAuthorizationMessage>, 
@@ -48,6 +49,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         private string _releaseDate = string.Empty;
 
         private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel;
+        private readonly Lazy<AnalyticsPageUserControlViewModel> _analytics;
         private readonly Lazy<LibraryPageUserControlViewModel> _library;
         private readonly Lazy<WorkAreaUserControlViewModel> _workArea;
         private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister;
@@ -101,6 +103,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             var sp = AppServices.Provider;
             
             _adminPanel = new Lazy<AdminPanelPageUserControlViewModel>(() => sp.GetRequiredService<AdminPanelPageUserControlViewModel>());
+            _analytics = new Lazy<AnalyticsPageUserControlViewModel>(() => sp.GetRequiredService<AnalyticsPageUserControlViewModel>());
             _library = new Lazy<LibraryPageUserControlViewModel>(() => sp.GetRequiredService<LibraryPageUserControlViewModel>());
             _workArea = new Lazy<WorkAreaUserControlViewModel>(() => sp.GetRequiredService<WorkAreaUserControlViewModel>());
             _measurementRegister = new Lazy<MeasurementRegisterPageUserControlViewModel>(() => sp.GetRequiredService<MeasurementRegisterPageUserControlViewModel>());
@@ -109,14 +112,14 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             _authorizationUserControlViewModel = sp.GetRequiredService<AuthorizationUserControlViewModel>();
 
             IsLoading = true;
-            CurrentPage = _library.Value;
+            CurrentPage = _analytics.Value;
             _settings = AppSettings.Load();
             RightBoardViewModel = sp.GetRequiredService<RightBoardUserControlViewModel>();
             
             WeakReferenceMessenger.Default.RegisterAll(this);
             _ = CheckNetworkAsync();
             
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
         }
 
         public async Task InitializeAsync()
@@ -276,6 +279,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         {
             CurrentPage = _adminPanel.Value;
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.AdminPanel));
+        }
+
+        public void Receive(OpenAnalyticsMessage message)
+        {
+            CurrentPage = _analytics.Value;
+            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
         }
 
         public void Receive(OpenLibraryMessage message)

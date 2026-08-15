@@ -41,6 +41,12 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     }
 
     [RelayCommand]
+    public void OpenAnalytics()
+    {
+        WeakReferenceMessenger.Default.Send(new OpenAnalyticsMessage());
+    }
+
+    [RelayCommand]
     public void OpenMeasurementRegister()
     {
         WeakReferenceMessenger.Default.Send(new OpenMeasurementRegisterMessage());
@@ -121,6 +127,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         {
             new("Admin panel", OpenAdminPanelCommand, "shield-check.svg", () => roleId == 1),
             new("Work area", OpenWorkAreaCommand, "grid-2x2.svg",() => roleId is 1 or 2),
+            new("Analytics", OpenAnalyticsCommand, "chart-pie.svg", () => true),
             new("Measurement register", OpenMeasurementRegisterCommand, "library-big.svg", () => roleId is 1 or 2),
             new("Register of testing equipment", OpenRegisterOfTestingEquipmentCommand, "library-big.svg", () => roleId is 1 or 2),
             new("Library", OpenLibraryCommand, "library-big.svg", () => true),
