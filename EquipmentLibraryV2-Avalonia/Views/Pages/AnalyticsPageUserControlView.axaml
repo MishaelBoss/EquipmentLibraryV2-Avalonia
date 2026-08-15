@@ -2,7 +2,168 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:donut="using:EquipmentLibraryV2_Avalonia.Controls"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Pages.AnalyticsPageUserControlView">
-    Welcome to Avalonia!
+
+    <Grid RowDefinitions="*,*,*" Margin="12">
+        <Grid Grid.Row="0" Margin="8,4">
+            <Border CornerRadius="8" Background="#26292E" BorderBrush="#3B3F46" BorderThickness="1"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="#1E1E1E" CornerRadius="8,8,0,0" Padding="14,10">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                            <Border Width="9" Height="9" CornerRadius="2" Background="#28A745" VerticalAlignment="Center"/>
+                            <TextBlock Text="СИ — Средства измерений" Foreground="White" FontSize="15"
+                                       FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1" Margin="14,10">
+                        <Grid ColumnDefinitions="Auto,22,Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid Grid.Column="0" Width="132" Height="132">
+                                <donut:DonutChart ItemsSource="{Binding SiSegments}" RingThickness="20"/>
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="1">
+                                    <TextBlock Text="{Binding SiTotal}" FontSize="32" FontWeight="Bold"
+                                               Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="ед." FontSize="13" Foreground="#8A8F98" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Grid.Column="2" Spacing="6" VerticalAlignment="Center" MinWidth="200">
+                                <TextBlock Text="{Binding SiTotal, StringFormat='Всего: {0} ед.'}"
+                                           FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                                <ItemsControl ItemsSource="{Binding SiSegments}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="Auto,8,*,Auto">
+                                                <Border Width="10" Height="10" CornerRadius="2"
+                                                        Background="{Binding ColorBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Label}"
+                                                           Foreground="#B9BEC7" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding Value}"
+                                                           Foreground="White" FontSize="14" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="8,4">
+            <Border CornerRadius="8" Background="#26292E" BorderBrush="#3B3F46" BorderThickness="1"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="#1E1E1E" CornerRadius="8,8,0,0" Padding="14,10">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                            <Border Width="9" Height="9" CornerRadius="2" Background="#4A90E2" VerticalAlignment="Center"/>
+                            <TextBlock Text="СДК — Средства допускового контроля" Foreground="White" FontSize="15"
+                                       FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1" Margin="14,10">
+                        <Grid ColumnDefinitions="Auto,22,Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid Grid.Column="0" Width="132" Height="132">
+                                <donut:DonutChart ItemsSource="{Binding SdkSegments}" RingThickness="20"/>
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="1">
+                                    <TextBlock Text="{Binding SdkTotal}" FontSize="32" FontWeight="Bold"
+                                               Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="ед." FontSize="13" Foreground="#8A8F98" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Grid.Column="2" Spacing="6" VerticalAlignment="Center" MinWidth="200">
+                                <TextBlock Text="{Binding SdkTotal, StringFormat='Всего: {0} ед.'}"
+                                           FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                                <ItemsControl ItemsSource="{Binding SdkSegments}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="Auto,8,*,Auto">
+                                                <Border Width="10" Height="10" CornerRadius="2"
+                                                        Background="{Binding ColorBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Label}"
+                                                           Foreground="#B9BEC7" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding Value}"
+                                                           Foreground="White" FontSize="14" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="8,4">
+            <Border CornerRadius="8" Background="#26292E" BorderBrush="#3B3F46" BorderThickness="1"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="#1E1E1E" CornerRadius="8,8,0,0" Padding="14,10">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                            <Border Width="9" Height="9" CornerRadius="2" Background="#E67E22" VerticalAlignment="Center"/>
+                            <TextBlock Text="ИО — Испытательное оборудование" Foreground="White" FontSize="15"
+                                       FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1" Margin="14,10">
+                        <Grid ColumnDefinitions="Auto,22,Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid Grid.Column="0" Width="132" Height="132">
+                                <donut:DonutChart ItemsSource="{Binding IoSegments}" RingThickness="20"/>
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="1">
+                                    <TextBlock Text="{Binding IoTotal}" FontSize="32" FontWeight="Bold"
+                                               Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="ед." FontSize="13" Foreground="#8A8F98" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Grid.Column="2" Spacing="6" VerticalAlignment="Center" MinWidth="200">
+                                <TextBlock Text="{Binding IoTotal, StringFormat='Всего: {0} ед.'}"
+                                           FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                                <ItemsControl ItemsSource="{Binding IoSegments}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="Auto,8,*,Auto">
+                                                <Border Width="10" Height="10" CornerRadius="2"
+                                                        Background="{Binding ColorBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Label}"
+                                                           Foreground="#B9BEC7" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding Value}"
+                                                           Foreground="White" FontSize="14" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>
