@@ -118,10 +118,6 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         Buttons.Clear();
 
         var roleId = AuthService.CurrentSession?.UserRole ?? 0;
-        
-        var adminIconSource = await SvgSource.LoadAsync("/Assets/shield-check.svg", null);
-        
-        var adminIcon = new SvgImage { Source = adminIconSource };
 
         var newButtons = new List<DashboardButtonViewModel>
         {

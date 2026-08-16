@@ -20,7 +20,7 @@ internal static class ConnectivityService
         string.IsNullOrWhiteSpace(AppConfig.User) ||
         string.IsNullOrWhiteSpace(AppConfig.Password);
 
-    public static async Task<bool> ConnectivityChecker()
+    public static async Task<bool> ConnectivityChecker(bool showNotification = true)
     {
         try
         {
@@ -44,14 +44,15 @@ internal static class ConnectivityService
 
             if (reply is not { Status: IPStatus.Success })
             {
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
+                if (showNotification)
+                    WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
                 return false;
             }
             
             Log.Information($"Address: {reply.Address}");
             Log.Information($"Roundtrip time: {reply.RoundtripTime}");
             Log.Information($"Time to live: {reply.Options?.Ttl}");
-            return await TestPostgreSqlConnection();
+            return await TestPostgreSqlConnection(showNotification);
         }
         catch (PingException ex)
         {
@@ -65,7 +66,7 @@ internal static class ConnectivityService
         }
     }
 
-    private static async Task<bool> TestPostgreSqlConnection()
+    private static async Task<bool> TestPostgreSqlConnection(bool showNotification = true)
     {
         var connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
                                   $"User Id={AppConfig.User};Password={AppConfig.Password};" +
@@ -85,7 +86,8 @@ internal static class ConnectivityService
         catch (Exception ex)
         {
             Log.Warning($"PostgreSQL connection failed: {ex.Message}");
-            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
+            if (showNotification)
+                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
             return false;
         }
     }

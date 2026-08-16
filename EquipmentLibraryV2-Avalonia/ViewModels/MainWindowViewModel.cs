@@ -55,6 +55,10 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister;
         private readonly Lazy<RegisterOfTestingEquipmentPageUserControlViewModel> _registerOfTestingEquipment;
 
+        private const int NetworkCheckIntervalSeconds = 15;
+        private readonly CancellationTokenSource _networkCheckCts = new();
+        private int _networkCheckInProgress;
+
         private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel;
 
         public RightBoardUserControlViewModel RightBoardViewModel { get; }
@@ -64,7 +68,6 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         [RelayCommand]
         public async Task ReturnToConnectNetwork()
         {
-            await ConnectivityService.ConnectivityChecker();
             await CheckNetworkAsync();
         }
 
@@ -118,6 +121,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             
             WeakReferenceMessenger.Default.RegisterAll(this);
             _ = CheckNetworkAsync();
+            _ = MonitorNetworkAsync();
             
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
         }
@@ -234,11 +238,38 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             }
         }
 
-        private async Task CheckNetworkAsync()
+        private async Task MonitorNetworkAsync()
         {
-            StatusNetwork = "Проверка...";
-            IsConnected = await ConnectivityService.ConnectivityChecker();
-            StatusNetwork = IsConnected ? "Подключено" : "Нет соединения";
+            try
+            {
+                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(NetworkCheckIntervalSeconds));
+                while (await timer.WaitForNextTickAsync(_networkCheckCts.Token))
+                {
+                    await CheckNetworkAsync(showNotification: false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
+
+        private async Task CheckNetworkAsync(bool showNotification = true)
+        {
+            if (Interlocked.Exchange(ref _networkCheckInProgress, 1) == 1)
+                return;
+
+            try
+            {
+                if (!IsConnected)
+                    StatusNetwork = "Проверка...";
+
+                IsConnected = await ConnectivityService.ConnectivityChecker(showNotification);
+                StatusNetwork = IsConnected ? "Подключено" : "Нет соединения";
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _networkCheckInProgress, 0);
+            }
         }
 
         public void Receive(ShowOrHideNotification message)
@@ -375,6 +406,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         }
 
         public void Dispose()
-            => WeakReferenceMessenger.Default.UnregisterAll(this);
+        {
+            _networkCheckCts.Cancel();
+            WeakReferenceMessenger.Default.UnregisterAll(this);
+        }
     }
 }
