@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Settings"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:ConnectionUserControlViewModel"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Settings.ConnectionUserControlView">
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/SettingsStyles.axaml"/>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="20">
+        <TextBlock Text="Настройка подключения к серверу базы данных. Укажите параметры доступа и проверьте соединение."
+                   Foreground="#9E9EB0"
+                   FontSize="13"
+                   TextWrapping="Wrap"/>
+
+        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="10" Padding="20" Background="#151517"
+                BoxShadow="0 2 8 0 #30000000">
+            <StackPanel Spacing="16">
+                <Grid ColumnDefinitions="*, 16, *">
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock Text="IP адрес сервера" Classes="FieldLabel"/>
+                        <TextBox Classes="TB1" Text="{Binding Ip}" PlaceholderText="Например, 192.168.1.10"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="6">
+                        <TextBlock Text="Порт" Classes="FieldLabel"/>
+                        <TextBox Classes="TB1" Text="{Binding Port}" PlaceholderText="Например, 5432"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid ColumnDefinitions="*, 16, *">
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock Text="База данных" Classes="FieldLabel"/>
+                        <TextBox Classes="TB1" Text="{Binding Database}" PlaceholderText="Имя базы данных"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="6">
+                        <TextBlock Text="Пользователь" Classes="FieldLabel"/>
+                        <TextBox Classes="TB1" Text="{Binding User}" PlaceholderText="Имя пользователя"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Пароль" Classes="FieldLabel"/>
+                    <TextBox Classes="TB1" Text="{Binding Password}" PlaceholderText="Пароль"
+                             PasswordChar="•"/>
+                </StackPanel>
+
+                <Border Height="1" Background="#2D2D30" Margin="0,4,0,0"/>
+
+                <Grid ColumnDefinitions="*, Auto">
+                    <Button Grid.Column="1" Classes="Btn1"
+                            Command="{Binding TestConnectionCommand}"
+                            Padding="16,9" Cursor="Hand">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Image Source="{SvgImage /Assets/shield-check.svg}" Width="14" Height="14"/>
+                            <TextBlock Text="Проверить подключение" FontSize="13"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

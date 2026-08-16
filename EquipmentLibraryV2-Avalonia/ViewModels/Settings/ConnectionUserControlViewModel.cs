@@ -1,0 +1,163 @@
+using System.Net.NetworkInformation;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.Services.Interfaces;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
+using Npgsql;
+using Serilog;
+
+namespace EquipmentLibraryV2_Avalonia.ViewModels.Settings;
+
+public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPage
+{
+    private readonly AppSettings _settings;
+    private string _originalIp;
+    private string _originalPort;
+    private string _originalDatabase;
+    private string _originalUser;
+    private string _originalPassword;
+    
+    [ObservableProperty] public partial string Ip { get; set; }
+    [ObservableProperty] public partial string Port { get; set; }
+    [ObservableProperty] public partial string Database { get; set; }
+    [ObservableProperty] public partial string Password { get; set; }
+    [ObservableProperty] public partial string User { get; set; }
+
+    public ConnectionUserControlViewModel()
+    {
+        _settings = AppSettings.Load();
+
+        _originalIp = _settings.Ip;
+        _originalPort = _settings.Port;
+        _originalDatabase = _settings.Database;
+        _originalUser = _settings.User;
+        _originalPassword = _settings.Password;
+
+        Ip = _settings.Ip;
+        Port = _settings.Port;
+        Database = _settings.Database;
+        Password = _settings.Password;
+        User = _settings.User;
+    }
+
+    [RelayCommand]
+    public async Task TestConnection()
+    {
+        if (await ConnectivityChecker())
+        {
+            Log.Information("Succeful connect");
+        }
+        else
+        {
+            Log.Information("Not connection to database");
+        }
+    }
+
+    #region Test
+
+    private bool IsConfigInvalid() =>
+        string.IsNullOrWhiteSpace(Ip) ||
+        string.IsNullOrWhiteSpace(Port) ||
+        string.IsNullOrWhiteSpace(Database) ||
+        string.IsNullOrWhiteSpace(User) ||
+        string.IsNullOrWhiteSpace(Password);
+
+    public async Task<bool> ConnectivityChecker()
+    {
+        try
+        {
+            if (IsConfigInvalid())
+            {
+                Log.Error("Database connection data is incomplete {PropertyValue0}", Database);
+                return false;
+            }
+
+            using var ping = new Ping();
+            var hostName = Ip;
+            if (string.IsNullOrEmpty(hostName))
+            {
+                Log.Warning("Ping failed: Host name or IP address is empty.");
+                return false;
+            }
+
+            var reply = ping.Send(hostName, 3000);
+
+            Log.Information($"Ping status for ({hostName}): {reply.Status}");
+
+            if (reply is not { Status: IPStatus.Success })
+            {
+                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
+                return false;
+            }
+            
+            Log.Information($"Address: {reply.Address}");
+            Log.Information($"Roundtrip time: {reply.RoundtripTime}");
+            Log.Information($"Time to live: {reply.Options?.Ttl}");
+            return await TestPostgreSqlConnection();
+        }
+        catch (PingException ex)
+        {
+            Log.Warning($"Ping failed: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning($"Ping failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    private async Task<bool> TestPostgreSqlConnection()
+    {
+        var connString = $"Server={Ip};Port={Port};Database={Database};" +
+                                  $"User Id={User};Password={Password};" +
+                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5";
+        
+        try
+        {
+            await using var connection = new NpgsqlConnection(connString);
+            await connection.OpenAsync();
+
+            await using var cmd = new NpgsqlCommand("SELECT 1", connection);
+            var result = await cmd.ExecuteScalarAsync();
+
+            Log.Information($"PostgreSQL connection test successful, result {result}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning($"PostgreSQL connection failed: {ex.Message}");
+            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
+            return false;
+        }
+    }
+
+    #endregion
+
+    public bool HasChanges =>
+        Ip != _originalIp ||
+        Port != _originalPort ||
+        Database != _originalDatabase ||
+        User != _originalUser ||
+        Password != _originalPassword;
+
+    public void Save()
+    {
+        _settings.Ip = Ip;
+        _settings.Port = Port;
+        _settings.Database = Database;
+        _settings.User = User;
+        _settings.Password = Password;
+        _settings.Save();
+
+        _originalIp = Ip;
+        _originalPort = Port;
+        _originalDatabase = Database;
+        _originalUser = User;
+        _originalPassword = Password;
+    }
+}

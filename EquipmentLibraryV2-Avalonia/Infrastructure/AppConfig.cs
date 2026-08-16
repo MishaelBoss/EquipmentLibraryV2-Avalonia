@@ -18,11 +18,33 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
 
         #region DB
 
-        public const string? Ip = "localhost";
-        public const string? Port = "5432";
-        public const string? Database = "ELA_V2";
-        public const string? User = "postgres";
-        public const string? Password = "cr2032";
+        public const string DefaultIp = "localhost";
+        public const string DefaultPort = "5432";
+        public const string DefaultDatabase = "ELA_V2";
+        public const string DefaultUser = "postgres";
+        public const string DefaultPassword = "cr2032";
+
+        public static string Ip => LoadSetting(s => s.Ip, DefaultIp);
+        public static string Port => LoadSetting(s => s.Port, DefaultPort);
+        public static string Database => LoadSetting(s => s.Database, DefaultDatabase);
+        public static string User => LoadSetting(s => s.User, DefaultUser);
+        public static string Password => LoadSetting(s => s.Password, DefaultPassword);
+
+        private static string LoadSetting(Func<AppSettings, string> selector, string fallback)
+        {
+            try
+            {
+                var value = selector(AppSettings.Load());
+                return string.IsNullOrWhiteSpace(value) ? fallback : value;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        private static string Pick(string? value, string fallback) =>
+            string.IsNullOrWhiteSpace(value) ? fallback : value;
 
         private static string? _connectionString;
 
@@ -31,15 +53,22 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
             if (!string.IsNullOrEmpty(_connectionString))
                 return _connectionString;
 
-            
-            var hasConnectionData = !string.IsNullOrWhiteSpace(Ip) &&
-                                    !string.IsNullOrWhiteSpace(Port) &&
-                                    !string.IsNullOrWhiteSpace(Database) &&
-                                    !string.IsNullOrWhiteSpace(User) &&
-                                    !string.IsNullOrWhiteSpace(Password);
+            var settings = AppSettings.Load();
 
-            var baseConnection = $"Server={Ip};Port={Port};Database={Database};User Id={User};Password={Password};SslMode=Disable";
-            
+            var ip = Pick(settings.Ip, DefaultIp);
+            var port = Pick(settings.Port, DefaultPort);
+            var database = Pick(settings.Database, DefaultDatabase);
+            var user = Pick(settings.User, DefaultUser);
+            var password = Pick(settings.Password, DefaultPassword);
+
+            var hasConnectionData = !string.IsNullOrWhiteSpace(ip) &&
+                                    !string.IsNullOrWhiteSpace(port) &&
+                                    !string.IsNullOrWhiteSpace(database) &&
+                                    !string.IsNullOrWhiteSpace(user) &&
+                                    !string.IsNullOrWhiteSpace(password);
+
+            var baseConnection = $"Server={ip};Port={port};Database={database};User Id={user};Password={password};SslMode=Disable";
+
             if (!hasConnectionData)
             {
                 _connectionString = await ConnectivityService.ConnectivityChecker() ? baseConnection : string.Empty;

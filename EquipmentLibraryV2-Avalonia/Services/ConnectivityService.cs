@@ -31,7 +31,7 @@ internal static class ConnectivityService
             }
 
             using var ping = new Ping();
-            const string? hostName = AppConfig.Ip;
+            var hostName = AppConfig.Ip;
             if (string.IsNullOrEmpty(hostName))
             {
                 Log.Warning("Ping failed: Host name or IP address is empty.");
@@ -52,7 +52,6 @@ internal static class ConnectivityService
             Log.Information($"Roundtrip time: {reply.RoundtripTime}");
             Log.Information($"Time to live: {reply.Options?.Ttl}");
             return await TestPostgreSqlConnection();
-
         }
         catch (PingException ex)
         {
@@ -68,7 +67,7 @@ internal static class ConnectivityService
 
     private static async Task<bool> TestPostgreSqlConnection()
     {
-        const string connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
+        var connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
                                   $"User Id={AppConfig.User};Password={AppConfig.Password};" +
                                   $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5";
         

@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Text.Json;
 
 namespace EquipmentLibraryV2_Avalonia.Infrastructure;
@@ -7,6 +5,11 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure;
 public class AppSettings
 {
     public bool CheckLatestUpdates { get; set; } = true;
+    public string Ip { get; set; } = string.Empty;
+    public string Port { get; set; } = string.Empty;
+    public string Database { get; set; } = string.Empty;
+    public string User { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
     
     private static readonly string SettingsPath = Path.Combine(
         AppPaths.UserDataDir, "settings.json");

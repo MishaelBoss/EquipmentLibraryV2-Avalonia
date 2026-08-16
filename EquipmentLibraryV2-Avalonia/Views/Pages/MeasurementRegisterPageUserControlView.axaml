@@ -2,7 +2,139 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Pages"
+             xmlns:models="using:EquipmentLibraryV2_Avalonia.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:MeasurementRegisterPageUserControlViewModel"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Pages.MeasurementRegisterPageUserControlView">
-  Welcome to Avalonia!
+    
+    <UserControl.Styles>
+		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
+		<Style Selector="Grid.TableRow:pointerover">
+			<Setter Property="Background" Value="#2A2A3A"/>
+		</Style>
+		<Style Selector="TextBlock.CellText">
+			<Setter Property="Foreground" Value="#CCC"/>
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid Margin="22" RowDefinitions="Auto, *">
+
+		<Grid Margin="2" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="0">
+			<Border CornerRadius="20" Background="#8E9198" Padding="16,8"
+			        BoxShadow="0 2 8 0 #30000000">
+				<StackPanel Orientation="Horizontal" Spacing="10">
+					<TextBox Width="280" Height="38" PlaceholderText="Search"
+					         VerticalContentAlignment="Center"
+					         Text="{Binding SearchText, Mode=TwoWay}"
+					         CornerRadius="14" BorderThickness="1.5"
+					         BorderBrush="#B0B3B8" FontSize="15"/>
+					<Button Height="38" Cursor="Hand" Padding="16,0"
+					        Background="#2B2D31" Foreground="White" BorderBrush="#B0B3B8"
+					        BorderThickness="1.5" CornerRadius="14"
+					        VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Image Source="{SvgImage /Assets/download.svg}" Width="14" Height="14"/>
+							<TextBlock Text="Скачать" FontSize="13" FontWeight="SemiBold"/>
+						</StackPanel>
+						<Button.Flyout>
+							<Flyout Placement="Bottom">
+								<StackPanel Spacing="2" MinWidth="150">
+									<Button Classes="modernFlyoutItem" Command="{Binding DownloadPdfCommand}">
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="Скачать PDF" FontSize="13"/>
+										</StackPanel>
+									</Button>
+									<Button Classes="modernFlyoutItem" Command="{Binding DownloadExcelCommand}">
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="Скачать Excel" FontSize="13"/>
+										</StackPanel>
+									</Button>
+								</StackPanel>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+				</StackPanel>
+			</Border>
+		</Grid>
+
+		<Grid Grid.Row="1" Margin="0,10,0,0" IsVisible="{Binding !IsLoading}">
+
+			<Border CornerRadius="8" BorderBrush="#333" BorderThickness="1"
+			        BoxShadow="0 4 16 0 #30000000" IsVisible="{Binding IsEmpty}">
+				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+					<Border Width="56" Height="56" CornerRadius="28" Background="#252525" HorizontalAlignment="Center">
+						<TextBlock Text="!" FontSize="28" FontWeight="Bold" Foreground="#555"
+						           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Border>
+					<TextBlock Text="Оборудование не найдено" FontSize="15" Foreground="#888" HorizontalAlignment="Center"/>
+					<TextBlock Text="Попробуйте изменить параметры поиска" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+				</StackPanel>
+			</Border>
+
+			<Border CornerRadius="8" BorderBrush="#333" BorderThickness="1" ClipToBounds="True"
+			        BoxShadow="0 4 16 0 #30000000" IsVisible="{Binding !IsEmpty}">
+				<Grid RowDefinitions="Auto, *">
+
+					<Border Grid.Row="0" Background="#1E1E1E" Padding="0" CornerRadius="8,8,0,0">
+						<Grid ColumnDefinitions="2.5*, 1.5*, 1.5*, 1.5*, 1.5*" Height="40">
+							<TextBlock Grid.Column="0" Text="Наименование" Foreground="#888"
+							           FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="16,0"/>
+							<TextBlock Grid.Column="1" Text="Зав. №" Foreground="#888"
+							           FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0"/>
+							<TextBlock Grid.Column="2" Text="Модель" Foreground="#888"
+							           FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0"/>
+							<TextBlock Grid.Column="3" Text="Инв. №" Foreground="#888"
+							           FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0"/>
+							<TextBlock Grid.Column="4" Text="Добавил" Foreground="#888"
+							           FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0"/>
+						</Grid>
+					</Border>
+
+					<Border Grid.Row="1" Background="#252525" CornerRadius="0,0,8,8">
+						<ScrollViewer>
+							<ItemsControl ItemsSource="{Binding EquipmentItems}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate x:DataType="models:EquipmentItem">
+										<Grid Classes="TableRow"
+										      ColumnDefinitions="2.5*, 1.5*, 1.5*, 1.5*, 1.5*"
+										      Height="44">
+											<Border BorderBrush="#2A2A2A" BorderThickness="0,0,0,1" Grid.ColumnSpan="5"/>
+
+											<TextBlock Grid.Column="0" Text="{Binding Title}"
+											           Classes="CellText" Margin="16,0" FontWeight="SemiBold" Foreground="White"/>
+
+											<TextBlock Grid.Column="1" Text="{Binding SerialNumber}"
+											           Classes="CellText" Margin="8,0"/>
+
+											<TextBlock Grid.Column="2" Text="{Binding Model}"
+											           Classes="CellText" Margin="8,0"/>
+
+											<TextBlock Grid.Column="3" Text="{Binding InvNum}"
+											           Classes="CellText" Margin="8,0"/>
+
+											<TextBlock Grid.Column="4" Text="{Binding UserLogin}"
+											           Classes="CellText" Margin="8,0" Foreground="#999"/>
+										</Grid>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</ScrollViewer>
+					</Border>
+
+				</Grid>
+			</Border>
+		</Grid>
+
+		<Grid Grid.Row="1" IsVisible="{Binding IsLoading}"
+		      HorizontalAlignment="Center" VerticalAlignment="Center">
+			<StackPanel Orientation="Horizontal" Spacing="12">
+				<ProgressBar IsIndeterminate="True" Width="200" Height="6"/>
+				<TextBlock Text="Загрузка..." Foreground="#888" FontSize="13" VerticalAlignment="Center"/>
+			</StackPanel>
+		</Grid>
+	</Grid>
 </UserControl>
