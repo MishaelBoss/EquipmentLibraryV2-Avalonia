@@ -47,38 +47,50 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
             string.IsNullOrWhiteSpace(value) ? fallback : value;
 
         private static string? _connectionString;
+        private static readonly SemaphoreSlim ConnectionGate = new(1, 1);
 
         public static async Task<string> ConnectionAsync()
         {
             if (!string.IsNullOrEmpty(_connectionString))
                 return _connectionString;
 
-            var settings = AppSettings.Load();
-
-            var ip = Pick(settings.Ip, DefaultIp);
-            var port = Pick(settings.Port, DefaultPort);
-            var database = Pick(settings.Database, DefaultDatabase);
-            var user = Pick(settings.User, DefaultUser);
-            var password = Pick(settings.Password, DefaultPassword);
-
-            var hasConnectionData = !string.IsNullOrWhiteSpace(ip) &&
-                                    !string.IsNullOrWhiteSpace(port) &&
-                                    !string.IsNullOrWhiteSpace(database) &&
-                                    !string.IsNullOrWhiteSpace(user) &&
-                                    !string.IsNullOrWhiteSpace(password);
-
-            var baseConnection = $"Server={ip};Port={port};Database={database};User Id={user};Password={password};SslMode=Disable";
-
-            if (!hasConnectionData)
+            await ConnectionGate.WaitAsync();
+            try
             {
-                _connectionString = await ConnectivityService.ConnectivityChecker() ? baseConnection : string.Empty;
-            }
-            else
-            {
-                _connectionString = baseConnection;
-            }
+                if (!string.IsNullOrEmpty(_connectionString))
+                    return _connectionString;
 
-            return _connectionString;
+                var settings = AppSettings.Load();
+
+                var ip = Pick(settings.Ip, DefaultIp);
+                var port = Pick(settings.Port, DefaultPort);
+                var database = Pick(settings.Database, DefaultDatabase);
+                var user = Pick(settings.User, DefaultUser);
+                var password = Pick(settings.Password, DefaultPassword);
+
+                var hasConnectionData = !string.IsNullOrWhiteSpace(ip) &&
+                                        !string.IsNullOrWhiteSpace(port) &&
+                                        !string.IsNullOrWhiteSpace(database) &&
+                                        !string.IsNullOrWhiteSpace(user) &&
+                                        !string.IsNullOrWhiteSpace(password);
+
+                var baseConnection = $"Server={ip};Port={port};Database={database};User Id={user};Password={password};SslMode=Disable";
+
+                if (!hasConnectionData)
+                {
+                    _connectionString = await ConnectivityService.ConnectivityChecker() ? baseConnection : string.Empty;
+                }
+                else
+                {
+                    _connectionString = baseConnection;
+                }
+
+                return _connectionString;
+            }
+            finally
+            {
+                ConnectionGate.Release();
+            }
         }
 
         public static void ResetConnection()

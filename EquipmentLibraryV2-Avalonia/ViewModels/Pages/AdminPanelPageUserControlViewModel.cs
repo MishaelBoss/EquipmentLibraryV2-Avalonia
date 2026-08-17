@@ -222,7 +222,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
                     var userViewModel = new CartUserViewModel
                     {
                         UserId = userId,
-                        UserRole = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                        UserRole = reader.IsDBNull(1) ? 0 : Convert.ToInt32(reader.GetValue(1)),
                         Login = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                         FirstName = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                         LastName = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
@@ -271,7 +271,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
             _searchCancellationTokenSource.Dispose();
             
             _loadingSemaphore.Dispose();
-        
+
+            WeakReferenceMessenger.Default.UnregisterAll(this);
+
             GC.SuppressFinalize(this);
         }
     }

@@ -200,6 +200,8 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
         _settings.Password = Password;
         _settings.Save();
 
+        AppConfig.ResetConnection();
+
         _originalIp = Ip;
         _originalPort = Port;
         _originalDatabase = Database;

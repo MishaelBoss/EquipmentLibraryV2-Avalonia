@@ -413,8 +413,24 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             
             _networkCheckCts.Cancel();
             _networkCheckCts.Dispose();
-            
+
+            DisposePage(_adminPanel);
+            DisposePage(_analytics);
+            DisposePage(_library);
+            DisposePage(_workArea);
+            DisposePage(_measurementRegister);
+            DisposePage(_registerOfTestingEquipment);
+
+            if (RightBoardViewModel is IDisposable rightBoardDisposable)
+                rightBoardDisposable.Dispose();
+
             GC.SuppressFinalize(this);
+        }
+
+        private static void DisposePage<T>(Lazy<T> lazy) where T : class
+        {
+            if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 }

@@ -13,6 +13,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 {
     public partial class AddOrEditUserUserControlViewModel : ViewModelBase
     {
+        private const string UnchangedPasswordMask = "********";
+
         private readonly long? _id;
         private readonly int? _initialUserRoleId;
 
@@ -109,17 +111,21 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                 const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
                                           "VALUES (@login, @first_name, @last_name, crypt(@password, gen_salt('bf')), @user_type_id, now())";
 
-                const string updateUserSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf')), user_type_id = @user_type_id WHERE id = @id";
+                const string updateUserWithPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf')), user_type_id = @user_type_id WHERE id = @id";
+
+                const string updateUserWithoutPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, user_type_id = @user_type_id WHERE id = @id";
 
                 var isNew = _id == 0;
-                var sql = isNew ? addUserSql : updateUserSql;
-                
+                var updatePassword = !isNew && Password is not null && Password != UnchangedPasswordMask && Password != string.Empty;
+                var sql = isNew ? addUserSql : updatePassword ? updateUserWithPasswordSql : updateUserWithoutPasswordSql;
+
                 Log.Debug(
-                    "Confirm will {Action} user. Id={Id}, Login={Login}, UserRoleId={UserRoleId}, Sql={SqlName}",
+                    "Confirm will {Action} user. Id={Id}, Login={Login}, UserRoleId={UserRoleId}, UpdatePassword={UpdatePassword}, Sql={SqlName}",
                     _id,
                     Login,
                     // ReSharper disable once NullableWarningSuppressionIsUsed
                     SelectUserRole!.Id,
+                    updatePassword,
                     isNew ? "INSERT" : "UPDATE");
 
                 await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
@@ -127,18 +133,15 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                 await using var command = new NpgsqlCommand(sql, connection);
                 Log.Debug("Database connection opened for Confirm. Id={Id}", _id);
 
-                if (_id is null)
-                {
-                    Log.Warning(
-                        "Confirm aborted: _id is null. Cannot determine whether to insert or update user. Login={Login}",
-                        Login);
-                    return;
-                }
-
                 command.Parameters.AddWithValue("@login", Login);
                 command.Parameters.AddWithValue("@first_name", FirstName);
                 command.Parameters.AddWithValue("@last_name", LastName);
-                command.Parameters.AddWithValue("@password", Password);
+
+                if (isNew || updatePassword)
+                {
+                    command.Parameters.AddWithValue("@password", Password);
+                }
+
                 command.Parameters.AddWithValue("@user_type_id", SelectUserRole.Id);
                 
                 if (!isNew)

@@ -91,7 +91,6 @@ public static class AuthService
         catch (Exception ex)
         {
             Log.Error(ex, "Failed to save login cookie for user {Login}", login);
-            throw;
         }
     }
 

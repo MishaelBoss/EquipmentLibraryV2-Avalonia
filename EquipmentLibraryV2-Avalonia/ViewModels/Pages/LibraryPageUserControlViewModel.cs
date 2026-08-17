@@ -182,6 +182,8 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
         
         _debounceCts.Cancel();
         _debounceCts.Dispose();
+
+        WeakReferenceMessenger.Default.UnregisterAll(this);
         
         GC.SuppressFinalize(this);
     }
