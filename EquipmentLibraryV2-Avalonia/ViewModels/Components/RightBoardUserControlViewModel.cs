@@ -10,17 +10,20 @@ using EquipmentLibraryV2_Avalonia.Services;
 using System.Collections.ObjectModel;
 using Avalonia.Svg.Skia;
 using EquipmentLibraryV2_Avalonia.Views;
+using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
-public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<LoginMessage>, IRecipient<LogoutMessage>
+public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<LoginMessage>, IRecipient<LogoutMessage>, IDisposable
 {
     [ObservableProperty] public partial ObservableCollection<DashboardButtonViewModel> Buttons { get; set; } = [];
 
     public RightBoardUserControlViewModel() 
     {
-        WeakReferenceMessenger.Default.RegisterAll(this);
-
+        Log.Information("Starting dashboard buttons initialization.");
+        
+        IsActive = true;
+        
         UpdateUi();
     }
 
@@ -75,8 +78,6 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     {
         if (await AuthService.TryAutoLoginAsync())
         {
-            // WeakReferenceMessenger.Default.Send(new OpenOrCloseProfileMessage());
-
             var dialog = new LogoutDialogWindow();
 
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -100,45 +101,54 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     {
         var dialog = new SettingsDialogWindow();
 
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            var mainWindow = desktop.MainWindow;
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        var mainWindow = desktop.MainWindow;
 
-            if (mainWindow != null)
-            {
-                dialog.ShowDialog(mainWindow);
-            }
+        if (mainWindow != null)
+        {
+            dialog.ShowDialog(mainWindow);
         }
     }
 
     private async void UpdateUi()
     {
-        await AuthService.TryAutoLoginAsync();
-
-        Buttons.Clear();
-
-        var roleId = AuthService.CurrentSession?.UserRole ?? 0;
-
-        var newButtons = new List<DashboardButtonViewModel>
+        try
         {
-            new("Admin panel", OpenAdminPanelCommand, "shield-check.svg", () => roleId == 1),
-            new("Work area", OpenWorkAreaCommand, "grid-2x2.svg",() => roleId is 1 or 2),
-            new("Аналитика", OpenAnalyticsCommand, "chart-pie.svg", () => true),
-            new("СИ (Средства измерений)", OpenMeasurementRegisterCommand, "library-big.svg", () => roleId is 1 or 2),
-            new("ИО (Испытательное оборудование)", OpenRegisterOfTestingEquipmentCommand, "library-big.svg", () => roleId is 1 or 2),
-            new("Вся библиотека", OpenLibraryCommand, "library-big.svg", () => true),
-        };
+            await AuthService.TryAutoLoginAsync();
 
-        var visibleButtons = newButtons.Where(b => b.IsButtonVisible);
+            Buttons.Clear();
 
-        foreach (var btn in visibleButtons)
+            var roleId = AuthService.CurrentSession?.UserRole ?? 0;
+            
+            var newButtons = new List<DashboardButtonViewModel>
+            {
+                new("Админ панель", OpenAdminPanelCommand, "shield-check.svg", () => roleId == 1),
+                new("Рабочие место", OpenWorkAreaCommand, "grid-2x2.svg",() => roleId is 1 or 2),
+                new("Аналитика", OpenAnalyticsCommand, "chart-pie.svg", () => true),
+                new("СИ (Средства измерений)", OpenMeasurementRegisterCommand, "library-big.svg", () => roleId is 1 or 2),
+                new("ИО (Испытательное оборудование)", OpenRegisterOfTestingEquipmentCommand, "library-big.svg", () => roleId is 1 or 2),
+                new("Вся библиотека", OpenLibraryCommand, "library-big.svg", () => true),
+            };
+
+            var visibleButtons = newButtons.Where(b => b.IsButtonVisible);
+
+            foreach (var btn in visibleButtons)
+            {
+                Buttons.Add(btn);
+            }
+            
+            Log.Information("Dashboard successfully initialized. Total visible buttons added: {Count}", Buttons.Count);
+        }
+        catch (Exception ex)
         {
-            Buttons.Add(btn);
+            Log.Error(ex, "Critical error during dashboard initialization or auto-login process.");
         }
     }
 
-    ~RightBoardUserControlViewModel() 
+    public void Dispose()
     {
-        WeakReferenceMessenger.Default.UnregisterAll(this);
+        IsActive = false;
+        
+        GC.SuppressFinalize(this);
     }
 }

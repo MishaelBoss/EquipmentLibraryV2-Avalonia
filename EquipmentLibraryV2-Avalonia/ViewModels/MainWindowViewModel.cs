@@ -31,7 +31,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         IRecipient<OpenOrCloseConfirmDeleteMessage>,
         IRecipient<OpenMeasurementRegisterMessage>,
         IRecipient<OpenRegisterOfTestingEquipmentMessage>,
-        IRecipient<OpenOrClosePasswordResetMessage>
+        IRecipient<OpenOrClosePasswordResetMessage>,
+        IDisposable
     {
         [ObservableProperty] public partial bool IsLoading { get; set; }
 
@@ -119,7 +120,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             _settings = AppSettings.Load();
             RightBoardViewModel = sp.GetRequiredService<RightBoardUserControlViewModel>();
             
-            WeakReferenceMessenger.Default.RegisterAll(this);
+            IsActive = true;
+            
             _ = CheckNetworkAsync();
             _ = MonitorNetworkAsync();
             
@@ -407,8 +409,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Dispose()
         {
+            IsActive = false;
+            
             _networkCheckCts.Cancel();
-            WeakReferenceMessenger.Default.UnregisterAll(this);
+            _networkCheckCts.Dispose();
+            
+            GC.SuppressFinalize(this);
         }
     }
 }

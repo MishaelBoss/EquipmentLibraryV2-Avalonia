@@ -12,7 +12,7 @@ using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 {
-    public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipient<RefreshUserListMessage>, IRecipient<RefreshDataMessage>
+    public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipient<RefreshUserListMessage>, IRecipient<RefreshDataMessage>, IDisposable
     {
         [ObservableProperty] public partial string SearchText { get; set; } = string.Empty;
         [ObservableProperty] public partial bool ShowActiveUsers { get; set; } = true;
@@ -35,7 +35,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
 
         public AdminPanelPageUserControlViewModel() 
         {
-            WeakReferenceMessenger.Default.RegisterAll(this);
+            IsActive = true;
             LoadInitialUsers();
         }
 
@@ -264,6 +264,15 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
         }
 
         public void Dispose()
-                => WeakReferenceMessenger.Default.UnregisterAll(this);
+        {
+            IsActive = false;
+            
+            _searchCancellationTokenSource.Cancel();
+            _searchCancellationTokenSource.Dispose();
+            
+            _loadingSemaphore.Dispose();
+        
+            GC.SuppressFinalize(this);
+        }
     }
 }

@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
@@ -9,5 +10,13 @@ public partial class AdminPanelPageUserControlView : UserControl
     {
         InitializeComponent();
         DataContext = new AdminPanelPageUserControlViewModel();
+    }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+
+        if (DataContext is IDisposable disposable)
+            disposable.Dispose();
     }
 }

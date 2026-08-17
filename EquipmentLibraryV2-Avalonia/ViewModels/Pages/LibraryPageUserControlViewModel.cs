@@ -11,13 +11,15 @@ using System.Collections.ObjectModel;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
-public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient<RefreshDataMessage>
+public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient<RefreshDataMessage>, IDisposable
 {
     [ObservableProperty] public partial string? SearchText { get; set; }
     [ObservableProperty] public partial EquipmentType? SelectedEquipmentType { get; set; }
     [ObservableProperty] public partial ObservableCollection<EquipmentItem> EquipmentItems { get; set; } = [];
     [ObservableProperty] public partial ObservableCollection<EquipmentType> EquipmentTypes { get; set; } = [];
     [ObservableProperty] public partial bool IsLoading { get; set; }
+    
+    private bool _disposed;
     
     public bool IsEmpty => EquipmentItems.Count == 0 && !IsLoading;
 
@@ -49,8 +51,9 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
     public LibraryPageUserControlViewModel()
     {
         Log.Information("LibraryPageUserControlViewModel created");
-        WeakReferenceMessenger.Default.RegisterAll(this);
 
+        IsActive = true;
+        
         Task.Run(async () =>
         {
             Log.Debug("Initial data refresh started");
@@ -61,7 +64,12 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
 
     private async Task DebounceFilterChanged()
     {
-        await _debounceCts.CancelAsync();
+        if (_debounceCts != null)
+        {
+            await _debounceCts.CancelAsync();
+            _debounceCts.Dispose();
+        }
+        
         _debounceCts = new CancellationTokenSource();
         var token = _debounceCts.Token;
         try
@@ -165,6 +173,16 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
         }
     }
 
-    public void Dispose() 
-        => WeakReferenceMessenger.Default.UnregisterAll(this);
+    public void Dispose()
+    {
+        if (_disposed)  return;
+        _disposed = true;
+        
+        IsActive = false;
+        
+        _debounceCts.Cancel();
+        _debounceCts.Dispose();
+        
+        GC.SuppressFinalize(this);
+    }
 }

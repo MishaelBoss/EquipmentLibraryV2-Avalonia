@@ -12,7 +12,7 @@ using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
-public partial class MeasurementRegisterPageUserControlViewModel : ViewModelBase, IRecipient<RefreshDataMessage>
+public partial class MeasurementRegisterPageUserControlViewModel : ViewModelBase, IRecipient<RefreshDataMessage>, IDisposable
 {
     [ObservableProperty] public partial string? SearchText { get; set; }
     [ObservableProperty] public partial ObservableCollection<EquipmentItem> EquipmentItems { get; set; } = [];
@@ -59,8 +59,9 @@ public partial class MeasurementRegisterPageUserControlViewModel : ViewModelBase
     public MeasurementRegisterPageUserControlViewModel()
     {
         Log.Information("MeasurementRegisterPageUserControlViewModel created");
-        WeakReferenceMessenger.Default.RegisterAll(this);
 
+        IsActive = true;
+        
         Task.Run(async () =>
         {
             Log.Debug("Initial data refresh started");
@@ -140,6 +141,13 @@ public partial class MeasurementRegisterPageUserControlViewModel : ViewModelBase
         }
     }
 
-    public void Dispose() 
-        => WeakReferenceMessenger.Default.UnregisterAll(this);
+    public void Dispose()
+    {
+        IsActive = false;
+        
+        _debounceCts.Cancel();
+        _debounceCts.Dispose();
+        
+        GC.SuppressFinalize(this);
+    }
 }

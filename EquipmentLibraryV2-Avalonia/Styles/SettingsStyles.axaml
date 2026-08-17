@@ -105,6 +105,7 @@
     </Style>
     
     <Style Selector="TextBox.TB1">
+        <Setter Property="PlaceholderForeground" Value="#80FFFFFF"/>
         <Setter Property="Background" Value="#3A3A3A"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -133,37 +134,5 @@
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Margin" Value="2,0,0,0"/>
-    </Style>
-
-    <Style Selector="Button.BtnPrimary">
-        <Setter Property="Background" Value="#28A745"/>
-        <Setter Property="BorderBrush" Value="#28A745"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-    </Style>
-
-    <Style Selector="Button.BtnPrimary TextBlock">
-        <Setter Property="Foreground" Value="White"/>
-    </Style>
-
-    <Style Selector="Button.BtnPrimary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="#218838"/>
-        <Setter Property="BorderBrush" Value="#218838"/>
-    </Style>
-
-    <Style Selector="Button.BtnPrimary:pressed /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="#1E7E34"/>
-        <Setter Property="BorderBrush" Value="#1E7E34"/>
-    </Style>
-
-    <Style Selector="Button.BtnPrimary:disabled /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="#1D472A"/>
-        <Setter Property="BorderBrush" Value="#1D472A"/>
-        <Setter Property="Foreground" Value="#8A8F98"/>
     </Style>
 </Styles>
