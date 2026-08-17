@@ -308,8 +308,15 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
         }
 
+        private static bool IsCurrentUserAllowed(params long[] roles)
+        {
+            var role = AuthService.CurrentSession?.UserRole;
+            return role is not null && roles.Contains(role.Value);
+        }
+
         public void Receive(OpenAdminPanelMessage message)
         {
+            if (!IsCurrentUserAllowed(1)) return;
             CurrentPage = _adminPanel.Value;
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.AdminPanel));
         }
@@ -328,6 +335,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(OpenWorkAreaMessage message)
         {
+            if (!IsCurrentUserAllowed(1, 2)) return;
             CurrentPage = _workArea.Value;
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.WorkArea));
         }
@@ -377,12 +385,14 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public void Receive(OpenMeasurementRegisterMessage message)
         {
+            if (!IsCurrentUserAllowed(1, 2)) return;
             CurrentPage = _measurementRegister.Value;
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.MeasurementRegister));
         }
 
         public void Receive(OpenRegisterOfTestingEquipmentMessage message)
         {
+            if (!IsCurrentUserAllowed(1, 2)) return;
             CurrentPage = _registerOfTestingEquipment.Value;
             WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.RegisterOfTestingEquipment));
         }

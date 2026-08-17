@@ -1,4 +1,4 @@
-using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -122,37 +122,42 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
                 return false;
             }
 
-            using var ping = new Ping();
-            var hostName = Ip;
-            if (string.IsNullOrEmpty(hostName))
-            {
-                Log.Warning("Ping failed: Host name or IP address is empty.");
-                return false;
-            }
+            if (!int.TryParse(Port, out var port))
+                port = 5432;
 
-            var reply = ping.Send(hostName, 3000);
-
-            Log.Information($"Ping status for ({hostName}): {reply.Status}");
-
-            if (reply is not { Status: IPStatus.Success })
+            if (!await IsTcpReachableAsync(Ip, port))
             {
                 WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
                 return false;
             }
-            
-            Log.Information($"Address: {reply.Address}");
-            Log.Information($"Roundtrip time: {reply.RoundtripTime}");
-            Log.Information($"Time to live: {reply.Options?.Ttl}");
+
             return await TestPostgreSqlConnection();
         }
-        catch (PingException ex)
+        catch (Exception ex)
         {
-            Log.Warning($"Ping failed: {ex.Message}");
+            Log.Warning($"Connection check failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    private static async Task<bool> IsTcpReachableAsync(string host, int port)
+    {
+        using var tcp = new TcpClient();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+        try
+        {
+            await tcp.ConnectAsync(host, port, cts.Token);
+            Log.Information($"TCP connect to ({host},{port}) succeeded");
+            return tcp.Connected;
+        }
+        catch (OperationCanceledException)
+        {
+            Log.Warning($"TCP connect to ({host},{port}) timed out after 3s");
             return false;
         }
         catch (Exception ex)
         {
-            Log.Warning($"Ping failed: {ex.Message}");
+            Log.Warning($"TCP connect to ({host},{port}) failed: {ex.Message}");
             return false;
         }
     }
@@ -161,7 +166,7 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     {
         var connString = $"Server={Ip};Port={Port};Database={Database};" +
                                   $"User Id={User};Password={Password};" +
-                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5";
+                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5;SslMode=Prefer";
         
         try
         {

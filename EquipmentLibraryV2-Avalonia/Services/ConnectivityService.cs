@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using Serilog;
 using System;
-using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
@@ -30,38 +30,43 @@ internal static class ConnectivityService
                 return false;
             }
 
-            using var ping = new Ping();
-            var hostName = AppConfig.Ip;
-            if (string.IsNullOrEmpty(hostName))
-            {
-                Log.Warning("Ping failed: Host name or IP address is empty.");
-                return false;
-            }
+            if (!int.TryParse(AppConfig.Port, out var port))
+                port = 5432;
 
-            var reply = ping.Send(hostName, 3000);
-
-            Log.Information($"Ping status for ({hostName}): {reply.Status}");
-
-            if (reply is not { Status: IPStatus.Success })
+            if (!await IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
             {
                 if (showNotification)
                     WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
                 return false;
             }
-            
-            Log.Information($"Address: {reply.Address}");
-            Log.Information($"Roundtrip time: {reply.RoundtripTime}");
-            Log.Information($"Time to live: {reply.Options?.Ttl}");
+
             return await TestPostgreSqlConnection(showNotification);
         }
-        catch (PingException ex)
+        catch (Exception ex)
         {
-            Log.Warning($"Ping failed: {ex.Message}");
+            Log.Warning($"Connection check failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    private static async Task<bool> IsTcpReachableAsync(string host, int port, TimeSpan timeout)
+    {
+        using var tcp = new TcpClient();
+        using var cts = new CancellationTokenSource(timeout);
+        try
+        {
+            await tcp.ConnectAsync(host, port, cts.Token);
+            Log.Information($"TCP connect to ({host},{port}) succeeded");
+            return tcp.Connected;
+        }
+        catch (OperationCanceledException)
+        {
+            Log.Warning($"TCP connect to ({host},{port}) timed out after {timeout.TotalSeconds:0}s");
             return false;
         }
         catch (Exception ex)
         {
-            Log.Warning($"Ping failed: {ex.Message}");
+            Log.Warning($"TCP connect to ({host},{port}) failed: {ex.Message}");
             return false;
         }
     }
@@ -70,7 +75,7 @@ internal static class ConnectivityService
     {
         var connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
                                   $"User Id={AppConfig.User};Password={AppConfig.Password};" +
-                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5";
+                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5;SslMode=Prefer";
         
         try
         {

@@ -74,7 +74,7 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
                                         !string.IsNullOrWhiteSpace(user) &&
                                         !string.IsNullOrWhiteSpace(password);
 
-                var baseConnection = $"Server={ip};Port={port};Database={database};User Id={user};Password={password};SslMode=Disable";
+                var baseConnection = $"Server={ip};Port={port};Database={database};User Id={user};Password={password};SslMode=Prefer";
 
                 if (!hasConnectionData)
                 {
