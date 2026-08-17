@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -11,6 +12,14 @@ using Npgsql;
 using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Settings;
+
+public enum ConnectionTestStatus
+{
+    Idle,
+    Testing,
+    Success,
+    Failure
+}
 
 public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPage
 {
@@ -26,6 +35,37 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     [ObservableProperty] public partial string Database { get; set; }
     [ObservableProperty] public partial string Password { get; set; }
     [ObservableProperty] public partial string User { get; set; }
+    [ObservableProperty] public partial ConnectionTestStatus TestStatus { get; set; } = ConnectionTestStatus.Idle;
+    [ObservableProperty] public partial bool IsTesting { get; set; }
+
+    private static readonly IBrush StatusTestingBrush = new SolidColorBrush(Color.Parse("#F0A500"));
+    private static readonly IBrush StatusSuccessBrush = new SolidColorBrush(Color.Parse("#28A745"));
+    private static readonly IBrush StatusFailureBrush = new SolidColorBrush(Color.Parse("#E74C3C"));
+
+    public bool StatusVisible => TestStatus != ConnectionTestStatus.Idle;
+
+    public string StatusText => TestStatus switch
+    {
+        ConnectionTestStatus.Testing => "Проверка подключения...",
+        ConnectionTestStatus.Success => "Подключение к базе данных успешно",
+        ConnectionTestStatus.Failure => "Не удалось подключиться к базе данных",
+        _ => string.Empty
+    };
+
+    public IBrush StatusBrush => TestStatus switch
+    {
+        ConnectionTestStatus.Testing => StatusTestingBrush,
+        ConnectionTestStatus.Success => StatusSuccessBrush,
+        ConnectionTestStatus.Failure => StatusFailureBrush,
+        _ => Brushes.Transparent
+    };
+
+    partial void OnTestStatusChanged(ConnectionTestStatus value)
+    {
+        OnPropertyChanged(nameof(StatusVisible));
+        OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(StatusBrush));
+    }
 
     public ConnectionUserControlViewModel()
     {
@@ -47,14 +87,20 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     [RelayCommand]
     public async Task TestConnection()
     {
-        if (await ConnectivityChecker())
+        if (IsTesting)
         {
-            Log.Information("Succeful connect");
+            return;
         }
-        else
-        {
-            Log.Information("Not connection to database");
-        }
+
+        TestStatus = ConnectionTestStatus.Testing;
+        IsTesting = true;
+
+        var ok = await ConnectivityChecker();
+
+        TestStatus = ok ? ConnectionTestStatus.Success : ConnectionTestStatus.Failure;
+        IsTesting = false;
+
+        Log.Information(ok ? "Successful connect" : "Not connection to database");
     }
 
     #region Test

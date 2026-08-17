@@ -123,7 +123,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         {
             new("Admin panel", OpenAdminPanelCommand, "shield-check.svg", () => roleId == 1),
             new("Work area", OpenWorkAreaCommand, "grid-2x2.svg",() => roleId is 1 or 2),
-            new("Analytics", OpenAnalyticsCommand, "chart-pie.svg", () => true),
+            new("Аналитика", OpenAnalyticsCommand, "chart-pie.svg", () => true),
             new("СИ (Средства измерений)", OpenMeasurementRegisterCommand, "library-big.svg", () => roleId is 1 or 2),
             new("ИО (Испытательное оборудование)", OpenRegisterOfTestingEquipmentCommand, "library-big.svg", () => roleId is 1 or 2),
             new("Вся библиотека", OpenLibraryCommand, "library-big.svg", () => true),
