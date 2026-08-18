@@ -7,6 +7,7 @@ using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.Services.Interfaces;
+using EquipmentLibraryV2_Avalonia.Services;
 using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using Npgsql;
 using Serilog;
@@ -96,6 +97,14 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
         IsTesting = true;
 
         var ok = await ConnectivityChecker();
+
+        if (ok)
+        {
+            var connString = $"Server={Ip};Port={Port};Database={Database};" +
+                             $"User Id={User};Password={Password};" +
+                             $"SslMode=Prefer;Timeout=10;CommandTimeout=30";
+            MigrationRunner.Run(connString);
+        }
 
         TestStatus = ok ? ConnectionTestStatus.Success : ConnectionTestStatus.Failure;
         IsTesting = false;

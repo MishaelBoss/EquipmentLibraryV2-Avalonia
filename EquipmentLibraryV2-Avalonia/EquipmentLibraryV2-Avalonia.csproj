@@ -16,6 +16,7 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <Content Include="Assets\logo\logo.ico" />
+    <EmbeddedResource Include="Migrations\**\*.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,8 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="dbup" Version="5.0.41" />
+    <PackageReference Include="dbup-postgresql" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Npgsql" Version="10.0.3" />

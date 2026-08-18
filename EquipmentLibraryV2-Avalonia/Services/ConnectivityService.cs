@@ -49,7 +49,7 @@ internal static class ConnectivityService
         }
     }
 
-    private static async Task<bool> IsTcpReachableAsync(string host, int port, TimeSpan timeout)
+    public static async Task<bool> IsTcpReachableAsync(string host, int port, TimeSpan timeout)
     {
         using var tcp = new TcpClient();
         using var cts = new CancellationTokenSource(timeout);

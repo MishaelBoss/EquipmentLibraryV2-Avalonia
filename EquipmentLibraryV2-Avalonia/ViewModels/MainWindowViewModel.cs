@@ -15,7 +15,9 @@ using Serilog;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Text.Json.Nodes;
+using Dapper;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels
 {
@@ -134,6 +136,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
             try {
                 await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
+                await EnsureDatabaseReadyAsync();
                 Log.Information("Initialization completed successfully.");
             }
             catch (Exception ex)
@@ -144,6 +147,60 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
             {
                 IsLoading = false;
                 Log.Information("Loading state set to false.");
+            }
+        }
+
+        private async Task EnsureDatabaseReadyAsync()
+        {
+            try
+            {
+                if (!int.TryParse(AppConfig.Port, out var port))
+                    port = 5432;
+
+                if (!await ConnectivityService.IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
+                {
+                    Log.Debug("Database server is not reachable, skipping migration");
+                    return;
+                }
+
+                var connectionString =
+                    $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
+                    $"User Id={AppConfig.User};Password={AppConfig.Password};" +
+                    $"SslMode=Prefer;Timeout=10;CommandTimeout=30";
+
+                if (!MigrationRunner.Run(connectionString))
+                    return;
+
+                await using var connection = new NpgsqlConnection(connectionString);
+                var users = await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM public.users");
+
+                if (users == 0)
+                    ShowCreateAdminDialog();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Database readiness check failed");
+            }
+        }
+
+        private void ShowCreateAdminDialog()
+        {
+            try
+            {
+                var dialog = new CreateAdminDialogWindow();
+
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+                {
+                    _ = dialog.ShowDialog(mainWindow);
+                }
+                else
+                {
+                    dialog.Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to show create-admin dialog");
             }
         }
 
