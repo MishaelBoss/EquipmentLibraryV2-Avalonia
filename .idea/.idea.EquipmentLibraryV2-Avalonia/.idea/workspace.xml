@@ -11,11 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee9cf56f-0569-4ac4-991b-dfa6ccfc6470" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EquipmentLibraryV2-Avalonia/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Services/ConnectivityService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Services/ConnectivityService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/MainWindowViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Settings/ConnectionUserControlViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/ViewModels/Settings/ConnectionUserControlViewModel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EquipmentLibraryV2-Avalonia/Views/CreateAdminDialogWindow.axaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +141,8 @@
     <MESSAGE value="Update" />
     <MESSAGE value="Fixed" />
     <MESSAGE value="Fixed and update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed and update" />
+    <MESSAGE value="TEst" />
+    <option name="LAST_COMMIT_MESSAGE" value="TEst" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
