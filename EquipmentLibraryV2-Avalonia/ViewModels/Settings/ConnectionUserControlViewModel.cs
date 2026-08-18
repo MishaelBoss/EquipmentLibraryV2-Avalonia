@@ -49,7 +49,7 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     {
         ConnectionTestStatus.Testing => "Проверка подключения...",
         ConnectionTestStatus.Success => "Подключение к базе данных успешно",
-        ConnectionTestStatus.Failure => "Не удалось подключиться. Проверьте, что сервер PostgreSQL запущен и доступен по адресу и порту (по умолчанию localhost:5432). База данных и схема создадутся автоматически после подключения.",
+        ConnectionTestStatus.Failure => "Не удалось подключиться.",
         _ => string.Empty
     };
 
