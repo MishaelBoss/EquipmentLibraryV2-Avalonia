@@ -49,7 +49,7 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     {
         ConnectionTestStatus.Testing => "Проверка подключения...",
         ConnectionTestStatus.Success => "Подключение к базе данных успешно",
-        ConnectionTestStatus.Failure => "Не удалось подключиться к базе данных",
+        ConnectionTestStatus.Failure => "Не удалось подключиться. Проверьте, что сервер PostgreSQL запущен и доступен по адресу и порту (по умолчанию localhost:5432). База данных и схема создадутся автоматически после подключения.",
         _ => string.Empty
     };
 
@@ -136,7 +136,7 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
 
             if (!await IsTcpReachableAsync(Ip, port))
             {
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
+                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
                 return false;
             }
 

@@ -5,6 +5,7 @@ using Dapper;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.Services;
 using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
@@ -92,6 +93,9 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
 
     private async Task LoadEquipmentTypesAsync()
     {
+        if (!await ConnectivityService.IsServerReachableAsync())
+            return;
+
         try
         {
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
@@ -120,6 +124,9 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
 
     private async Task LoadAllEquipmentsAsync()
     {
+        if (!await ConnectivityService.IsServerReachableAsync())
+            return;
+
         await Dispatcher.UIThread.InvokeAsync(() => IsLoading = true);
 
         try

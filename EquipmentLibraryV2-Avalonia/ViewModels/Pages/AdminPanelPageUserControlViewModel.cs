@@ -101,6 +101,9 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages
         [RelayCommand]
         private async Task LoadUsersWithResetAsync(CancellationToken cancellationToken = default)
         {
+            if (!await ConnectivityService.IsServerReachableAsync())
+                return;
+
             if (!await _loadingSemaphore.WaitAsync(0, cancellationToken))
                 return;
 

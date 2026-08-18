@@ -13,6 +13,40 @@ namespace EquipmentLibraryV2_Avalonia.Services;
 
 internal static class ConnectivityService
 {
+    private static readonly object SyncRoot = new();
+    private static bool _lastReachable;
+    private static long _lastCheckedUtcTicks;
+
+    public static void RememberResult(bool connected)
+    {
+        lock (SyncRoot)
+        {
+            _lastReachable = connected;
+            _lastCheckedUtcTicks = DateTime.UtcNow.Ticks;
+        }
+    }
+
+    public static bool IsReachableRecently(TimeSpan within)
+    {
+        lock (SyncRoot)
+        {
+            return _lastReachable && DateTime.UtcNow.Ticks - _lastCheckedUtcTicks <= within.Ticks;
+        }
+    }
+
+    public static async Task<bool> IsServerReachableAsync()
+    {
+        if (IsReachableRecently(TimeSpan.FromSeconds(60)))
+            return true;
+
+        if (!int.TryParse(AppConfig.Port, out var port))
+            port = 5432;
+
+        var ok = await IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3));
+        RememberResult(ok);
+        return ok;
+    }
+
     private static bool IsConfigInvalid() =>
         string.IsNullOrWhiteSpace(AppConfig.Ip) ||
         string.IsNullOrWhiteSpace(AppConfig.Port) ||
@@ -36,7 +70,7 @@ internal static class ConnectivityService
             if (!await IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
             {
                 if (showNotification)
-                    WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("Connection to the server was lost", 503L)));
+                    WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
                 return false;
             }
 

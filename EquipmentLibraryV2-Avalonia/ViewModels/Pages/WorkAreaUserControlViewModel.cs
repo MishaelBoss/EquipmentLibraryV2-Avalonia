@@ -67,6 +67,9 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
 
     private async Task LoadEquipmentTypeAsync() 
     {
+        if (!await ConnectivityService.IsServerReachableAsync())
+            return;
+
         Log.Debug("LoadEquipmentTypeAsync started");
         
         try
@@ -96,6 +99,9 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
 
     private async Task LoadAllObjectsAsync()
     {
+        if (!await ConnectivityService.IsServerReachableAsync())
+            return;
+
         Log.Debug("LoadAllObjectsAsync started");
         
         try

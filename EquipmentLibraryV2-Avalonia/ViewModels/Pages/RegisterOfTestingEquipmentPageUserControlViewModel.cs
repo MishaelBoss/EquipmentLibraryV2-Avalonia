@@ -7,6 +7,7 @@ using Dapper;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.Services;
 using Npgsql;
 using Serilog;
 
@@ -94,6 +95,9 @@ public partial class RegisterOfTestingEquipmentPageUserControlViewModel : ViewMo
 
     private async Task LoadAllEquipmentsAsync()
     {
+        if (!await ConnectivityService.IsServerReachableAsync())
+            return;
+
         await Dispatcher.UIThread.InvokeAsync(() => IsLoading = true);
 
         try

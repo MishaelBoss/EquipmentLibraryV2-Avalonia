@@ -159,7 +159,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
                 if (!await ConnectivityService.IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
                 {
-                    Log.Debug("Database server is not reachable, skipping migration");
+                    Log.Warning("PostgreSQL is not running. Start PostgreSQL and restart the app — the database schema will be created automatically");
                     return;
                 }
 
