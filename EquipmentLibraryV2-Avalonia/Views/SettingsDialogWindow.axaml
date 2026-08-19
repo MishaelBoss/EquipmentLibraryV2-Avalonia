@@ -9,9 +9,12 @@
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
         Width="1000" Height="620" MinWidth="800" MinHeight="420"
         WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
         Background="#2D2D35"
         x:Class="EquipmentLibraryV2_Avalonia.SettingsDialogWindow"
-        Title="Настройки">
+        Title="">
     
     <Window.Styles>
         <StyleInclude Source="/Styles/SettingsStyles.axaml"/>
@@ -26,11 +29,33 @@
         </DataTemplate>
     </Window.DataTemplates>
 
-    <Grid RowDefinitions="*, Auto">        
-        <Grid Grid.Row="0" ColumnDefinitions="250, *">
-            <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#2D2D35" Margin="0,16,0,0">
+    <Grid RowDefinitions="Auto, *, Auto">
+        <Border Grid.Row="0" 
+                Height="38" 
+                Background="#2D2D35" 
+                Padding="16,0,24,0"
+                BorderBrush="#26262B" 
+                BorderThickness="0,0,0,1"
+                WindowDecorationProperties.ElementRole="TitleBar">
+            <Grid ColumnDefinitions="Auto, *">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+                </StackPanel>
+        
+                <TextBlock Grid.Column="1"
+                           Margin="5,0,0,0"
+                           Text="settings"
+                           FontWeight="SemiBold"
+                           Foreground="#CED0D6"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"/>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="1" ColumnDefinitions="250, *">
+            <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#2D2D35" Margin="0,0,0,0">
                 <TextBox Grid.Row="0" 
-                         Margin="16,4" 
+                         Margin="10,4" 
                          PlaceholderText="Search" 
                          Height="32" 
                          Classes="Search"/>
@@ -71,8 +96,8 @@
 
             <Border Grid.Column="1" 
                     Background="#1F2023" 
-                    CornerRadius="12" 
-                    Margin="0,16,16,16">
+                    CornerRadius="0, 0,12, 12" 
+                    Margin="0,0,16,16">
                 
                 <Grid RowDefinitions="Auto, *" Margin="24">
                     <TextBlock Grid.Row="0" 
@@ -88,7 +113,7 @@
             </Border>
         </Grid>
 
-        <Border Grid.Row="1" Background="#2D2D35" Padding="16,12,24,16"
+        <Border Grid.Row="2" Background="#2D2D35" Padding="16,12,24,16"
                 BorderBrush="#26262B" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="Auto, *">
                 <TextBlock Grid.Column="0"

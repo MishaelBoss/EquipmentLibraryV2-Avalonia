@@ -6,8 +6,8 @@
         x:DataType="vm:CreateAdminDialogWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="460" d:DesignHeight="400"
         x:Class="EquipmentLibraryV2_Avalonia.Views.CreateAdminDialogWindow"
-        Width="460" Height="420"
-        MinWidth="460" MinHeight="420"
+        Width="460" Height="390"
+        MinWidth="460" MinHeight="390"
         MaxWidth="840" MaxHeight="600"
         CanResize="true"
         WindowStartupLocation="CenterOwner"
@@ -16,9 +16,13 @@
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="#1E1E24"
         Title="Создание администратора">
+    
+    <Window.Styles>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
+    </Window.Styles>
 
     <Border BorderThickness="1" CornerRadius="8">
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, *"
+        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
               Margin="24, 28, 24, 20">
             <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
                 <TextBlock Text="Создание администратора"
@@ -33,25 +37,22 @@
 
             <StackPanel Grid.Row="1" Spacing="6" Margin="0,0,0,12">
                 <TextBlock Text="Логин" Foreground="#9E9EB0" FontSize="13"/>
-                <TextBox Text="{Binding Login}" Watermark="Логин"
-                         CornerRadius="6" Padding="10,8"
-                         Background="#25252B" Foreground="White" BorderBrush="#3D3D45"/>
+                <TextBox Text="{Binding Login}" PlaceholderText="Логин"
+                         Classes="TB1"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Spacing="6" Margin="0,0,0,12">
                 <TextBlock Text="Пароль" Foreground="#9E9EB0" FontSize="13"/>
-                <TextBox Text="{Binding Password}" Watermark="Минимум 6 символов"
+                <TextBox Text="{Binding Password}" PlaceholderText="Минимум 6 символов"
                          PasswordChar="●"
-                         CornerRadius="6" Padding="10,8"
-                         Background="#25252B" Foreground="White" BorderBrush="#3D3D45"/>
+                         Classes="TB1"/>
             </StackPanel>
 
             <StackPanel Grid.Row="3" Spacing="6" Margin="0,0,0,12">
                 <TextBlock Text="Подтверждение пароля" Foreground="#9E9EB0" FontSize="13"/>
-                <TextBox Text="{Binding ConfirmPassword}" Watermark="Повторите пароль"
+                <TextBox Text="{Binding ConfirmPassword}" PlaceholderText="Повторите пароль"
                          PasswordChar="●"
-                         CornerRadius="6" Padding="10,8"
-                         Background="#25252B" Foreground="White" BorderBrush="#3D3D45"/>
+                         Classes="TB1"/>
             </StackPanel>
 
             <TextBlock Grid.Row="4"
@@ -97,12 +98,6 @@
                     </Button.Styles>
                 </Button>
             </StackPanel>
-
-            <Border Grid.Row="6" VerticalAlignment="Bottom" Background="#25252B"
-                    CornerRadius="6" Padding="12,8">
-                <TextBlock Foreground="#9E9EB0" FontSize="12" TextWrapping="Wrap"
-                           Text="Внимание: после создания администратора логин и пароль нужно будет вводить при каждом входе в приложение."/>
-            </Border>
         </Grid>
     </Border>
 </Window>

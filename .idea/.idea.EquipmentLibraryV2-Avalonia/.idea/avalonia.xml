@@ -13,6 +13,8 @@
         <entry key="EquipmentLibraryV2-Avalonia/Styles/Settings/ConnectionStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/Settings/LogginStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/SettingsStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Styles/Styles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Styles/Theme.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/UserCardStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/WorkAreaUserControlStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Styles/settings/LogginStyles.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
@@ -26,6 +28,7 @@
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/PasswordResetUserControlView.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/Components/RightBoardUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
+        <entry key="EquipmentLibraryV2-Avalonia/Views/CreateAdminDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogUserControl.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/DetailUpdateDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
         <entry key="EquipmentLibraryV2-Avalonia/Views/LogoutDialogWindow.axaml" value="EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia.csproj" />
