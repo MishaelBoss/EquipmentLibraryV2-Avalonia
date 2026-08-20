@@ -9,16 +9,40 @@
         MaxWidth="840" MaxHeight="600"
         Width="450" Height="320"
         MinWidth="450" MinHeight="320"
+        CornerRadius="8"
+        BorderBrush="#2D2D35"
+        BorderThickness="1"
         CanResize="true"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="#1E1E24"
-        Title="AboutDialogWindow">
+        Title="">
     
-    <Border BorderThickness="1" CornerRadius="8">
-        <Grid RowDefinitions="Auto, *, Auto" Margin="24, 28, 24, 20">
+    <Grid RowDefinitions="Auto, *">
+        <Border Grid.Row="0" 
+                Height="38" 
+                Padding="16,0,24,0"
+                BorderBrush="#26262B" 
+                BorderThickness="0,0,0,1"
+                WindowDecorationProperties.ElementRole="TitleBar">
+            <Grid ColumnDefinitions="Auto, *">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+                </StackPanel>
+        
+                <TextBlock Grid.Column="1"
+                           Margin="5,0,0,0"
+                           Text="about"
+                           FontWeight="SemiBold"
+                           Foreground="#CED0D6"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"/>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="1" RowDefinitions="Auto, *, Auto" Margin="24, 28, 24, 20">
             <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
                 <TextBlock Text="О программе" 
                            Foreground="White" 
@@ -85,5 +109,5 @@
                 </Button>
             </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
 </Window>

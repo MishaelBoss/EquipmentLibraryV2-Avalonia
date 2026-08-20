@@ -13,10 +13,34 @@
         ExtendClientAreaTitleBarHeightHint="-1"
         x:Class="EquipmentLibraryV2_Avalonia.Views.LogoutDialogWindow"
         x:DataType="vm:LogoutDialogWindowViewModel"
-        Title="Выход из системы">
+        CornerRadius="8"
+        BorderBrush="#2D2D35"
+        BorderThickness="1"
+        Title="">
 
-    <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8">
-        <Grid RowDefinitions="*, Auto" Margin="24">
+    <Grid RowDefinitions="Auto, *">
+        <Border Grid.Row="0" 
+                Height="38" 
+                Padding="16,0,24,0"
+                BorderBrush="#26262B" 
+                BorderThickness="0,0,0,1"
+                WindowDecorationProperties.ElementRole="TitleBar">
+            <Grid ColumnDefinitions="Auto, *">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+                </StackPanel>
+        
+                <TextBlock Grid.Column="1"
+                           Margin="5,0,0,0"
+                           Text="logout"
+                           FontWeight="SemiBold"
+                           Foreground="#CED0D6"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"/>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="1" RowDefinitions="*, Auto" Margin="24">
             
             <StackPanel Grid.Row="0" Spacing="8" VerticalAlignment="Center">
                 <TextBlock Text="Выход из профиля" 
@@ -71,5 +95,5 @@
                 
             </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
 </Window>

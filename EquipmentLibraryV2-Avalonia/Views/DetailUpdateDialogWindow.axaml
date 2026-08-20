@@ -14,6 +14,7 @@
              ExtendClientAreaTitleBarHeightHint="-1"
              Background="#1E1E24"
              x:Class="EquipmentLibraryV2_Avalonia.Views.DetailUpdateDialogWindow">
+    
     <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8"
             BoxShadow="0 0 24 0 #50000000">
         <Grid RowDefinitions="Auto, *, Auto" Margin="28,24,28,20">
