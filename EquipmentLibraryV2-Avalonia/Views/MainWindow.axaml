@@ -32,14 +32,16 @@
 
 	<Border CornerRadius="8" Background="#000000" ClipToBounds="True" x:Name="MainBorder">
 		<Grid RowDefinitions="Auto, *, Auto">
-			<Grid Grid.Row="0" Height="40" Background="Transparent" ColumnDefinitions="Auto, *, Auto" WindowDecorationProperties.ElementRole="TitleBar">
-
+			<Grid Grid.Row="0" 
+			      Background="Transparent" 
+			      ColumnDefinitions="Auto, *, Auto"
+			      WindowDecorationProperties.ElementRole="TitleBar">
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
 					<Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
 				</StackPanel>
 
 				<TextBlock Grid.Column="1"
-						   Text="EquipmentLibrary"
+						   Text="Equipment Library V2"
 						   FontWeight="SemiBold"
 						   Foreground="#CED0D6"
 						   HorizontalAlignment="Center"
@@ -50,46 +52,49 @@
 					<Grid IsHitTestVisible="False" x:Name="SpacerGrid"/>
 
 					<StackPanel Orientation="Horizontal"
-								HorizontalAlignment="Right"
-								x:Name="ButtonStack">
+					            HorizontalAlignment="Right"
+					            x:Name="ButtonStack">
 						<Button Classes="WB"
-								Click="Minimize_Click">
+						        WindowDecorationProperties.ElementRole="MinimizeButton"
+						        Click="Minimize_Click">
 							<Panel Width="12" Height="12">
 								<Rectangle Fill="#CED0D6"
-										   Width="10" Height="1.5"
-										   HorizontalAlignment="Center"
-										   VerticalAlignment="Center"/>
+								           Width="10" Height="1.5"
+								           HorizontalAlignment="Center"
+								           VerticalAlignment="Center"/>
 							</Panel>
 						</Button>
 						<Button Classes="WB"
-								Click="MaximizeRestore_Click"
-								x:Name="MaximizeRestoreButton">
+						        WindowDecorationProperties.ElementRole="MaximizeButton"
+						        Click="MaximizeRestore_Click"
+						        x:Name="MaximizeRestoreButton">
 							<Panel Width="12" Height="12">
 								<Rectangle Stroke="#CED0D6"
-										   StrokeThickness="1.5"
-										   Width="10" Height="10"
-										   HorizontalAlignment="Center"
-										   VerticalAlignment="Center"
-										   x:Name="MaximizeIcon"/>
+								           StrokeThickness="1.5"
+								           Width="10" Height="10"
+								           HorizontalAlignment="Center"
+								           VerticalAlignment="Center"
+								           x:Name="MaximizeIcon"/>
 								<Rectangle Stroke="#CED0D6"
-										   StrokeThickness="1.5"
-										   Width="8" Height="8"
-										   HorizontalAlignment="Center"
-										   VerticalAlignment="Center"
-										   Margin="-1,-1,0,0"
-										   x:Name="RestoreIcon"
-										   IsVisible="False"/>
+								           StrokeThickness="1.5"
+								           Width="8" Height="8"
+								           HorizontalAlignment="Center"
+								           VerticalAlignment="Center"
+								           Margin="-1,-1,0,0"
+								           x:Name="RestoreIcon"
+								           IsVisible="False"/>
 							</Panel>
 						</Button>
 						<Button Classes="WB CloseButton"
-								Click="Close_Click">
+						        WindowDecorationProperties.ElementRole="CloseButton"
+						        Click="Close_Click">
 							<Panel Width="12" Height="12">
 								<Line StartPoint="1,1" EndPoint="11,11"
-									  Stroke="#CED0D6" StrokeThickness="1.5"
-									  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+								      Stroke="#CED0D6" StrokeThickness="1.5"
+								      HorizontalAlignment="Center" VerticalAlignment="Center"/>
 								<Line StartPoint="11,1" EndPoint="1,11"
-									  Stroke="#CED0D6" StrokeThickness="1.5"
-									  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+								      Stroke="#CED0D6" StrokeThickness="1.5"
+								      HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</Panel>
 						</Button>
 					</StackPanel>

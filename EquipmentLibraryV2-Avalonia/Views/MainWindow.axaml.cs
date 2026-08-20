@@ -38,14 +38,9 @@ public partial class MainWindow : Window
             
         switch (isWindows)
         {
-            case true when !isWindows11:
+            case true:
                 WindowDecorations = WindowDecorations.None;
-                Serilog.Log.Debug(
-                    "Window decorations disabled for non‑Windows 11. IsWindows11={IsWindows11}",
-                    isWindows11);
-                break;
-            case true when isWindows11:
-                Serilog.Log.Debug("Running on Windows 11. Keeping default window decorations.");
+                Serilog.Log.Debug("Window decorations disabled on Windows.");
                 break;
             default:
             {
@@ -68,11 +63,9 @@ public partial class MainWindow : Window
 
         if (OperatingSystem.IsWindows())
         {
-            ButtonStack.IsVisible = !isWindows11;
-            SpacerGrid.IsVisible = isWindows11;
-            Serilog.Log.Debug("ButtonStack.IsVisible={ButtonStackVisible}, SpacerGrid.IsVisible={SpacerVisible}",
-                ButtonStack.IsVisible,
-                SpacerGrid.IsVisible);
+            ButtonStack.IsVisible = true;
+            SpacerGrid.IsVisible = false;
+            Serilog.Log.Debug("Custom window control buttons enabled on Windows.");
         }
         else
         {
