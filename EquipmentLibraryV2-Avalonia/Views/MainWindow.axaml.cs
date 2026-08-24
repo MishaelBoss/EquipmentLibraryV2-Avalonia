@@ -102,7 +102,7 @@ public partial class MainWindow : Window
 
         PropertyChanged += OnWindowStateChanged;
         KeyDown += OnKeyDown;
-        Closing += (s, e) =>
+        Closing += (_, _) =>
         {
             Serilog.Log.Information("MainWindow closing. Saving window settings.");
             SaveWindowSettings();
@@ -113,48 +113,59 @@ public partial class MainWindow : Window
 
     private async void OnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (DataContext is not ViewModels.MainWindowViewModel vm)
-            return;
-            
-        Serilog.Log.Debug("KeyDown received. Key={Key}", e.Key);
-
-        switch (e.Key)
+        try
         {
-            case Key.Escape:
+            if (DataContext is not ViewModels.MainWindowViewModel vm)
+                return;
+            
+            Serilog.Log.Debug("KeyDown received. Key={Key}", e.Key);
+
+            switch (e.Key)
             {
-                Serilog.Log.Debug("Escape pressed. TopOverlayContent={HasTopOverlay}",
-                    vm.TopOverlayContent is not null);
-
-                if (vm.TopOverlayContent is not null && vm.IsOverlayDismissible)
+                case Key.Escape:
                 {
-                    vm.TopOverlayContent = null;
-                    Serilog.Log.Information("TopOverlayContent closed by Escape key.");
+                    Serilog.Log.Debug("Escape pressed. TopOverlayContent={HasTopOverlay}",
+                        vm.TopOverlayContent is not null);
+
+                    if (vm.TopOverlayContent is not null && vm.IsOverlayDismissible)
+                    {
+                        vm.TopOverlayContent = null;
+                        Serilog.Log.Information("TopOverlayContent closed by Escape key.");
+                        e.Handled = true;
+                    }
+                    
+                    break;
+                }
+                case Key.F5:
+                    Serilog.Log.Information("F5 pressed. Sending RefreshDataMessage and starting refresh indicator animation.");
+                    
+                    WeakReferenceMessenger.Default.Send(new RefreshDataMessage());
                     e.Handled = true;
-                }
-                    
-                break;
-            }
-            case Key.F5:
-                Serilog.Log.Information("F5 pressed. Sending RefreshDataMessage and starting refresh indicator animation.");
-                    
-                WeakReferenceMessenger.Default.Send(new RefreshDataMessage());
-                e.Handled = true;
 
-                try
-                {
-                    RefreshIndicator.IsVisible = true;
-                    RefreshIndicator.Opacity = 1;
-                    await Task.Delay(2000);
-                    RefreshIndicator.Opacity = 0;
-                    RefreshIndicator.IsVisible = false;
-                    Serilog.Log.Debug("Refresh indicator animation completed.");
-                }
-                catch (Exception ex)
-                {
-                    RefreshIndicator.IsVisible = false;
-                    Serilog.Log.Warning(ex, "F5 refresh indicator animation failed");
-                }
-                break;
+                    try
+                    {
+                        RefreshIndicator.IsVisible = true;
+                        RefreshIndicator.Opacity = 1;
+                        await Task.Delay(2000);
+                        RefreshIndicator.Opacity = 0;
+                        RefreshIndicator.IsVisible = false;
+                        Serilog.Log.Debug("Refresh indicator animation completed.");
+                    }
+                    catch (Exception ex)
+                    {
+                        RefreshIndicator.IsVisible = false;
+                        Serilog.Log.Warning(ex, "F5 refresh indicator animation failed");
+                    }
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Unhandled exception in MainWindow.OnKeyDown. " +
+                                  "Key={Key}, WindowState={WindowState}, DataContextType={DataContextType}", 
+                e.Key,
+                WindowState,
+                DataContext?.GetType().FullName ?? "null");
         }
     }
 
