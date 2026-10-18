@@ -39,7 +39,6 @@ public partial class MainWindow : Window
         switch (isWindows)
         {
             case true:
-                WindowDecorations = WindowDecorations.None;
                 Serilog.Log.Debug("Window decorations disabled on Windows.");
                 break;
             default:
@@ -63,14 +62,10 @@ public partial class MainWindow : Window
 
         if (OperatingSystem.IsWindows())
         {
-            ButtonStack.IsVisible = true;
-            SpacerGrid.IsVisible = false;
             Serilog.Log.Debug("Custom window control buttons enabled on Windows.");
         }
         else
         {
-            ButtonStack.IsVisible = false;
-            SpacerGrid.IsVisible = true;
             Serilog.Log.Debug("Non‑Windows OS: ButtonStack hidden, SpacerGrid visible.");
         }
 
@@ -265,10 +260,6 @@ public partial class MainWindow : Window
         Serilog.Log.Debug("WindowState changed to {WindowState}. IsFullScreen={IsFullScreen}",
             WindowState,
             isFullScreen);
-
-        if (MaximizeIcon is null || RestoreIcon is null) return;
-        MaximizeIcon.IsVisible = !isFullScreen;
-        RestoreIcon.IsVisible = isFullScreen;
     }
 
     private void Minimize_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

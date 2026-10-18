@@ -53,7 +53,7 @@ public partial class RegisterOfTestingEquipmentPageUserControlViewModel : ViewMo
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error("Произошел сбой: {ErrorMessage}", ex.Message);
         }
     }
     
@@ -111,7 +111,7 @@ public partial class RegisterOfTestingEquipmentPageUserControlViewModel : ViewMo
                         LEFT JOIN public.equipment_type et ON e.equipment_type_id = et.id
                         LEFT JOIN public.users u ON e.user_id = u.id
                         WHERE e.equipment_type_id = 2";
-
+            
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 sql += " AND (e.title ILIKE @Search OR e.serial_number ILIKE @Search OR e.model ILIKE @Search OR e.inv_num ILIKE @Search)";
