@@ -48,6 +48,15 @@
         <Style Selector="Button.WB:pressed /template/ ContentPresenter">
                 <Setter Property="Background" Value="#505050"/>
         </Style>
+        <Style Selector="Button.WB.CloseButton Image.hover">
+                <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="Button.WB.CloseButton:pointerover Image.hover">
+                <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="Button.WB.CloseButton:pointerover Image.normal">
+                <Setter Property="IsVisible" Value="False"/>
+        </Style>
         <Style Selector="Button.WB.CloseButton:pressed /template/ ContentPresenter">
                 <Setter Property="Background" Value="#F1707A"/>
         </Style>

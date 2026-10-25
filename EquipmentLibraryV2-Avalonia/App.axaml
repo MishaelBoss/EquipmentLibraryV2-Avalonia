@@ -9,6 +9,24 @@
         <local:ViewLocator/>
     </Application.DataTemplates>
   
+    <Application.Resources>
+        <!-- Hides Avalonia's drawn titlebar while keeping native DWM animations (issue #21212).
+             Use together with WindowDecorations="Full" + ExtendClientAreaToDecorationsHint="True". -->
+        <ControlTheme x:Key="{x:Type WindowDrawnDecorations}" TargetType="WindowDrawnDecorations">
+            <Setter Property="Template">
+                <WindowDrawnDecorationsTemplate>
+                    <WindowDrawnDecorationsContent>
+                        <WindowDrawnDecorationsContent.Overlay>
+                            <DockPanel Height="{TemplateBinding TitleBarHeight}"
+                                       VerticalAlignment="Top"
+                                       Margin="{TemplateBinding ShadowThickness}" />
+                        </WindowDrawnDecorationsContent.Overlay>
+                    </WindowDrawnDecorationsContent>
+                </WindowDrawnDecorationsTemplate>
+            </Setter>
+        </ControlTheme>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>

@@ -75,18 +75,11 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         }
 
         [RelayCommand]
-        public async Task About() {
+        public void About() 
+        {
             var dialog = new AboutDialogWindow();
-
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                var mainWindow = desktop.MainWindow;
-
-                if (mainWindow != null)
-                {
-                    await dialog.ShowDialog(mainWindow);
-                }
-            }
+    
+            dialog.Show(); 
         }
 
         [RelayCommand]

@@ -256,6 +256,11 @@ public partial class MainWindow : Window
         if (e.Property != WindowStateProperty) return;
         var isFullScreen = WindowState is WindowState.Maximized or WindowState.FullScreen;
         MainBorder.CornerRadius = isFullScreen ? new CornerRadius(0) : new CornerRadius(8);
+        if (MaximizeIcon is not null && RestoreIcon is not null)
+        {
+            MaximizeIcon.IsVisible = !isFullScreen;
+            RestoreIcon.IsVisible = isFullScreen;
+        }
             
         Serilog.Log.Debug("WindowState changed to {WindowState}. IsFullScreen={IsFullScreen}",
             WindowState,

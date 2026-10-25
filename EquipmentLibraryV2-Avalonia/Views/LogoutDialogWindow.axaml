@@ -7,8 +7,9 @@
         Width="400" Height="180"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"
+        ShowInTaskbar="True"
         Background="#1E1E24"
+        WindowDecorations="Full"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         x:Class="EquipmentLibraryV2_Avalonia.Views.LogoutDialogWindow"
@@ -17,27 +18,39 @@
         BorderBrush="#2D2D35"
         BorderThickness="1"
         Title="">
+    
+    <Window.Styles>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
+    </Window.Styles>
 
     <Grid RowDefinitions="Auto, *">
         <Border Grid.Row="0" 
                 Height="38" 
-                Padding="16,0,24,0"
+                Padding="0"
+                Background="Transparent"
                 BorderBrush="#26262B" 
                 BorderThickness="0,0,0,1"
+                ZIndex="20"
                 WindowDecorationProperties.ElementRole="TitleBar">
-            <Grid ColumnDefinitions="Auto, *">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,5,0">
+            <Grid ColumnDefinitions="*, Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="5">
                     <Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+                    <TextBlock Text="logout"
+                               FontWeight="SemiBold"
+                               Foreground="#CED0D6"
+                               IsHitTestVisible="False"/>
                 </StackPanel>
-        
-                <TextBlock Grid.Column="1"
-                           Margin="5,0,0,0"
-                           Text="logout"
-                           FontWeight="SemiBold"
-                           Foreground="#CED0D6"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           IsHitTestVisible="False"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34">
+                    <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
+                        <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
+                    </Button>
+                    <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
+                        <Panel IsHitTestVisible="False">
+                            <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
+                            <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
+                        </Panel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
         <Grid Grid.Row="1" RowDefinitions="*, Auto" Margin="24">

@@ -9,15 +9,39 @@
              MinHeight="320" MaxHeight="500"
              Width="530" Height="380"
              WindowStartupLocation="CenterOwner"
-             ShowInTaskbar="False"
+             ShowInTaskbar="True"
+             WindowDecorations="Full"
              ExtendClientAreaToDecorationsHint="True"
              ExtendClientAreaTitleBarHeightHint="-1"
              Background="#1E1E24"
              x:Class="EquipmentLibraryV2_Avalonia.Views.DetailUpdateDialogWindow">
     
+    <Window.Styles>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
+    </Window.Styles>
+    
     <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8"
             BoxShadow="0 0 24 0 #50000000">
-        <Grid RowDefinitions="Auto, *, Auto" Margin="28,24,28,20">
+        <Grid RowDefinitions="Auto, *" >
+        <Grid Grid.Row="0" Height="38" ColumnDefinitions="*, Auto" ZIndex="20"
+              Background="Transparent"
+              WindowDecorationProperties.ElementRole="TitleBar">
+            <TextBlock Grid.Column="0" Text="Доступно обновление" Margin="16,0,0,0"
+                       FontWeight="SemiBold" Foreground="#CED0D6"
+                       VerticalAlignment="Center" IsHitTestVisible="False"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34">
+                <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
+                    <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
+                </Button>
+                <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
+                    <Panel IsHitTestVisible="False">
+                        <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
+                        <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
+                    </Panel>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" RowDefinitions="Auto, *, Auto" Margin="28,24,28,20">
             <StackPanel Grid.Row="0" Spacing="16">
                 <Grid ColumnDefinitions="Auto, *" VerticalAlignment="Center" HorizontalAlignment="Left">
                     <Border Width="48" Height="48" CornerRadius="24" Background="#1E3A5F" VerticalAlignment="Center">
@@ -104,6 +128,7 @@
                     </Button>
                 </Grid>
             </Border>
+        </Grid>
         </Grid>
     </Border>
 </Window>

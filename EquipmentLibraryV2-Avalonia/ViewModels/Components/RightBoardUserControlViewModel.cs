@@ -80,15 +80,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         {
             var dialog = new LogoutDialogWindow();
 
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                var mainWindow = desktop.MainWindow;
-
-                if (mainWindow != null)
-                {
-                    await dialog.ShowDialog(mainWindow);
-                }
-            }
+            dialog.Show();
         }
         else
         {
@@ -101,13 +93,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     {
         var dialog = new SettingsDialogWindow();
 
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-        var mainWindow = desktop.MainWindow;
-
-        if (mainWindow != null)
-        {
-            dialog.ShowDialog(mainWindow);
-        }
+        dialog.Show();
     }
 
     private async void UpdateUi()

@@ -11,7 +11,8 @@
         Width="1000" Height="620"
         MinWidth="800" MinHeight="420"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"
+        ShowInTaskbar="True"
+        WindowDecorations="Full"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="#2D2D35"
@@ -20,6 +21,7 @@
     
     <Window.Styles>
         <StyleInclude Source="/Styles/SettingsStyles.axaml"/>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
     </Window.Styles>
     
     <Window.DataTemplates>
@@ -35,23 +37,30 @@
         <Border Grid.Row="0" 
                 Height="38" 
                 Background="#2D2D35" 
-                Padding="16,0,24,0"
+                Padding="0"
                 BorderBrush="#26262B" 
                 BorderThickness="0,0,0,1"
+                ZIndex="20"
                 WindowDecorationProperties.ElementRole="TitleBar">
-            <Grid ColumnDefinitions="Auto, *">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,5,0">
+            <Grid ColumnDefinitions="*, Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="5">
                     <Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+                    <TextBlock Text="settings"
+                               FontWeight="SemiBold"
+                               Foreground="#CED0D6"
+                               IsHitTestVisible="False"/>
                 </StackPanel>
-        
-                <TextBlock Grid.Column="1"
-                           Margin="5,0,0,0"
-                           Text="settings"
-                           FontWeight="SemiBold"
-                           Foreground="#CED0D6"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           IsHitTestVisible="False"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34">
+                    <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
+                        <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
+                    </Button>
+                    <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
+                        <Panel IsHitTestVisible="False">
+                            <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
+                            <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
+                        </Panel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
         <Grid Grid.Row="1" ColumnDefinitions="250, *">
