@@ -8,7 +8,7 @@
         x:Class="EquipmentLibraryV2_Avalonia.Views.CreateAdminDialogWindow"
         Width="460" Height="390"
         MinWidth="460" MinHeight="390"
-        MaxWidth="840" MaxHeight="600"
+        MaxWidth="840" MaxHeight="500"
         CanResize="true"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
