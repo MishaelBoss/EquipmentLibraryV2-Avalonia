@@ -13,9 +13,10 @@ public partial class UpdatesUserControlViewModel : ViewModelBase, ISettingsPage
 
     public bool HasChanges => _originalValue != CheckLatestUpdates;
 
-    public UpdatesUserControlViewModel()
+    public UpdatesUserControlViewModel(AppSettings settings)
     {
-        _settings = AppSettings.Load();
+        _settings = settings;
+        
         _originalValue = _settings.CheckLatestUpdates;
         CheckLatestUpdates = _settings.CheckLatestUpdates;
     }
@@ -23,7 +24,6 @@ public partial class UpdatesUserControlViewModel : ViewModelBase, ISettingsPage
     public void Save()
     {
         _settings.CheckLatestUpdates = CheckLatestUpdates;
-        _settings.Save();
         _originalValue = CheckLatestUpdates;
     }
 }

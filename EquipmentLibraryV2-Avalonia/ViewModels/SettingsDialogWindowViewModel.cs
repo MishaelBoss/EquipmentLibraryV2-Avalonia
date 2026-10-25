@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.ViewModels.Settings;
 using EquipmentLibraryV2_Avalonia.Services.Interfaces;
 using EquipmentLibraryV2_Avalonia.Models;
@@ -11,6 +12,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels;
 
 public partial class SettingsDialogWindowViewModel : ViewModelBase
 {
+    private readonly AppSettings _settings;
     public ObservableCollection<SettingsPageItem> Pages { get; }
 
     [ObservableProperty] public partial SettingsPageItem? SelectedPage { get; set; }
@@ -19,11 +21,13 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
 
     public SettingsDialogWindowViewModel()
     {
+        _settings = AppSettings.Load();
+        
         Pages =
         [
             new SettingsPageItem("Логирование", new LoggingViewModel()),
-            new SettingsPageItem("Обновления", new UpdatesUserControlViewModel()),
-            new SettingsPageItem("Подключение", new ConnectionUserControlViewModel())
+            new SettingsPageItem("Обновления", new UpdatesUserControlViewModel(_settings)),
+            new SettingsPageItem("Подключение", new ConnectionUserControlViewModel(_settings))
         ];
 
         SelectedPage = Pages[0];
@@ -65,6 +69,8 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
             if (page.ViewModel is ISettingsPage sp)
                 sp.Save();
         }
+        _settings.Save();
+        
         RecalculateHasChanges();
     }
 

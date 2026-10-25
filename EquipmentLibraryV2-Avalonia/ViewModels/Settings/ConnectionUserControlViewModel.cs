@@ -68,9 +68,9 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
         OnPropertyChanged(nameof(StatusBrush));
     }
 
-    public ConnectionUserControlViewModel()
+    public ConnectionUserControlViewModel(AppSettings settings)
     {
-        _settings = AppSettings.Load();
+        _settings = settings;
 
         _originalIp = _settings.Ip;
         _originalPort = _settings.Port;
@@ -212,7 +212,6 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
         _settings.Database = Database;
         _settings.User = User;
         _settings.Password = Password;
-        _settings.Save();
 
         AppConfig.ResetConnection();
 

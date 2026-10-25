@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EquipmentLibraryV2_Avalonia.Infrastructure;
 
@@ -10,8 +11,9 @@ public class AppSettings
     public string Database { get; set; } = string.Empty;
     public string User { get; set; } = string.Empty;
 
+    [JsonIgnore] 
     public string Password { get; set; } = string.Empty;
-
+    
     private static readonly string SettingsPath = Path.Combine(
         AppPaths.UserDataDir, "settings.json");
 
@@ -37,7 +39,7 @@ public class AppSettings
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Не удалось загрузить настройки: {ex.Message}");
+            Serilog.Log.Error(ex, "Не удалось загрузить настройки");
             return new AppSettings();
         }
     }
@@ -72,21 +74,16 @@ public class AppSettings
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            var json = JsonSerializer.Serialize(new
-            {
-                CheckLatestUpdates,
-                Ip,
-                Port,
-                Database,
-                User,
-                EncryptedPassword = SettingsProtector.Encrypt(Password),
-            }, new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions 
+            { 
+                WriteIndented = true 
+            });
 
             File.WriteAllText(SettingsPath, json);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Не удалось сохранить настройки: {ex.Message}");
+            Serilog.Log.Error(ex, "Не удалось сохранить настройки"); 
         }
     }
 
