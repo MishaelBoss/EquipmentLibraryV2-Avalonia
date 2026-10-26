@@ -11,12 +11,12 @@
         MinWidth="900" MinHeight="640"
         x:Class="EquipmentLibraryV2_Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-         Background="#000000"
-         Icon="/Assets/logo/logo.ico"
-         WindowDecorations="Full"
-         ExtendClientAreaToDecorationsHint="True"
-         ExtendClientAreaTitleBarHeightHint="-1"
-         Title="Equipment Library V2">
+        Background="#000000"
+        Icon="/Assets/logo/logo.ico"
+        WindowDecorations="Full"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        Title="Equipment Library V2">
 
 	<Window.Styles>
 		<StyleInclude Source="/Styles/Styles.axaml"/>

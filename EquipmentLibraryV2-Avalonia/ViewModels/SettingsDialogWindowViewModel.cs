@@ -26,6 +26,7 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
         Pages =
         [
             new SettingsPageItem("Логирование", new LoggingViewModel()),
+            new SettingsPageItem("Расположение папок", new FolderLocationUserControlViewModel(_settings)),
             new SettingsPageItem("Обновления", new UpdatesUserControlViewModel(_settings)),
             new SettingsPageItem("Подключение", new ConnectionUserControlViewModel(_settings))
         ];

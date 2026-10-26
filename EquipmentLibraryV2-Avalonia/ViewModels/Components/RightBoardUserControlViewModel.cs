@@ -1,14 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Services;
 using System.Collections.ObjectModel;
-using Avalonia.Svg.Skia;
+using Avalonia.Controls;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 
@@ -20,7 +18,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
 
     public RightBoardUserControlViewModel() 
     {
-        Log.Information("Starting dashboard buttons initialization.");
+        Log.Information("Starting dashboard buttons initialization");
         
         IsActive = true;
         
@@ -93,7 +91,13 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     {
         var dialog = new SettingsDialogWindow();
 
-        dialog.Show();
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        
+        var mainWindow = desktop.MainWindow;
+        if (mainWindow == null) return;
+        
+        dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        dialog.Show(mainWindow);
     }
 
     private async void UpdateUi()
@@ -127,7 +131,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Critical error during dashboard initialization or auto-login process.");
+            Log.Error(ex, "Critical error during dashboard initialization or auto-login process");
         }
     }
 

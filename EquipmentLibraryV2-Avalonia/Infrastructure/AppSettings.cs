@@ -6,6 +6,8 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure;
 public class AppSettings
 {
     public bool CheckLatestUpdates { get; set; } = true;
+    public string? FolderDownload { get; set; } = string.Empty;
+    public bool UseRawSelectedFolder { get; set; } = false;
     public string Ip { get; set; } = string.Empty;
     public string Port { get; set; } = string.Empty;
     public string Database { get; set; } = string.Empty;
@@ -30,6 +32,8 @@ public class AppSettings
             return new AppSettings
             {
                 CheckLatestUpdates = TryGetBool(root, "CheckLatestUpdates") ?? true,
+                FolderDownload = TryGetString(root, "FolderDownload") ?? string.Empty,
+                UseRawSelectedFolder = TryGetBool(root, "UseRawSelectedFolder") ?? false,
                 Ip = TryGetString(root, "Ip") ?? string.Empty,
                 Port = TryGetString(root, "Port") ?? string.Empty,
                 Database = TryGetString(root, "Database") ?? string.Empty,

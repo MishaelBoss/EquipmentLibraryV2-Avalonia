@@ -11,7 +11,7 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
         {
             get
             {
-                string path = Path.Combine(
+                var path = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     AppName);
 
@@ -24,5 +24,6 @@ namespace EquipmentLibraryV2_Avalonia.Infrastructure
         public static string DefaultCacheDir => Path.Combine(LauncherDir, "cache");
         public static string DefaultUpdateDir => Path.Combine(LauncherDir, "updates");
         public static string DefaultDownloadDir => Path.Combine(LauncherDir, "downloads");
+        public static string CustomDownloadDir => Path.Combine(AppName, "downloads");
     }
 }
