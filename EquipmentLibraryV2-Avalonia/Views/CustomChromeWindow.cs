@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 
 namespace EquipmentLibraryV2_Avalonia.Views;
 

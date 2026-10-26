@@ -7,6 +7,8 @@ using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Serilog;
+using static System.OperatingSystem;
 
 namespace EquipmentLibraryV2_Avalonia.Views;
 
@@ -21,52 +23,43 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        Serilog.Log.Information("MainWindow constructor started.");
+        Log.Information("MainWindow constructor started");
             
         InitializeComponent();
         LoadWindowSettings();
 
-        var isWindows11 = OperatingSystem.IsWindows() && Environment.OSVersion.Version.Build >= 22000;
-        Serilog.Log.Information("Detected OS. IsWindows={IsWindows}, IsWindows11={IsWindows11}, Build={Build}",
-            OperatingSystem.IsWindows(),
+        var isWindows11 = IsWindows() && Environment.OSVersion.Version.Build >= 22000;
+        Log.Information("Detected OS. IsWindows={IsWindows}, IsWindows11={IsWindows11}, Build={Build}",
+            IsWindows(),
             isWindows11,
             Environment.OSVersion.Version.Build);
             
-        var isWindows = OperatingSystem.IsWindows();
-        var isMac = OperatingSystem.IsMacOS();
-        var isLinux = OperatingSystem.IsLinux();
+        var isWindows = IsWindows();
+        var isMac = IsMacOS();
+        var isLinux = IsLinux();
             
         switch (isWindows)
         {
             case true:
-                Serilog.Log.Debug("Window decorations disabled on Windows.");
+                Log.Debug("Window decorations disabled on Windows");
                 break;
             default:
             {
                 if (isMac)
                 {
-                    Serilog.Log.Information("Running on macOS. Using platform default window decorations.");
+                    Log.Information("Running on macOS. Using platform default window decorations");
                 } else if (isLinux)
                 {
-                    Serilog.Log.Information("Running on Linux. Using platform default window decorations.");
+                    Log.Information("Running on Linux. Using platform default window decorations");
                 }
                 else
                 {
-                    Serilog.Log.Warning("Running on unknown OS platform. IsWindows={IsWindows}, IsMac={IsMac}, IsLinux={IsLinux}",
+                    Log.Warning("Running on unknown OS platform. IsWindows={IsWindows}, IsMac={IsMac}, IsLinux={IsLinux}",
                         isWindows, isMac, isLinux);
                 }
                     
                 break;
             }
-        }
-
-        if (OperatingSystem.IsWindows())
-        {
-            Serilog.Log.Debug("Custom window control buttons enabled on Windows.");
-        }
-        else
-        {
-            Serilog.Log.Debug("Non‑Windows OS: ButtonStack hidden, SpacerGrid visible.");
         }
 
         if (isWindows11)
@@ -79,19 +72,19 @@ public partial class MainWindow : Window
                     var enableSnap = 1;
                     var hr = DwmSetWindowAttribute(handle.Value, DwmwaSnapFloatingCursor, ref enableSnap, sizeof(int));
                         
-                    Serilog.Log.Information(
+                    Log.Information(
                         "DwmSetWindowAttribute applied for Windows 11 snap. Handle={Handle}, Result={Result}",
                         handle.Value,
                         hr);
                 }
                 else
                 {
-                    Serilog.Log.Warning("Failed to get native window handle for DwmSetWindowAttribute on Windows 11.");
+                    Log.Warning("Failed to get native window handle for DwmSetWindowAttribute on Windows 11");
                 }
             }
             catch (Exception ex)
             {
-                Serilog.Log.Warning(ex, "DwmSetWindowAttribute failed on Windows 11.");
+                Log.Warning(ex, "DwmSetWindowAttribute failed on Windows 11");
             }
         }
 
@@ -99,11 +92,11 @@ public partial class MainWindow : Window
         KeyDown += OnKeyDown;
         Closing += (_, _) =>
         {
-            Serilog.Log.Information("MainWindow closing. Saving window settings.");
+            Log.Information("MainWindow closing. Saving window settings");
             SaveWindowSettings();
         };
 
-        Serilog.Log.Information("MainWindow constructor finished.");
+        Log.Information("MainWindow constructor finished");
     }
 
     private async void OnKeyDown(object? sender, KeyEventArgs e)
@@ -113,26 +106,26 @@ public partial class MainWindow : Window
             if (DataContext is not ViewModels.MainWindowViewModel vm)
                 return;
             
-            Serilog.Log.Debug("KeyDown received. Key={Key}", e.Key);
+            Log.Debug("KeyDown received. Key={Key}", e.Key);
 
             switch (e.Key)
             {
                 case Key.Escape:
                 {
-                    Serilog.Log.Debug("Escape pressed. TopOverlayContent={HasTopOverlay}",
+                    Log.Debug("Escape pressed. TopOverlayContent={HasTopOverlay}",
                         vm.TopOverlayContent is not null);
 
                     if (vm.TopOverlayContent is not null && vm.IsOverlayDismissible)
                     {
                         vm.TopOverlayContent = null;
-                        Serilog.Log.Information("TopOverlayContent closed by Escape key.");
+                        Log.Information("TopOverlayContent closed by Escape key");
                         e.Handled = true;
                     }
                     
                     break;
                 }
                 case Key.F5:
-                    Serilog.Log.Information("F5 pressed. Sending RefreshDataMessage and starting refresh indicator animation.");
+                    Log.Information("F5 pressed. Sending RefreshDataMessage and starting refresh indicator animation");
                     
                     WeakReferenceMessenger.Default.Send(new RefreshDataMessage());
                     e.Handled = true;
@@ -144,19 +137,19 @@ public partial class MainWindow : Window
                         await Task.Delay(2000);
                         RefreshIndicator.Opacity = 0;
                         RefreshIndicator.IsVisible = false;
-                        Serilog.Log.Debug("Refresh indicator animation completed.");
+                        Log.Debug("Refresh indicator animation completed");
                     }
                     catch (Exception ex)
                     {
                         RefreshIndicator.IsVisible = false;
-                        Serilog.Log.Warning(ex, "F5 refresh indicator animation failed");
+                        Log.Warning(ex, "F5 refresh indicator animation failed");
                     }
                     break;
             }
         }
         catch (Exception ex)
         {
-            Serilog.Log.Error(ex, "Unhandled exception in MainWindow.OnKeyDown. " +
+            Log.Error(ex, "Unhandled exception in MainWindow.OnKeyDown. " +
                                   "Key={Key}, WindowState={WindowState}, DataContextType={DataContextType}", 
                 e.Key,
                 WindowState,
@@ -166,11 +159,11 @@ public partial class MainWindow : Window
 
     private void LoadWindowSettings() 
     {
-        Serilog.Log.Debug("Loading window settings from {Path}", _settingsPath);
+        Log.Debug("Loading window settings from {Path}", _settingsPath);
             
         try {
             if (!File.Exists(_settingsPath)) {
-                Serilog.Log.Information("Window settings file not found. Using centered startup location.");
+                Log.Information("Window settings file not found. Using centered startup location");
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 return;
             }
@@ -180,7 +173,7 @@ public partial class MainWindow : Window
 
             if (settings == null)
             {
-                Serilog.Log.Warning("Window settings deserialization returned null. Using centered startup location.");
+                Log.Warning("Window settings deserialization returned null. Using centered startup location");
                 return;
             }
 
@@ -193,7 +186,7 @@ public partial class MainWindow : Window
             if (Enum.TryParse<WindowState>(settings.WindowState, out var state))
             {
                 WindowState = state;
-                Serilog.Log.Information(
+                Log.Information(
                     "Window settings applied. Width={Width}, Height={Height}, X={X}, Y={Y}, WindowState={WindowState}",
                     settings.Width,
                     settings.Height,
@@ -203,18 +196,18 @@ public partial class MainWindow : Window
             }
             else
             {
-                Serilog.Log.Warning("Failed to parse WindowState from settings: {State}", settings.WindowState);
+                Log.Warning("Failed to parse WindowState from settings: {State}", settings.WindowState);
             }
         }
         catch (Exception ex) {
-            Serilog.Log.Warning(ex, "Failed to load window settings. Using centered startup location.");
+            Log.Warning(ex, "Failed to load window settings. Using centered startup location");
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
     }
 
     private void SaveWindowSettings()
     {
-        Serilog.Log.Debug("Saving window settings to {Path}", _settingsPath);
+        Log.Debug("Saving window settings to {Path}", _settingsPath);
             
         try
         {
@@ -225,19 +218,18 @@ public partial class MainWindow : Window
             {
                 settings.Width = Width;
                 settings.Height = Height;
-                settings.X = Position.X;
-                settings.Y = Position.Y;
             } else {
                 settings.Width = Bounds.Width;
                 settings.Height = Bounds.Height;
-                settings.X = Position.X;
-                settings.Y = Position.Y;
             }
+
+            settings.X = Position.X;
+            settings.Y = Position.Y;
 
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_settingsPath, json);
                 
-            Serilog.Log.Information(
+            Log.Information(
                 "Window settings saved. Width={Width}, Height={Height}, X={X}, Y={Y}, WindowState={WindowState}",
                 settings.Width,
                 settings.Height,
@@ -247,7 +239,7 @@ public partial class MainWindow : Window
         }
         catch (ExternalException ex)
         {
-            Serilog.Log.Error(ex, "Failed to save window settings to {Path}", _settingsPath);
+            Log.Error(ex, "Failed to save window settings to {Path}", _settingsPath);
         }
     }
 
@@ -262,14 +254,14 @@ public partial class MainWindow : Window
             RestoreIcon.IsVisible = isFullScreen;
         }
             
-        Serilog.Log.Debug("WindowState changed to {WindowState}. IsFullScreen={IsFullScreen}",
+        Log.Debug("WindowState changed to {WindowState}. IsFullScreen={IsFullScreen}",
             WindowState,
             isFullScreen);
     }
 
     private void Minimize_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Serilog.Log.Information("Minimize button clicked.");
+        Log.Information("Minimize button clicked");
         WindowState = WindowState.Minimized;
     }
 
@@ -279,7 +271,7 @@ public partial class MainWindow : Window
             ? WindowState.Normal
             : WindowState.Maximized;
 
-        Serilog.Log.Information("Maximize/Restore button clicked. OldState={OldState}, NewState={NewState}",
+        Log.Information("Maximize/Restore button clicked. OldState={OldState}, NewState={NewState}",
             WindowState,
             newState);
 
@@ -288,7 +280,7 @@ public partial class MainWindow : Window
 
     private void Close_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Serilog.Log.Information("Close button clicked. Closing MainWindow.");
+        Log.Information("Close button clicked. Closing MainWindow");
         Close();
     }
 
