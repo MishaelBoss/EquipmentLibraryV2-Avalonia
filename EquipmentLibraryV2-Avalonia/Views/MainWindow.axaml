@@ -38,7 +38,7 @@
 				<Image Grid.Column="0" Source="/Assets/logo/logo.ico" Width="18" Height="18"
 				       Margin="16,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"
 				       IsHitTestVisible="False" IsVisible="{OnPlatform True, macOS=False}"/>
-				<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34">
+				<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" Name="ButtonStack">
 					<Button Classes="WB"
 					        WindowDecorationProperties.ElementRole="MinimizeButton"
 					        Click="Minimize_Click">
