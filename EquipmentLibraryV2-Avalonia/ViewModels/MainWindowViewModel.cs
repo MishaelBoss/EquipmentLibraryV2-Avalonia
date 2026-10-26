@@ -40,13 +40,13 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
         [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
-        [ObservableProperty] public partial bool IsOverlayDismissible { get; set; } = true;
+        [ObservableProperty] public partial bool IsOverlayDismissible { get; private set; } = true;
         public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 
         [ObservableProperty] public partial string Version { get; set; } = AppConfig.Version;
         [ObservableProperty] public partial string StatusNetwork { get; set; } = "Проверка...";
         [ObservableProperty] public partial bool IsConnected { get; set; }
-        [ObservableProperty] public partial bool IsNewVerion { get; set; } = false;
+        [ObservableProperty] public partial bool IsNewVersion { get; set; } = false;
         private string _newVersion = string.Empty;
         private string _releaseNotes = string.Empty;
         private string _releaseDate = string.Empty;
@@ -101,12 +101,12 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         {
             var sp = AppServices.Provider;
             
-            _adminPanel = new Lazy<AdminPanelPageUserControlViewModel>(() => sp.GetRequiredService<AdminPanelPageUserControlViewModel>());
-            _analytics = new Lazy<AnalyticsPageUserControlViewModel>(() => sp.GetRequiredService<AnalyticsPageUserControlViewModel>());
-            _library = new Lazy<LibraryPageUserControlViewModel>(() => sp.GetRequiredService<LibraryPageUserControlViewModel>());
-            _workArea = new Lazy<WorkAreaUserControlViewModel>(() => sp.GetRequiredService<WorkAreaUserControlViewModel>());
-            _measurementRegister = new Lazy<MeasurementRegisterPageUserControlViewModel>(() => sp.GetRequiredService<MeasurementRegisterPageUserControlViewModel>());
-            _registerOfTestingEquipment = new Lazy<RegisterOfTestingEquipmentPageUserControlViewModel>(() => sp.GetRequiredService<RegisterOfTestingEquipmentPageUserControlViewModel>());
+            _adminPanel = new Lazy<AdminPanelPageUserControlViewModel>(sp.GetRequiredService<AdminPanelPageUserControlViewModel>);
+            _analytics = new Lazy<AnalyticsPageUserControlViewModel>(sp.GetRequiredService<AnalyticsPageUserControlViewModel>);
+            _library = new Lazy<LibraryPageUserControlViewModel>(sp.GetRequiredService<LibraryPageUserControlViewModel>);
+            _workArea = new Lazy<WorkAreaUserControlViewModel>(sp.GetRequiredService<WorkAreaUserControlViewModel>);
+            _measurementRegister = new Lazy<MeasurementRegisterPageUserControlViewModel>(sp.GetRequiredService<MeasurementRegisterPageUserControlViewModel>);
+            _registerOfTestingEquipment = new Lazy<RegisterOfTestingEquipmentPageUserControlViewModel>(sp.GetRequiredService<RegisterOfTestingEquipmentPageUserControlViewModel>);
             
             _authorizationUserControlViewModel = sp.GetRequiredService<AuthorizationUserControlViewModel>();
 
@@ -125,21 +125,21 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         public async Task InitializeAsync()
         {
-            Log.Information("Initialization started.");
+            Log.Information("Initialization started");
 
             try {
                 await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
                 await EnsureDatabaseReadyAsync();
-                Log.Information("Initialization completed successfully.");
+                Log.Information("Initialization completed successfully");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Initialization failed.");
+                Log.Error(ex, "Initialization failed");
             }
             finally
             {
                 IsLoading = false;
-                Log.Information("Loading state set to false.");
+                Log.Information("Loading state set to false");
             }
         }
 
@@ -222,7 +222,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
                 if (jsonNode == null)
                 {
-                    Log.Warning("Version manifest is empty or invalid JSON.");
+                    Log.Warning("Version manifest is empty or invalid JSON");
                     return;
                 }
 
@@ -258,7 +258,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
                 if (!string.IsNullOrWhiteSpace(targetVersion) &&
                     VersionHelper.IsNewerVersion(currentVersion, targetVersion))
                 {
-                    IsNewVerion = true;
+                    IsNewVersion = true;
                     Version = $"EquipmentLibrary v2: {targetVersion}";
                     _newVersion = $"EquipmentLibrary v2: {targetVersion}";
                     _releaseNotes = string.IsNullOrEmpty(targetVersionDetail) 
@@ -270,14 +270,14 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
                 }
                 else
                 {
-                    IsNewVerion = false;
+                    IsNewVersion = false;
                     Version = AppConfig.DisplayVersion;
                     Log.Information("No update available for current version {CurrentVersion}", currentVersion);
                 }
             }
             catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
             {
-                Log.Warning(ex, "Version check timed out.");
+                Log.Warning(ex, "Version check timed out");
                 WeakReferenceMessenger.Default.Send(
                     new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Version check timed out", 503L)));
             }
@@ -413,7 +413,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         {
             if (message.OnSuccessCallback is null)
             {
-                Log.Debug("Received CloseConfirmDelete message. Overlay will be closed.");
+                Log.Debug("Received CloseConfirmDelete message. Overlay will be closed");
                 TopOverlayContent = null;
                 return;
             }
@@ -489,7 +489,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
 
         private static void DisposePage<T>(Lazy<T> lazy) where T : class
         {
-            if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
+            if (lazy is { IsValueCreated: true, Value: IDisposable disposable })
                 disposable.Dispose();
         }
     }

@@ -125,7 +125,7 @@
 					</StackPanel>
 					
 					<Grid Grid.Column="3">
-						<Button Background="Transparent" Command="{Binding AboutCommand}" IsVisible="{Binding !IsNewVerion}">
+						<Button Background="Transparent" Command="{Binding AboutCommand}" IsVisible="{Binding !IsNewVersion}">
 							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
 								<TextBlock VerticalAlignment="Center"
 										   Foreground="#666" FontSize="11" FontWeight="SemiBold">
@@ -135,7 +135,7 @@
 						</Button>
 
 						<Button Background="Transparent" 
-								IsVisible="{Binding IsNewVerion}" 
+								IsVisible="{Binding IsNewVersion}" 
 								Command="{Binding UpdateCommand}">
 							<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
 								<Image Source="{SvgImage /Assets/update.svg}" Width="12" Height="12"/>
