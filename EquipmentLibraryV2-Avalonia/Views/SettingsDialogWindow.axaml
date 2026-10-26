@@ -43,14 +43,14 @@
                 ZIndex="20"
                 WindowDecorationProperties.ElementRole="TitleBar">
             <Grid ColumnDefinitions="*, Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="5">
-                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18" IsVisible="{OnPlatform True, macOS=False}"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="5" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
+                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18"/>
                     <TextBlock Text="settings"
                                FontWeight="SemiBold"
                                Foreground="#CED0D6"
                                IsHitTestVisible="False"/>
                 </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
                     <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
                         <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
                     </Button>

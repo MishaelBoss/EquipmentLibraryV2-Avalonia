@@ -62,12 +62,10 @@ public partial class MainWindow : Window
 
         if (OperatingSystem.IsWindows())
         {
-            ButtonStack.IsVisible = true;
             Serilog.Log.Debug("Custom window control buttons enabled on Windows.");
         }
         else
         {
-            ButtonStack.IsVisible = false;
             Serilog.Log.Debug("Non‑Windows OS: ButtonStack hidden, SpacerGrid visible.");
         }
 
