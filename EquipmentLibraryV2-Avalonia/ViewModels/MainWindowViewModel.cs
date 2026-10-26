@@ -127,6 +127,8 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
         {
             Log.Information("Initialization started");
 
+            if(Infrastructure.App.IsDeveloperMode) Log.Information("In developer mode");
+            
             try {
                 await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
                 await EnsureDatabaseReadyAsync();
@@ -255,17 +257,35 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
                     }
                 }
                 
-                if (!string.IsNullOrWhiteSpace(targetVersion) &&
-                    VersionHelper.IsNewerVersion(currentVersion, targetVersion))
+                var hasUpdate = false;
+
+                if (Infrastructure.App.IsDeveloperMode)
+                {
+                    hasUpdate = true;
+
+                    if (string.IsNullOrWhiteSpace(targetVersion))
+                    {
+                        targetVersion = "9.9.9-dev";
+                        targetVersionDetail = "Тестовый режим разработчика: Проверка UI окна обновлений.";
+                        targetVersionDate = "2026-10-26";
+                    }
+                }
+                else
+                {
+                    hasUpdate = !string.IsNullOrWhiteSpace(targetVersion) &&
+                                VersionHelper.IsNewerVersion(currentVersion, targetVersion);
+                }
+
+                if (hasUpdate)
                 {
                     IsNewVersion = true;
                     Version = $"EquipmentLibrary v2: {targetVersion}";
                     _newVersion = $"EquipmentLibrary v2: {targetVersion}";
-                    _releaseNotes = string.IsNullOrEmpty(targetVersionDetail) 
+                    _releaseNotes = string.IsNullOrEmpty(targetVersionDetail)
                         ? "There are no change logs for this version."
                         : targetVersionDetail;
                     _releaseDate = targetVersionDate;
-                    
+
                     Log.Information("Update found: {Version}. Description: {Description}", targetVersion, targetVersionDetail);
                 }
                 else

@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Data.Converters;
-using System;
 using System.Globalization;
 
 namespace EquipmentLibraryV2_Avalonia.Converters;

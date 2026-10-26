@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
         xmlns:equipmentLibraryV2Avalonia="clr-namespace:EquipmentLibraryV2_Avalonia"
+        xmlns:infrastructure="clr-namespace:EquipmentLibraryV2_Avalonia.Infrastructure"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
         Width="1000" Height="650" 
         MinWidth="900" MinHeight="640"
@@ -122,6 +123,11 @@
 						</StackPanel.Transitions>
 						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
 						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
+					</StackPanel>
+					
+					<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
+					            IsVisible="{x:Static infrastructure:App.IsDeveloperMode}">
+						<TextBlock Text="Вы находитесь в режиме dev" Foreground="#4CAF50" FontSize="11"/>
 					</StackPanel>
 					
 					<Grid Grid.Column="3">
