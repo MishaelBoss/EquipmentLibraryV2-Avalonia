@@ -45,7 +45,7 @@
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
                     <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
                         <Panel IsHitTestVisible="False">
-                            <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
+                            <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_darks.svg}" Width="16" Height="16"/>
                             <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
                         </Panel>
                     </Button>

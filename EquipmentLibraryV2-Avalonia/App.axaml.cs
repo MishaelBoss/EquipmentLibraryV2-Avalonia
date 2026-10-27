@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,8 +5,6 @@ using Avalonia.Markup.Xaml;
 using EquipmentLibraryV2_Avalonia.ViewModels;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
-using EquipmentLibraryV2_Avalonia.Infrastructure;
-using Serilog.Debugging;
 
 namespace EquipmentLibraryV2_Avalonia;
 
@@ -20,7 +17,6 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        SetupSerilog();
         SetupGlobalExceptionHandlers();
         
         var russianCulture = new CultureInfo("ru-RU");
@@ -44,32 +40,6 @@ public class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private void SetupSerilog()
-    {
-        var now = DateTime.Now;
-        var datePart = now.ToString("dd_MM_yyyy");
-
-        var logPath = Path.Combine(
-            AppPaths.UserDataDir,
-            "logs",
-            $"launcher-log-{datePart}.txt");
-            
-        SelfLog.Enable(msg => 
-        {
-            Debug.WriteLine(msg);
-            Console.Error.WriteLine(msg);
-        });
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.Console(
-                outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .WriteTo.File(
-                logPath,
-                outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .CreateLogger();
     }
 
     private void SetupGlobalExceptionHandlers()
