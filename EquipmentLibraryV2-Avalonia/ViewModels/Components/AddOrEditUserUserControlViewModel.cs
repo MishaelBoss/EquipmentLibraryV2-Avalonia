@@ -102,24 +102,7 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
             
             return;
         }
-            
-        if (string.IsNullOrEmpty(Login) ||
-            string.IsNullOrEmpty(FirstName) ||
-            string.IsNullOrEmpty(LastName) ||
-            string.IsNullOrEmpty(Password) ||
-            SelectUserRole is null)
-        {
-            Log.Warning(
-                "Confirm aborted due to invalid form data. Id={Id}, LoginIsEmpty={LoginEmpty}, FirstNameEmpty={FirstNameEmpty}, LastNameEmpty={LastNameEmpty}, PasswordEmpty={PasswordEmpty}, UserRoleIsNull={UserRoleIsNull}",
-                _id,
-                string.IsNullOrEmpty(Login),
-                string.IsNullOrEmpty(FirstName),
-                string.IsNullOrEmpty(LastName),
-                string.IsNullOrEmpty(Password),
-                SelectUserRole is null);
-            return;
-        }
-
+        
         try
         {
             const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
