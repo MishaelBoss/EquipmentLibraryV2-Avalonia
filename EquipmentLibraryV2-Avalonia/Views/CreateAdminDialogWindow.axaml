@@ -6,12 +6,12 @@
         x:DataType="vm:CreateAdminDialogWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="460" d:DesignHeight="400"
         x:Class="EquipmentLibraryV2_Avalonia.Views.CreateAdminDialogWindow"
-        Width="460" Height="390"
+        Width="460" Height="450"
         MinWidth="460" MinHeight="390"
         MaxWidth="840" MaxHeight="500"
         CanResize="true"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="True"
+        ShowInTaskbar="False"
         WindowDecorations="Full"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
@@ -31,9 +31,6 @@
                        FontWeight="SemiBold" Foreground="#CED0D6"
                        VerticalAlignment="Center" IsHitTestVisible="False"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
-                    <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
-                </Button>
                 <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
                     <Panel IsHitTestVisible="False">
                         <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>

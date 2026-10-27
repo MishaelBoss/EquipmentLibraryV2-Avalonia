@@ -14,7 +14,7 @@
         BorderThickness="1"
         CanResize="true"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="True"
+        ShowInTaskbar="False"
         WindowDecorations="Full"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
@@ -43,9 +43,6 @@
                                IsHitTestVisible="False"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                    <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
-                        <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
-                    </Button>
                     <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
                         <Panel IsHitTestVisible="False">
                             <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>

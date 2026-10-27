@@ -65,12 +65,9 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
 
     private async Task DebounceFilterChanged()
     {
-        if (_debounceCts != null)
-        {
-            await _debounceCts.CancelAsync();
-            _debounceCts.Dispose();
-        }
-        
+        await _debounceCts.CancelAsync();
+        _debounceCts.Dispose();
+
         _debounceCts = new CancellationTokenSource();
         var token = _debounceCts.Token;
         try

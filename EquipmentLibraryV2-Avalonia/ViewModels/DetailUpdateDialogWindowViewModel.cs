@@ -29,7 +29,7 @@ public partial class DetailUpdateDialogWindowViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(UpdateUrl))
         {
-            Log.Warning("Attempted to open an update link, but the URL is empty or contains only spaces.");
+            Log.Warning("Attempted to open an update link, but the URL is empty or contains only spaces");
             return;
         }
 

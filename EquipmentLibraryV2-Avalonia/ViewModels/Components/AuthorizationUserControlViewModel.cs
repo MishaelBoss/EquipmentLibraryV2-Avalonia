@@ -6,157 +6,166 @@ using Avalonia.Media;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using EquipmentLibraryV2_Avalonia.Services;
+using EquipmentLibraryV2_Avalonia.Validators.Components;
 using Serilog;
 
-namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
+namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
+
+public partial class AuthorizationUserControlViewModel : ViewModelBase
 {
-    public partial class AuthorizationUserControlViewModel : ViewModelBase
+    private readonly IImage?[] _animationFrames = new IImage[8];
+        
+    private CancellationTokenSource? _animationCts;
+    private DateTime _lastAttempt = DateTime.MinValue;
+    private static readonly TimeSpan Cooldown = TimeSpan.FromSeconds(1);
+        
+    [ObservableProperty]
+    public partial string MessageError { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial string Login { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial string Password { get; set; } = string.Empty;
+        
+    [ObservableProperty] 
+    public partial bool IsPasswordVisible { get; set; }
+        
+    [ObservableProperty]
+    public partial bool IsLoading { get; set; }
+        
+    [ObservableProperty]
+    public partial IImage? CurrentAnimationFrame { get; set; }
+        
+    public bool IsActiveConfirmButton
+        => !string.IsNullOrEmpty(Login)
+           && !string.IsNullOrEmpty(Password)
+           && !IsLoading;
+
+    [RelayCommand]
+    public void Close()
     {
-        private readonly IImage?[] _animationFrames = new IImage[8];
-        
-        private CancellationTokenSource? _animationCts;
-        private DateTime _lastAttempt = DateTime.MinValue;
-        private static readonly TimeSpan Cooldown = TimeSpan.FromSeconds(1);
-        
-        [ObservableProperty]
-        public partial string MessageError { get; set; } = string.Empty;
+        WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
+    }
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial string Login { get; set; } = string.Empty;
+    [RelayCommand]
+    public void TogglePasswordVisibility()
+    {
+        IsPasswordVisible = !IsPasswordVisible;
+    }
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial string Password { get; set; } = string.Empty;
-        
-        [ObservableProperty] 
-        public partial bool IsPasswordVisible { get; set; }
-        
-        [ObservableProperty]
-        public partial bool IsLoading { get; set; }
-        
-        [ObservableProperty]
-        public partial IImage? CurrentAnimationFrame { get; set; }
-        
-        public bool IsActiveConfirmButton
-            => !string.IsNullOrEmpty(Login)
-            && !string.IsNullOrEmpty(Password)
-            && !IsLoading;
-
-        [RelayCommand]
-        public void Close()
+    public AuthorizationUserControlViewModel()
+    {
+        for (var i = 1; i <= 8; i++)
         {
-            WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
-        }
+            var path = $"avares://EquipmentLibraryV2_Avalonia/Assets/process/step_{i}.svg";
 
-        [RelayCommand]
-        public void TogglePasswordVisibility()
-        {
-            IsPasswordVisible = !IsPasswordVisible;
-        }
-
-        public AuthorizationUserControlViewModel()
-        {
-            for (var i = 1; i <= 8; i++)
-            {
-                var path = $"avares://EquipmentLibraryV2_Avalonia/Assets/process/step_{i}.svg";
-
-                try
-                {
-                    var svgSource = SvgSource.Load(path);
-                    _animationFrames[i - 1] = new SvgImage
-                    {
-                        Source = svgSource
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Failed to load SVG frame {FrameIndex} from {Path}", i, path);
-                    _animationFrames[i - 1] = _animationFrames[0];
-                }
-            }
-            
-            CurrentAnimationFrame = _animationFrames[0];
-        }
-
-        [RelayCommand]
-        private async Task Authorization()
-        {
-            if (IsLoading) return;
-
-            var elapsed = DateTime.UtcNow - _lastAttempt;
-            if (elapsed < Cooldown)
-            {
-                var remaining = Math.Ceiling((Cooldown - elapsed).TotalSeconds);
-                MessageError = $"Подождите {remaining} сек.";
-                return;
-            }
-
-            IsLoading = true;
-            MessageError = string.Empty;
-            
-            _animationCts = new CancellationTokenSource();
-            _ = RunAnimationAsync(_animationCts.Token);
-
-            _lastAttempt = DateTime.UtcNow;
-            
             try
             {
-                if (await AuthService.LoginAsync(Login, Password))
+                var svgSource = SvgSource.Load(path);
+                _animationFrames[i - 1] = new SvgImage
                 {
-                    WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
-                    ClearForm();
-                }
-                else
-                {
-                    MessageError = "Неверный логин или пароль";
-                }
+                    Source = svgSource
+                };
             }
             catch (Exception ex)
             {
-                MessageError = "Ошибка соединения с сервером";
-                Log.Warning(ex, "Authorization failed due to exception");
-            }
-            finally
-            {
-                _animationCts.Cancel();
-                IsLoading = false;
-                CurrentAnimationFrame = _animationFrames[0]; 
+                Log.Error(ex, "Failed to load SVG frame {FrameIndex} from {Path}", i, path);
+                _animationFrames[i - 1] = _animationFrames[0];
             }
         }
+            
+        CurrentAnimationFrame = _animationFrames[0];
+    }
 
-        private async Task RunAnimationAsync(CancellationToken token)
+    [RelayCommand]
+    private async Task Authorization()
+    {
+        if (IsLoading) return;
+
+        var validator = new AuthorizationValidator();
+        var validationResult = await validator.ValidateAsync(this);
+        
+        if (!validationResult.IsValid)
         {
-            var currentFrameIndex = 0;
+            MessageError = validationResult.Errors.First().ErrorMessage;
+            return;
+        }
+        
+        var elapsed = DateTime.UtcNow - _lastAttempt;
+        if (elapsed < Cooldown)
+        {
+            var remaining = Math.Ceiling((Cooldown - elapsed).TotalSeconds);
+            MessageError = $"Подождите {remaining} сек.";
+            return;
+        }
 
-            while (!token.IsCancellationRequested)
+        IsLoading = true;
+        MessageError = string.Empty;
+
+        _animationCts = new CancellationTokenSource();
+        _ = RunAnimationAsync(_animationCts.Token);
+        
+        _lastAttempt = DateTime.UtcNow;
+            
+        try
+        {
+            if (await AuthService.LoginAsync(Login, Password))
             {
-                var frameIndex = currentFrameIndex;
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    var frame = _animationFrames[frameIndex];
-                    if (frame is not null)
-                        CurrentAnimationFrame = frame;
-                });
-
-                currentFrameIndex = (currentFrameIndex + 1) % _animationFrames.Length;
-
-                try
-                {
-                    await Task.Delay(150, token);
-                }
-                catch (TaskCanceledException)
-                {
-                    break;
-                }
+                WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
+                ClearForm();
+            }
+            else
+            {
+                MessageError = "Неверный логин или пароль";
             }
         }
-
-        private void ClearForm()
+        catch (Exception ex)
         {
-            MessageError = string.Empty;
-            Login = string.Empty;
-            Password = string.Empty;
+            MessageError = "Ошибка соединения с сервером";
+            Log.Warning(ex, "Authorization failed due to exception");
         }
+        finally
+        {
+            if (_animationCts != null) await _animationCts.CancelAsync();
+            IsLoading = false;
+            CurrentAnimationFrame = _animationFrames[0]; 
+        }
+    }
+
+    private async Task RunAnimationAsync(CancellationToken token)
+    {
+        var currentFrameIndex = 0;
+
+        while (!token.IsCancellationRequested)
+        {
+            var frameIndex = currentFrameIndex;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var frame = _animationFrames[frameIndex];
+                if (frame is not null)
+                    CurrentAnimationFrame = frame;
+            });
+
+            currentFrameIndex = (currentFrameIndex + 1) % _animationFrames.Length;
+
+            try
+            {
+                await Task.Delay(150, token);
+            }
+            catch (TaskCanceledException)
+            {
+                break;
+            }
+        }
+    }
+
+    private void ClearForm()
+    {
+        MessageError = string.Empty;
+        Login = string.Empty;
+        Password = string.Empty;
     }
 }

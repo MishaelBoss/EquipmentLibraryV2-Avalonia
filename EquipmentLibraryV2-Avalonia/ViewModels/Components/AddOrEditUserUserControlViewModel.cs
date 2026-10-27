@@ -8,216 +8,229 @@ using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Validators.Components;
 
-namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
+namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
+
+public partial class AddOrEditUserUserControlViewModel : ViewModelBase
 {
-    public partial class AddOrEditUserUserControlViewModel : ViewModelBase
+    private const string UnchangedPasswordMask = "********";
+
+    private readonly long? _id;
+    private readonly int? _initialUserRoleId;
+    
+    public bool IsNewUser => _id == 0;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial string? Login { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial string? FirstName { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial string? LastName { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial string? Password { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
+    public partial UserRole? SelectUserRole { get; set; }
+
+    public ObservableCollection<UserRole> UserRoles { get; } = [];
+
+    public bool IsActiveConfirmButton
+        => !string.IsNullOrEmpty(Login)
+           && !string.IsNullOrEmpty(FirstName)
+           && !string.IsNullOrEmpty(LastName)
+           && !string.IsNullOrEmpty(Password)
+           && SelectUserRole != null;
+
+    public AddOrEditUserUserControlViewModel(
+        long? id = null, 
+        string? login = null, 
+        string? firstName = null, 
+        string? lastName = null, 
+        string? password = null, 
+        int? userRole = null)
     {
-        private const string UnchangedPasswordMask = "********";
+        _id = id ?? 0;
+        Login = login ?? string.Empty;
+        FirstName = firstName ?? string.Empty;
+        LastName = lastName ?? string.Empty;
+        Password = password ?? string.Empty;
+        _initialUserRoleId = userRole ?? 0;
 
-        private readonly long? _id;
-        private readonly int? _initialUserRoleId;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial string? Login { get; set; }
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial string? FirstName { get; set; }
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial string? LastName { get; set; }
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial string? Password { get; set; }
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
-        public partial UserRole? SelectUserRole { get; set; }
-
-        [ObservableProperty] public partial ObservableCollection<UserRole> UserRoles { get; set; } = [];
-
-        public bool IsActiveConfirmButton
-            => !string.IsNullOrEmpty(Login)
-            && !string.IsNullOrEmpty(FirstName)
-            && !string.IsNullOrEmpty(LastName)
-            && !string.IsNullOrEmpty(Password)
-            && SelectUserRole != null;
-
-        public AddOrEditUserUserControlViewModel(
-            long? id = null, 
-            string? login = null, 
-            string? firstName = null, 
-            string? lastName = null, 
-            string? password = null, 
-            int? userRole = null)
+        try
         {
-            _id = id ?? 0;
-            Login = login ?? string.Empty;
-            FirstName = firstName ?? string.Empty;
-            LastName = lastName ?? string.Empty;
-            Password = password ?? string.Empty;
-            _initialUserRoleId = userRole ?? 0;
+            _ = LoadUserRoles();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to load user roles for user {Login}", Login);
+        }
+    }
 
-            try
-            {
-                _ = LoadUserRoles();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-            }
+    [RelayCommand]
+    public void Close() 
+    {
+        WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
+    }
+
+    [RelayCommand]
+    public async Task Confirm() 
+    {
+        Log.Debug(
+            "Confirm command started. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
+            _id,
+            Login,
+            FirstName,
+            LastName,
+            SelectUserRole?.Id);
+        
+        var validator = new AddOrEditUserValidator();
+        var validationResult = await validator.ValidateAsync(this);
+
+        if (!validationResult.IsValid)
+        {
+            var firstError = validationResult.Errors.FirstOrDefault()?.ErrorMessage ?? "Ошибка валидации";
+            Log.Warning("Валидация формы добавления/редактирования не пройдена: {Error}", firstError);
+            
+            return;
+        }
+            
+        if (string.IsNullOrEmpty(Login) ||
+            string.IsNullOrEmpty(FirstName) ||
+            string.IsNullOrEmpty(LastName) ||
+            string.IsNullOrEmpty(Password) ||
+            SelectUserRole is null)
+        {
+            Log.Warning(
+                "Confirm aborted due to invalid form data. Id={Id}, LoginIsEmpty={LoginEmpty}, FirstNameEmpty={FirstNameEmpty}, LastNameEmpty={LastNameEmpty}, PasswordEmpty={PasswordEmpty}, UserRoleIsNull={UserRoleIsNull}",
+                _id,
+                string.IsNullOrEmpty(Login),
+                string.IsNullOrEmpty(FirstName),
+                string.IsNullOrEmpty(LastName),
+                string.IsNullOrEmpty(Password),
+                SelectUserRole is null);
+            return;
         }
 
-        [RelayCommand]
-        public void Close() 
+        try
         {
-            WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
-        }
+            const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
+                                      "VALUES (@login, @first_name, @last_name, crypt(@password, gen_salt('bf')), @user_type_id, now())";
 
-        [RelayCommand]
-        public async Task Confirm() 
-        {
+            const string updateUserWithPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf')), user_type_id = @user_type_id WHERE id = @id";
+
+            const string updateUserWithoutPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, user_type_id = @user_type_id WHERE id = @id";
+
+            var isNew = IsNewUser;
+            var updatePassword = !isNew && Password is not null && Password != UnchangedPasswordMask && Password != string.Empty;
+            var sql = isNew ? addUserSql : updatePassword ? updateUserWithPasswordSql : updateUserWithoutPasswordSql;
+
             Log.Debug(
-                "Confirm command started. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
+                "Confirm will {Action} user. Id={Id}, Login={Login}, UserRoleId={UserRoleId}, UpdatePassword={UpdatePassword}, Sql={SqlName}",
+                _id,
+                Login,
+                // ReSharper disable once NullableWarningSuppressionIsUsed
+                SelectUserRole!.Id,
+                updatePassword,
+                isNew ? "INSERT" : "UPDATE");
+
+            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await connection.OpenAsync();
+            await using var command = new NpgsqlCommand(sql, connection);
+            Log.Debug("Database connection opened for Confirm. Id={Id}", _id);
+
+            command.Parameters.AddWithValue("@login", Login);
+            command.Parameters.AddWithValue("@first_name", FirstName);
+            command.Parameters.AddWithValue("@last_name", LastName);
+
+            if (isNew || updatePassword)
+            {
+                command.Parameters.AddWithValue("@password", Password);
+            }
+
+            command.Parameters.AddWithValue("@user_type_id", SelectUserRole.Id);
+                
+            if (!isNew)
+            {
+                command.Parameters.AddWithValue("@id", _id);
+                Log.Debug("Update mode: parameter @id={Id} added", _id);
+            }
+                
+            Log.Debug(
+                "Executing user {Action} command. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
+                isNew ? "insert" : "update",
+                _id,
+                Login,
+                FirstName,
+                LastName,
+                // ReSharper disable once NullableWarningSuppressionIsUsed
+                SelectUserRole!.Id);
+                
+            var rows = await command.ExecuteNonQueryAsync();
+            Log.Information(
+                "User {Action} completed. RowsAffected={RowsAffected}, Id={Id}, Login={Login}, UserRoleId={UserRoleId}",
+                isNew ? "insert" : "update",
+                rows,
+                _id,
+                Login,
+                // ReSharper disable once NullableWarningSuppressionIsUsed
+                SelectUserRole!.Id);
+
+            WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
+            WeakReferenceMessenger.Default.Send(new RefreshUserListMessage());
+            Log.Debug(
+                "Messages sent: OpenOrCloseAddOrEditUserMessage and RefreshUserListMessage for Id={Id}, Login={Login}",
+                _id,
+                Login);
+
+            ClearForm();
+            Log.Debug("Form cleared after confirm. Id={Id}", _id);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(
+                ex,
+                "Confirm failed. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
                 _id,
                 Login,
                 FirstName,
                 LastName,
                 SelectUserRole?.Id);
-            
-            if (string.IsNullOrEmpty(Login) ||
-                string.IsNullOrEmpty(FirstName) ||
-                string.IsNullOrEmpty(LastName) ||
-                string.IsNullOrEmpty(Password) ||
-                SelectUserRole is null)
-            {
-                Log.Warning(
-                    "Confirm aborted due to invalid form data. Id={Id}, LoginIsEmpty={LoginEmpty}, FirstNameEmpty={FirstNameEmpty}, LastNameEmpty={LastNameEmpty}, PasswordEmpty={PasswordEmpty}, UserRoleIsNull={UserRoleIsNull}",
-                    _id,
-                    string.IsNullOrEmpty(Login),
-                    string.IsNullOrEmpty(FirstName),
-                    string.IsNullOrEmpty(LastName),
-                    string.IsNullOrEmpty(Password),
-                    SelectUserRole is null);
-                return;
-            }
-
-            try
-            {
-                const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
-                                          "VALUES (@login, @first_name, @last_name, crypt(@password, gen_salt('bf')), @user_type_id, now())";
-
-                const string updateUserWithPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf')), user_type_id = @user_type_id WHERE id = @id";
-
-                const string updateUserWithoutPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, user_type_id = @user_type_id WHERE id = @id";
-
-                var isNew = _id == 0;
-                var updatePassword = !isNew && Password is not null && Password != UnchangedPasswordMask && Password != string.Empty;
-                var sql = isNew ? addUserSql : updatePassword ? updateUserWithPasswordSql : updateUserWithoutPasswordSql;
-
-                Log.Debug(
-                    "Confirm will {Action} user. Id={Id}, Login={Login}, UserRoleId={UserRoleId}, UpdatePassword={UpdatePassword}, Sql={SqlName}",
-                    _id,
-                    Login,
-                    // ReSharper disable once NullableWarningSuppressionIsUsed
-                    SelectUserRole!.Id,
-                    updatePassword,
-                    isNew ? "INSERT" : "UPDATE");
-
-                await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
-                await connection.OpenAsync();
-                await using var command = new NpgsqlCommand(sql, connection);
-                Log.Debug("Database connection opened for Confirm. Id={Id}", _id);
-
-                command.Parameters.AddWithValue("@login", Login);
-                command.Parameters.AddWithValue("@first_name", FirstName);
-                command.Parameters.AddWithValue("@last_name", LastName);
-
-                if (isNew || updatePassword)
-                {
-                    command.Parameters.AddWithValue("@password", Password);
-                }
-
-                command.Parameters.AddWithValue("@user_type_id", SelectUserRole.Id);
-                
-                if (!isNew)
-                {
-                    command.Parameters.AddWithValue("@id", _id);
-                    Log.Debug("Update mode: parameter @id={Id} added", _id);
-                }
-                
-                Log.Debug(
-                    "Executing user {Action} command. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
-                    isNew ? "insert" : "update",
-                    _id,
-                    Login,
-                    FirstName,
-                    LastName,
-                    // ReSharper disable once NullableWarningSuppressionIsUsed
-                    SelectUserRole!.Id);
-                
-                var rows = await command.ExecuteNonQueryAsync();
-                Log.Information(
-                    "User {Action} completed. RowsAffected={RowsAffected}, Id={Id}, Login={Login}, UserRoleId={UserRoleId}",
-                    isNew ? "insert" : "update",
-                    rows,
-                    _id,
-                    Login,
-                    // ReSharper disable once NullableWarningSuppressionIsUsed
-                    SelectUserRole!.Id);
-
-                WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
-                WeakReferenceMessenger.Default.Send(new RefreshUserListMessage());
-                Log.Debug(
-                    "Messages sent: OpenOrCloseAddOrEditUserMessage and RefreshUserListMessage for Id={Id}, Login={Login}",
-                    _id,
-                    Login);
-
-                ClearForm();
-                Log.Debug("Form cleared after confirm. Id={Id}", _id);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(
-                    ex,
-                    "Confirm failed. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
-                    _id,
-                    Login,
-                    FirstName,
-                    LastName,
-                    SelectUserRole?.Id);
-            }
         }
+    }
 
-        private async Task LoadUserRoles() 
+    private async Task LoadUserRoles() 
+    {
+        const string sql = "SELECT * FROM public.user_type";
+        await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+        var result = await connection.QueryAsync<UserRole>(sql);
+
+        UserRoles.Clear();
+
+        foreach (var role in result)
         {
-            const string sql = "SELECT * FROM public.user_type";
-            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
-            var result = await connection.QueryAsync<UserRole>(sql);
-
-            UserRoles.Clear();
-
-            foreach (var role in result)
-            {
-                UserRoles.Add(role);
-            }
-
-            if (_initialUserRoleId.HasValue)
-            {
-                SelectUserRole = UserRoles.FirstOrDefault(r => r.Id == _initialUserRoleId.Value);
-            }
+            UserRoles.Add(role);
         }
 
-        private void ClearForm()
+        if (_initialUserRoleId.HasValue)
         {
-            Login = string.Empty;
-            FirstName = string.Empty;
-            LastName = string.Empty;
-            Password = string.Empty;
+            SelectUserRole = UserRoles.FirstOrDefault(r => r.Id == _initialUserRoleId.Value);
         }
+    }
+
+    private void ClearForm()
+    {
+        Login = string.Empty;
+        FirstName = string.Empty;
+        LastName = string.Empty;
+        Password = string.Empty;
     }
 }

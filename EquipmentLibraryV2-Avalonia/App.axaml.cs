@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -8,84 +9,90 @@ using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using Serilog.Debugging;
 
-namespace EquipmentLibraryV2_Avalonia
+namespace EquipmentLibraryV2_Avalonia;
+
+public class App : Application
 {
-    public partial class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
+    }
 
-        public override void OnFrameworkInitializationCompleted()
-        {
-            SetupSerilog();
-            SetupGlobalExceptionHandlers();
+    public override void OnFrameworkInitializationCompleted()
+    {
+        SetupSerilog();
+        SetupGlobalExceptionHandlers();
+        
+        var russianCulture = new CultureInfo("ru-RU");
+        Thread.CurrentThread.CurrentCulture = russianCulture;
+        Thread.CurrentThread.CurrentUICulture = russianCulture;
+
+        CultureInfo.DefaultThreadCurrentCulture = russianCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = russianCulture;
             
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var mainWindow = new MainWindow
             {
-                var mainWindow = new MainWindow
-                {
-                    DataContext = AppServices.Get<MainWindowViewModel>(),
-                };
-                desktop.MainWindow = mainWindow;
-                mainWindow.Show();
+                DataContext = AppServices.Get<MainWindowViewModel>(),
+            };
+            desktop.MainWindow = mainWindow;
+            mainWindow.Show();
 
-                if (mainWindow.DataContext is MainWindowViewModel vm)
-                    _ = vm.InitializeAsync();
-            }
-
-            base.OnFrameworkInitializationCompleted();
+            if (mainWindow.DataContext is MainWindowViewModel vm)
+                _ = vm.InitializeAsync();
         }
 
-        private void SetupSerilog()
-        {
-            var now = DateTime.Now;
-            var datePart = now.ToString("dd_MM_yyyy");
+        base.OnFrameworkInitializationCompleted();
+    }
 
-            var logPath = Path.Combine(
-                AppPaths.UserDataDir,
-                "logs",
-                $"launcher-log-{datePart}.txt");
+    private void SetupSerilog()
+    {
+        var now = DateTime.Now;
+        var datePart = now.ToString("dd_MM_yyyy");
+
+        var logPath = Path.Combine(
+            AppPaths.UserDataDir,
+            "logs",
+            $"launcher-log-{datePart}.txt");
             
-            SelfLog.Enable(msg => 
-            {
-                Debug.WriteLine(msg);
-                Console.Error.WriteLine(msg);
-            });
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console(
-                    outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .WriteTo.File(
-                    logPath,
-                    outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .CreateLogger();
-        }
-
-        private void SetupGlobalExceptionHandlers()
+        SelfLog.Enable(msg => 
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            {
-                var ex = args.ExceptionObject as Exception;
-                Log.Fatal(ex, "Unhandled AppDomain exception. Terminating={IsTerminating}", args.IsTerminating);
-            };
+            Debug.WriteLine(msg);
+            Console.Error.WriteLine(msg);
+        });
 
-            TaskScheduler.UnobservedTaskException += (sender, args) =>
-            {
-                Log.Fatal(args.Exception, "Unobserved task exception");
-                args.SetObserved();
-            };
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console(
+                outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .WriteTo.File(
+                logPath,
+                outputTemplate: "[{Timestamp:dd.MM.yyyy HH:mm:ss}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+    }
 
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+    private void SetupGlobalExceptionHandlers()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            var ex = args.ExceptionObject as Exception;
+            Log.Fatal(ex, "Unhandled AppDomain exception. Terminating={IsTerminating}", args.IsTerminating);
+        };
+
+        TaskScheduler.UnobservedTaskException += (sender, args) =>
+        {
+            Log.Fatal(args.Exception, "Unobserved task exception");
+            args.SetObserved();
+        };
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Exit += (_, _) =>
             {
-                desktop.Exit += (_, _) =>
-                {
-                    Log.Information("Application exiting");
-                    Log.CloseAndFlush();
-                };
-            }
+                Log.Information("Application exiting");
+                Log.CloseAndFlush();
+            };
         }
     }
 }

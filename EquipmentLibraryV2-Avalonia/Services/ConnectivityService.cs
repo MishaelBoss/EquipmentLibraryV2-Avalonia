@@ -1,8 +1,6 @@
 ﻿using Npgsql;
 using Serilog;
-using System;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
@@ -13,7 +11,7 @@ namespace EquipmentLibraryV2_Avalonia.Services;
 
 internal static class ConnectivityService
 {
-    private static readonly object SyncRoot = new();
+    private static readonly Lock SyncRoot = new();
     private static bool _lastReachable;
     private static long _lastCheckedUtcTicks;
 
@@ -64,21 +62,17 @@ internal static class ConnectivityService
                 return false;
             }
 
-            if (!int.TryParse(AppConfig.Port, out var port))
-                port = 5432;
+            if (!int.TryParse(AppConfig.Port, out var port)) port = 5432;
+            if (await IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
+                return await TestPostgreSqlConnection(showNotification);
+            if (showNotification)
+                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
+            return false;
 
-            if (!await IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
-            {
-                if (showNotification)
-                    WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
-                return false;
-            }
-
-            return await TestPostgreSqlConnection(showNotification);
         }
         catch (Exception ex)
         {
-            Log.Warning($"Connection check failed: {ex.Message}");
+            Log.Warning("Connection check failed: {ExMessage}", ex.Message);
             return false;
         }
     }
@@ -90,17 +84,17 @@ internal static class ConnectivityService
         try
         {
             await tcp.ConnectAsync(host, port, cts.Token);
-            Log.Information($"TCP connect to ({host},{port}) succeeded");
+            Log.Information("TCP connect to ({Host},{Port}) succeeded", host, port);
             return tcp.Connected;
         }
         catch (OperationCanceledException)
         {
-            Log.Warning($"TCP connect to ({host},{port}) timed out after {timeout.TotalSeconds:0}s");
+            Log.Warning("TCP connect to ({Host},{Port}) timed out after {TimeoutTotalSeconds:0}s", host, port, timeout.TotalSeconds);
             return false;
         }
         catch (Exception ex)
         {
-            Log.Warning($"TCP connect to ({host},{port}) failed: {ex.Message}");
+            Log.Warning("TCP connect to ({Host},{Port}) failed: {ExMessage}", host, port, ex.Message);
             return false;
         }
     }
@@ -117,14 +111,13 @@ internal static class ConnectivityService
             await connection.OpenAsync();
 
             await using var cmd = new NpgsqlCommand("SELECT 1", connection);
-            var result = await cmd.ExecuteScalarAsync();
 
-            Log.Information($"PostgreSQL connection test successful, result {result}");
+            Log.Information("PostgreSQL connection test successful, result {Result}", await cmd.ExecuteScalarAsync());
             return true;
         }
         catch (Exception ex)
         {
-            Log.Warning($"PostgreSQL connection failed: {ex.Message}");
+            Log.Warning(ex, "PostgreSQL connection failed"); 
             if (showNotification)
                 WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
             return false;

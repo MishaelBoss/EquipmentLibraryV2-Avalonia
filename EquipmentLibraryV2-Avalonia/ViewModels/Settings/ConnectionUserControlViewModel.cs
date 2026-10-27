@@ -8,19 +8,12 @@ using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.Services.Interfaces;
 using EquipmentLibraryV2_Avalonia.Services;
+using EquipmentLibraryV2_Avalonia.Validators.Settings;
 using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using Npgsql;
 using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Settings;
-
-public enum ConnectionTestStatus
-{
-    Idle,
-    Testing,
-    Success,
-    Failure
-}
 
 public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPage
 {
@@ -36,32 +29,32 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     [ObservableProperty] public partial string Database { get; set; }
     [ObservableProperty] public partial string Password { get; set; }
     [ObservableProperty] public partial string User { get; set; }
-    [ObservableProperty] public partial ConnectionTestStatus TestStatus { get; set; } = ConnectionTestStatus.Idle;
+    [ObservableProperty] public partial ConnectionTestStatusType TestStatus { get; set; } = ConnectionTestStatusType.Idle;
     [ObservableProperty] public partial bool IsTesting { get; set; }
 
     private static readonly IBrush StatusTestingBrush = new SolidColorBrush(Color.Parse("#F0A500"));
     private static readonly IBrush StatusSuccessBrush = new SolidColorBrush(Color.Parse("#28A745"));
     private static readonly IBrush StatusFailureBrush = new SolidColorBrush(Color.Parse("#E74C3C"));
 
-    public bool StatusVisible => TestStatus != ConnectionTestStatus.Idle;
+    public bool StatusVisible => TestStatus != ConnectionTestStatusType.Idle;
 
     public string StatusText => TestStatus switch
     {
-        ConnectionTestStatus.Testing => "Проверка подключения...",
-        ConnectionTestStatus.Success => "Подключение к базе данных успешно",
-        ConnectionTestStatus.Failure => "Не удалось подключиться.",
+        ConnectionTestStatusType.Testing => "Проверка подключения...",
+        ConnectionTestStatusType.Success => "Подключение к базе данных успешно",
+        ConnectionTestStatusType.Failure => "Не удалось подключиться.",
         _ => string.Empty
     };
 
     public IBrush StatusBrush => TestStatus switch
     {
-        ConnectionTestStatus.Testing => StatusTestingBrush,
-        ConnectionTestStatus.Success => StatusSuccessBrush,
-        ConnectionTestStatus.Failure => StatusFailureBrush,
+        ConnectionTestStatusType.Testing => StatusTestingBrush,
+        ConnectionTestStatusType.Success => StatusSuccessBrush,
+        ConnectionTestStatusType.Failure => StatusFailureBrush,
         _ => Brushes.Transparent
     };
 
-    partial void OnTestStatusChanged(ConnectionTestStatus value)
+    partial void OnTestStatusChanged(ConnectionTestStatusType value)
     {
         OnPropertyChanged(nameof(StatusVisible));
         OnPropertyChanged(nameof(StatusText));
@@ -93,7 +86,7 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
             return;
         }
 
-        TestStatus = ConnectionTestStatus.Testing;
+        TestStatus = ConnectionTestStatusType.Testing;
         IsTesting = true;
 
         var ok = await ConnectivityChecker();
@@ -106,7 +99,7 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
             MigrationRunner.Run(connString);
         }
 
-        TestStatus = ok ? ConnectionTestStatus.Success : ConnectionTestStatus.Failure;
+        TestStatus = ok ? ConnectionTestStatusType.Success : ConnectionTestStatusType.Failure;
         IsTesting = false;
 
         Log.Information(ok ? "Successful connect" : "Not connection to database");
@@ -125,26 +118,27 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
     {
         try
         {
-            if (IsConfigInvalid())
+            var validator = new ConnectionValidator();
+            var validationResult = await validator.ValidateAsync(this);
+
+            if (!validationResult.IsValid)
             {
-                Log.Error("Database connection data is incomplete {PropertyValue0}", Database);
+                var firstError = validationResult.Errors.First().ErrorMessage;
+                Log.Error("Валидация настроек подключения не пройдена: {Error}", firstError);
+
+                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, (firstError, 400L)));
                 return false;
             }
 
-            if (!int.TryParse(Port, out var port))
-                port = 5432;
+            if (!int.TryParse(Port, out var port)) port = 5432;
+            if (await IsTcpReachableAsync(Ip, port)) return await TestPostgreSqlConnection();
+            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
+            return false;
 
-            if (!await IsTcpReachableAsync(Ip, port))
-            {
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
-                return false;
-            }
-
-            return await TestPostgreSqlConnection();
         }
         catch (Exception ex)
         {
-            Log.Warning($"Connection check failed: {ex.Message}");
+            Log.Warning("Connection check failed: {ExMessage}", ex.Message);
             return false;
         }
     }

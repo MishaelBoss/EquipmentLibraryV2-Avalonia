@@ -24,18 +24,57 @@
             </Border>
 
             <StackPanel Grid.Row="2" Spacing="8" HorizontalAlignment="Left" Margin="7,10,0,0">
-                <ItemsControl ItemsSource="{Binding Buttons}">
-                    <ItemsControl.ItemTemplate>
+                <!-- Заменили ItemsControl на ListBox и добавили SelectedItem -->
+                <ListBox ItemsSource="{Binding Buttons}" 
+                         SelectedItem="{Binding SelectedButton}"
+                         Background="Transparent" 
+                         BorderThickness="0"
+                         Padding="0">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <!-- Выстраиваем кнопки вертикально с отступами -->
+                            <StackPanel Spacing="8"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    
+                    <ListBox.Styles>
+                        <!-- Стилизуем сам ListBoxItem под вашу кнопку Classes="BTN" -->
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Width" Value="185"/>
+                            <Setter Property="Height" Value="40"/>
+                            <Setter Property="Padding" Value="12,0"/>
+                            <Setter Property="Background" Value="Transparent"/> <!-- Обычное состояние -->
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="CornerRadius" Value="6"/>
+                            <Setter Property="Foreground" Value="#9E9EB0"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                        
+                        <!-- Эффект наведения мыши на кнопку меню -->
+                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#1A1A1C"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Style>
+                        
+                        <!-- ЭФФЕКТ ВЫДЕЛЕНИЯ: Активная (нажатая) кнопка страницы -->
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#1E3A5F"/> <!-- Синий акцент Rider -->
+                            <Setter Property="BorderBrush" Value="#345B8C"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Style>
+                    </ListBox.Styles>
+
+                    <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="vm:DashboardButtonViewModel">
-                            <Button Command="{Binding Command}" Width="185" Height="40" Classes="BTN">
-                                <StackPanel Orientation="Horizontal">
-                                    <Svg Path="{Binding IconPath}" Width="20" Height="20" Stretch="Uniform"/>
-                                    <TextBlock Text="{Binding ButtonText}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- Внутри убрали сам тег Button, так как ListBoxItem теперь сам является кнопкой -->
+                            <Grid ColumnDefinitions="Auto, *">
+                                <Svg Grid.Column="0" Path="{Binding IconPath}" Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ButtonText}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="13" FontWeight="Medium"/>
+                            </Grid>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
 
             <Border Grid.Row="3" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">

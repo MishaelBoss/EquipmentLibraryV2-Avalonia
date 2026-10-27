@@ -10,7 +10,20 @@
     <AssemblyTitle>EquipmentLibraryV2_Avalonia</AssemblyTitle>
     <AssemblyName>EquipmentLibraryV2_Avalonia</AssemblyName>
     <ApplicationIcon>Assets\Logo\logo.ico</ApplicationIcon>
-    <Version>1.8.3</Version>
+    <Version>1.9.0-pre</Version>
+    <Title>Equipment Library v2</Title>
+    <Authors>Michael</Authors>
+    <Description>Cross-platform desktop application for equipment accounting and measurement
+register management.</Description>
+    <Copyright>Copyright © 2026 Michael</Copyright>
+    <PackageProjectUrl>https://github.com/MishaelBoss/EquipmentLibraryV2-Avalonia</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/MishaelBoss/EquipmentLibraryV2-Avalonia/blob/main/LICENSE</PackageLicenseUrl>
+    <PackageTags>avalonia csharp dotnet postgresql equipment-management </PackageTags>
+    <Company>Michael Development</Company>
+    <Product>Equipment Library v2</Product>
+    <AssemblyVersion>1.9.0.0</AssemblyVersion>
+    <FileVersion>1.9.0.0</FileVersion>
+    <NeutralLanguage>ru</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,14 +38,19 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Dapper" Version="2.1.89" />
     <PackageReference Include="dbup" Version="5.0.41" />
     <PackageReference Include="dbup-postgresql" Version="7.0.1" />
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
+    <PackageReference Include="Humanizer" Version="3.0.10" />
+    <PackageReference Include="Humanizer.Core.ru" Version="3.0.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
+    <PackageReference Include="QuestPDF" Version="2026.9.1" />
     <PackageReference Include="Serilog" Version="4.4.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />

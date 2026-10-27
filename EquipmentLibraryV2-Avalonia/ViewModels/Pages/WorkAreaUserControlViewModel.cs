@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Services;
+using EquipmentLibraryV2_Avalonia.Validators.Pages;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
@@ -25,7 +26,18 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
     public async Task Add()
     {
         Log.Information("Add command started. Title={Title}, EquipmentTypeId={EquipmentTypeId}", Title, SelectedEquipmentType?.Id);
-        
+
+        var validator = new WorkAreaValidator();
+        var result = await validator.ValidateAsync(this);
+
+        if (!result.IsValid)
+        {
+            var firstError = result.Errors.FirstOrDefault()?.ErrorMessage ?? "Ошибка валидации";
+            Log.Warning("Валидация формы не пройдена: {Error}", firstError);
+            
+            return;
+        }
+
         try
         {
             await AddAsync();
@@ -41,6 +53,11 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
     public WorkAreaUserControlViewModel() 
     {
         Log.Information("WorkAreaUserControlViewModel created");
+        
+        Title = string.Empty;
+        SerialNumber = string.Empty;
+        Model = string.Empty;
+        InvNumber = string.Empty;
         
         Task.Run(async () =>
         {

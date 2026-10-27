@@ -5,6 +5,7 @@ using EquipmentLibraryV2_Avalonia.Infrastructure;
 using Npgsql;
 using Serilog;
 using Dapper;
+using EquipmentLibraryV2_Avalonia.Validators;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels;
 
@@ -21,28 +22,13 @@ public partial class CreateAdminDialogWindowViewModel : ViewModelBase
     public async Task Create(Window? window)
     {
         StatusText = string.Empty;
-
-        if (string.IsNullOrWhiteSpace(Login))
+        
+        var validator = new CreateAdminValidator();
+        var validationResult = await validator.ValidateAsync(this);
+        
+        if (!validationResult.IsValid)
         {
-            StatusText = "Укажите логин администратора";
-            return;
-        }
-
-        if (string.IsNullOrEmpty(Password))
-        {
-            StatusText = "Укажите пароль";
-            return;
-        }
-
-        if (Password != ConfirmPassword)
-        {
-            StatusText = "Пароли не совпадают";
-            return;
-        }
-
-        if (Password.Length < 6)
-        {
-            StatusText = "Пароль должен быть не короче 6 символов";
+            StatusText = validationResult.Errors.First().ErrorMessage;
             return;
         }
 
@@ -76,6 +62,7 @@ public partial class CreateAdminDialogWindowViewModel : ViewModelBase
             IsSuccess = true;
             StatusText = "Администратор создан";
 
+            await Task.Delay(500);
             window?.Close();
         }
         catch (Exception ex)

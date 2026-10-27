@@ -3,11 +3,7 @@ using Dapper;
 using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
-using System;
-using System.IO;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 
@@ -134,7 +130,7 @@ public static class AuthService
         }
         catch (Exception ex)
         {
-            Log.Logger.Error($"Auto-login failed {ex.Message}");
+            Log.Logger.Error("Auto-login failed {ExMessage}", ex.Message);
             return false;
         }
     }
@@ -242,7 +238,7 @@ public static class AuthService
 
                 if (isActive == false)
                 {
-                    Log.Warning("Session {UserId} deactivated by admin. Forcing logout.", CurrentSession.Id);
+                    Log.Warning("Session {UserId} deactivated by admin. Forcing logout", CurrentSession.Id);
                     Logout();
                     break;
                 }

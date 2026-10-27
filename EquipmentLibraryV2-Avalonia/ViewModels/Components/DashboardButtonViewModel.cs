@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows.Input;
-using Avalonia.Svg.Skia;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 

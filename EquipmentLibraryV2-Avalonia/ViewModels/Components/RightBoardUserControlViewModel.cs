@@ -6,15 +6,22 @@ using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Services;
 using System.Collections.ObjectModel;
-using Avalonia.Controls;
+using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
-public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<LoginMessage>, IRecipient<LogoutMessage>, IDisposable
+public partial class RightBoardUserControlViewModel : ViewModelBase, 
+    IRecipient<LoginMessage>,
+    IRecipient<LogoutMessage>,
+    IRecipient<PageChangedMessage>,
+    IDisposable
 {
-    [ObservableProperty] public partial ObservableCollection<DashboardButtonViewModel> Buttons { get; set; } = [];
+    public ObservableCollection<DashboardButtonViewModel> Buttons { get; } = [];
+    [ObservableProperty] private DashboardButtonViewModel? _selectedButton;
+    
+    private bool _isInternalNavigation;
 
     public RightBoardUserControlViewModel() 
     {
@@ -24,6 +31,15 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         
         UpdateUi();
     }
+    
+    partial void OnSelectedButtonChanged(DashboardButtonViewModel? value)
+    {
+        if (_isInternalNavigation) return;
+        
+        if (value?.Command.CanExecute(null) == true) 
+            value.Command.Execute(null);
+    }
+
 
     public void Receive(LoginMessage message) 
     {
@@ -77,8 +93,13 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         if (await AuthService.TryAutoLoginAsync())
         {
             var dialog = new LogoutDialogWindow();
+            
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+            
+            var mainWindow = desktop.MainWindow;
+            if (mainWindow == null) return;
 
-            dialog.Show();
+            await dialog.ShowDialog(mainWindow);
         }
         else
         {
@@ -87,7 +108,7 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
     }
 
     [RelayCommand]
-    public void OpenSettings()
+    public async Task OpenSettings()
     {
         var dialog = new SettingsDialogWindow();
 
@@ -96,8 +117,25 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
         var mainWindow = desktop.MainWindow;
         if (mainWindow == null) return;
         
-        dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        dialog.Show(mainWindow);
+        await dialog.ShowDialog(mainWindow);
+    }
+
+    public void Receive(PageChangedMessage message)
+    {
+        _isInternalNavigation = true;
+
+        SelectedButton = message.Page switch
+        {
+            PageType.Analytics => Buttons.FirstOrDefault(b => b.Command == OpenAnalyticsCommand),
+            PageType.AdminPanel => Buttons.FirstOrDefault(b => b.Command == OpenAdminPanelCommand),
+            PageType.WorkArea => Buttons.FirstOrDefault(b => b.Command == OpenWorkAreaCommand),
+            PageType.MeasurementRegister => Buttons.FirstOrDefault(b => b.Command == OpenMeasurementRegisterCommand),
+            PageType.RegisterOfTestingEquipment => Buttons.FirstOrDefault(b => b.Command == OpenRegisterOfTestingEquipmentCommand),
+            PageType.Library => Buttons.FirstOrDefault(b => b.Command == OpenLibraryCommand),
+            _ => SelectedButton
+        };
+        
+        _isInternalNavigation = false;
     }
 
     private async void UpdateUi()
@@ -128,6 +166,8 @@ public partial class RightBoardUserControlViewModel : ViewModelBase, IRecipient<
             }
             
             Log.Information("Dashboard successfully initialized. Total visible buttons added: {Count}", Buttons.Count);
+            
+            WeakReferenceMessenger.Default.Send(new RequestCurrentPageMessage());
         }
         catch (Exception ex)
         {

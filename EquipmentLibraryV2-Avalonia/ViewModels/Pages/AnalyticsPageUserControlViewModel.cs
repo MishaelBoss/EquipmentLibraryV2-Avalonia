@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using EquipmentLibraryV2_Avalonia.Controls;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;

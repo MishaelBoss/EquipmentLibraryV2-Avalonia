@@ -19,498 +19,536 @@ using Dapper;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 
-namespace EquipmentLibraryV2_Avalonia.ViewModels
+namespace EquipmentLibraryV2_Avalonia.ViewModels;
+
+public partial class MainWindowViewModel : ViewModelBase,
+    IRecipient<ShowOrHideNotification>,
+    IRecipient<LogoutMessage>,
+    IRecipient<OpenAdminPanelMessage>, 
+    IRecipient<OpenAnalyticsMessage>,
+    IRecipient<OpenLibraryMessage>, 
+    IRecipient<OpenWorkAreaMessage>, 
+    IRecipient<OpenOrCloseAuthorizationMessage>, 
+    IRecipient<OpenOrCloseAddOrEditUserMessage>,
+    IRecipient<OpenOrCloseConfirmDeleteMessage>,
+    IRecipient<OpenMeasurementRegisterMessage>,
+    IRecipient<OpenRegisterOfTestingEquipmentMessage>,
+    IRecipient<OpenOrClosePasswordResetMessage>,
+    IRecipient<RequestCurrentPageMessage>,
+    IDisposable
 {
-    public partial class MainWindowViewModel : ViewModelBase,
-        IRecipient<ShowOrHideNotification>,
-        IRecipient<LogoutMessage>,
-        IRecipient<OpenAdminPanelMessage>, 
-        IRecipient<OpenAnalyticsMessage>,
-        IRecipient<OpenLibraryMessage>, 
-        IRecipient<OpenWorkAreaMessage>, 
-        IRecipient<OpenOrCloseAuthorizationMessage>, 
-        IRecipient<OpenOrCloseAddOrEditUserMessage>,
-        IRecipient<OpenOrCloseConfirmDeleteMessage>,
-        IRecipient<OpenMeasurementRegisterMessage>,
-        IRecipient<OpenRegisterOfTestingEquipmentMessage>,
-        IRecipient<OpenOrClosePasswordResetMessage>,
-        IDisposable
+    [ObservableProperty] public partial bool IsLoading { get; set; }
+
+    [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
+    [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
+    [ObservableProperty] public partial bool IsOverlayDismissible { get; private set; } = true;
+    public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
+
+    [ObservableProperty] public partial string Version { get; set; } = AppConfig.Version;
+    [ObservableProperty] public partial string StatusNetwork { get; set; } = "Проверка...";
+    [ObservableProperty] public partial bool IsConnected { get; set; }
+    [ObservableProperty] public partial bool IsNewVersion { get; set; } = false;
+    private string _newVersion = string.Empty;
+    private string _releaseNotes = string.Empty;
+    private string _releaseDate = string.Empty;
+
+    private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel;
+    private readonly Lazy<AnalyticsPageUserControlViewModel> _analytics;
+    private readonly Lazy<LibraryPageUserControlViewModel> _library;
+    private readonly Lazy<WorkAreaUserControlViewModel> _workArea;
+    private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister;
+    private readonly Lazy<RegisterOfTestingEquipmentPageUserControlViewModel> _registerOfTestingEquipment;
+
+    private const int NetworkCheckIntervalSeconds = 15;
+    private readonly CancellationTokenSource _networkCheckCts = new();
+    private int _networkCheckInProgress;
+
+    private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel;
+
+    public RightBoardUserControlViewModel RightBoardViewModel { get; }
+
+    private readonly AppSettings _settings;
+
+    [RelayCommand]
+    public async Task ReturnToConnectNetwork()
     {
-        [ObservableProperty] public partial bool IsLoading { get; set; }
+        await CheckNetworkAsync();
+    }
 
-        [ObservableProperty] public partial ViewModelBase? CurrentPage { get; set; }
-        [ObservableProperty] public partial ViewModelBase? TopOverlayContent { get; set; }
-        [ObservableProperty] public partial bool IsOverlayDismissible { get; private set; } = true;
-        public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
+    [RelayCommand]
+    public async Task VersionAction()
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow == null) 
+            return;
 
-        [ObservableProperty] public partial string Version { get; set; } = AppConfig.Version;
-        [ObservableProperty] public partial string StatusNetwork { get; set; } = "Проверка...";
-        [ObservableProperty] public partial bool IsConnected { get; set; }
-        [ObservableProperty] public partial bool IsNewVersion { get; set; } = false;
-        private string _newVersion = string.Empty;
-        private string _releaseNotes = string.Empty;
-        private string _releaseDate = string.Empty;
+        var mainWindow = desktop.MainWindow;
 
-        private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel;
-        private readonly Lazy<AnalyticsPageUserControlViewModel> _analytics;
-        private readonly Lazy<LibraryPageUserControlViewModel> _library;
-        private readonly Lazy<WorkAreaUserControlViewModel> _workArea;
-        private readonly Lazy<MeasurementRegisterPageUserControlViewModel> _measurementRegister;
-        private readonly Lazy<RegisterOfTestingEquipmentPageUserControlViewModel> _registerOfTestingEquipment;
-
-        private const int NetworkCheckIntervalSeconds = 15;
-        private readonly CancellationTokenSource _networkCheckCts = new();
-        private int _networkCheckInProgress;
-
-        private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel;
-
-        public RightBoardUserControlViewModel RightBoardViewModel { get; }
-
-        private readonly AppSettings _settings;
-
-        [RelayCommand]
-        public async Task ReturnToConnectNetwork()
+        if (Infrastructure.App.IsDeveloperMode)
         {
-            await CheckNetworkAsync();
+            var aboutDialog = new AboutDialogWindow();
+        
+            var updateData = new DetailUpdateDialog(_newVersion, _releaseNotes, _releaseDate);
+            var updateDialog = new DetailUpdateDialogWindow 
+            { 
+                DataContext = new DetailUpdateDialogWindowViewModel(updateData) 
+            };
+
+            var aboutTask = aboutDialog.ShowDialog(mainWindow);
+            var updateTask = updateDialog.ShowDialog(mainWindow);
+
+            await Task.WhenAll(aboutTask, updateTask);
+            return;
         }
 
-        [RelayCommand]
-        public void About() 
-        {
-            var dialog = new AboutDialogWindow();
-    
-            dialog.Show(); 
-        }
-
-        [RelayCommand]
-        public async Task Update(Visual visualContext)
+        if (IsNewVersion)
         {
             var data = new DetailUpdateDialog(_newVersion, _releaseNotes, _releaseDate);
             var dialog = new DetailUpdateDialogWindow
             {
                 DataContext = new DetailUpdateDialogWindowViewModel(data)
             };
-
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
-            {
-                await dialog.ShowDialog(mainWindow);
-            }
-        }
         
-        public MainWindowViewModel()
-        {
-            var sp = AppServices.Provider;
-            
-            _adminPanel = new Lazy<AdminPanelPageUserControlViewModel>(sp.GetRequiredService<AdminPanelPageUserControlViewModel>);
-            _analytics = new Lazy<AnalyticsPageUserControlViewModel>(sp.GetRequiredService<AnalyticsPageUserControlViewModel>);
-            _library = new Lazy<LibraryPageUserControlViewModel>(sp.GetRequiredService<LibraryPageUserControlViewModel>);
-            _workArea = new Lazy<WorkAreaUserControlViewModel>(sp.GetRequiredService<WorkAreaUserControlViewModel>);
-            _measurementRegister = new Lazy<MeasurementRegisterPageUserControlViewModel>(sp.GetRequiredService<MeasurementRegisterPageUserControlViewModel>);
-            _registerOfTestingEquipment = new Lazy<RegisterOfTestingEquipmentPageUserControlViewModel>(sp.GetRequiredService<RegisterOfTestingEquipmentPageUserControlViewModel>);
-            
-            _authorizationUserControlViewModel = sp.GetRequiredService<AuthorizationUserControlViewModel>();
-
-            IsLoading = true;
-            CurrentPage = _analytics.Value;
-            _settings = AppSettings.Load();
-            RightBoardViewModel = sp.GetRequiredService<RightBoardUserControlViewModel>();
-            
-            IsActive = true;
-            
-            _ = CheckNetworkAsync();
-            _ = MonitorNetworkAsync();
-            
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
+            await dialog.ShowDialog(desktop.MainWindow);
         }
-
-        public async Task InitializeAsync()
+        else
         {
-            Log.Information("Initialization started");
+            var dialog = new AboutDialogWindow();
+        
+    
+            if (mainWindow == null) return;
+        
+            await dialog.ShowDialog(mainWindow); 
+        }
+    }
 
-            if(Infrastructure.App.IsDeveloperMode) Log.Information("In developer mode");
+    public MainWindowViewModel()
+    {
+        var sp = AppServices.Provider;
             
-            try {
-                await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
-                await EnsureDatabaseReadyAsync();
-                Log.Information("Initialization completed successfully");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Initialization failed");
-            }
-            finally
-            {
-                IsLoading = false;
-                Log.Information("Loading state set to false");
-            }
+        _adminPanel = new Lazy<AdminPanelPageUserControlViewModel>(sp.GetRequiredService<AdminPanelPageUserControlViewModel>);
+        _analytics = new Lazy<AnalyticsPageUserControlViewModel>(sp.GetRequiredService<AnalyticsPageUserControlViewModel>);
+        _library = new Lazy<LibraryPageUserControlViewModel>(sp.GetRequiredService<LibraryPageUserControlViewModel>);
+        _workArea = new Lazy<WorkAreaUserControlViewModel>(sp.GetRequiredService<WorkAreaUserControlViewModel>);
+        _measurementRegister = new Lazy<MeasurementRegisterPageUserControlViewModel>(sp.GetRequiredService<MeasurementRegisterPageUserControlViewModel>);
+        _registerOfTestingEquipment = new Lazy<RegisterOfTestingEquipmentPageUserControlViewModel>(sp.GetRequiredService<RegisterOfTestingEquipmentPageUserControlViewModel>);
+            
+        _authorizationUserControlViewModel = sp.GetRequiredService<AuthorizationUserControlViewModel>();
+
+        IsLoading = true;
+        CurrentPage = _analytics.Value;
+        _settings = AppSettings.Load();
+        RightBoardViewModel = sp.GetRequiredService<RightBoardUserControlViewModel>();
+            
+        IsActive = true;
+            
+        _ = CheckNetworkAsync();
+        _ = MonitorNetworkAsync();
+            
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
+    }
+
+    public async Task InitializeAsync()
+    {
+        Log.Information("Initialization started");
+
+        if(Infrastructure.App.IsDeveloperMode) Log.Information("In developer mode");
+            
+        try {
+            await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
+            await EnsureDatabaseReadyAsync();
+            Log.Information("Initialization completed successfully");
         }
-
-        private async Task EnsureDatabaseReadyAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                if (!int.TryParse(AppConfig.Port, out var port))
-                    port = 5432;
-
-                if (!await ConnectivityService.IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
-                {
-                    Log.Warning("PostgreSQL is not running. Start PostgreSQL and restart the app — the database schema will be created automatically");
-                    return;
-                }
-
-                var connectionString =
-                    $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
-                    $"User Id={AppConfig.User};Password={AppConfig.Password};" +
-                    $"SslMode=Prefer;Timeout=10;CommandTimeout=30";
-
-                if (!MigrationRunner.Run(connectionString))
-                    return;
-
-                await using var connection = new NpgsqlConnection(connectionString);
-                var users = await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM public.users");
-
-                if (users == 0)
-                    ShowCreateAdminDialog();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Database readiness check failed");
-            }
+            Log.Error(ex, "Initialization failed");
         }
-
-        private void ShowCreateAdminDialog()
+        finally
         {
-            try
-            {
-                var dialog = new CreateAdminDialogWindow();
-
-                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
-                {
-                    _ = dialog.ShowDialog(mainWindow);
-                }
-                else
-                {
-                    dialog.Show();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Failed to show create-admin dialog");
-            }
+            IsLoading = false;
+            Log.Information("Loading state set to false");
         }
+    }
 
-        private async Task LoadVersion()
+    private async Task EnsureDatabaseReadyAsync()
+    {
+        try
         {
-            Version = AppConfig.DisplayVersion;
-            Log.Information("Starting version check. Current version: {CurrentVersion}", AppConfig.Version);
+            if (!int.TryParse(AppConfig.Port, out var port))
+                port = 5432;
 
-            var handler = new SocketsHttpHandler
+            if (!await ConnectivityService.IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
             {
-                PooledConnectionLifetime = TimeSpan.FromMinutes(1),
-                ConnectTimeout = TimeSpan.FromSeconds(10)
-            };
+                Log.Warning("PostgreSQL is not running. Start PostgreSQL and restart the app — the database schema will be created automatically");
+                return;
+            }
 
-            using var client = new HttpClient(handler);
-            client.DefaultRequestVersion = HttpVersion.Version30;
-            client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+            var connectionString =
+                $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
+                $"User Id={AppConfig.User};Password={AppConfig.Password};" +
+                $"SslMode=Prefer;Timeout=10;CommandTimeout=30";
 
-            try
+            if (!MigrationRunner.Run(connectionString))
+                return;
+
+            await using var connection = new NpgsqlConnection(connectionString);
+            var users = await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM public.users");
+
+            if (users == 0)
+                await ShowCreateAdminDialog();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Database readiness check failed");
+        }
+    }
+
+    private async Task ShowCreateAdminDialog()
+    {
+        try
+        {
+            var dialog = new CreateAdminDialogWindow();
+
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+            
+            var mainWindow = desktop.MainWindow;
+            if (mainWindow == null) return; 
+            
+            await dialog.ShowDialog(mainWindow);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to show create-admin dialog");
+        }
+    }
+
+    private async Task LoadVersion()
+    {
+        Version = AppConfig.DisplayVersion;
+        Log.Information("Starting version check. Current version: {CurrentVersion}", AppConfig.Version);
+
+        var handler = new SocketsHttpHandler
+        {
+            PooledConnectionLifetime = TimeSpan.FromMinutes(1),
+            ConnectTimeout = TimeSpan.FromSeconds(10)
+        };
+
+        using var client = new HttpClient(handler);
+        client.DefaultRequestVersion = HttpVersion.Version30;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+
+        try
+        {
+            var response = await client.GetAsync("https://pastebin.com/raw/5CArBfWP");
+            response.EnsureSuccessStatusCode();
+
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var jsonNode = JsonNode.Parse(jsonString);
+
+            if (jsonNode == null)
             {
-                var response = await client.GetAsync("https://pastebin.com/raw/5CArBfWP");
-                response.EnsureSuccessStatusCode();
+                Log.Warning("Version manifest is empty or invalid JSON");
+                return;
+            }
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var jsonNode = JsonNode.Parse(jsonString);
+            var latest = jsonNode["promos"]?["latest"]?.ToString();
+            var recommended = jsonNode["promos"]?["recommended"]?.ToString();
 
-                if (jsonNode == null)
-                {
-                    Log.Warning("Version manifest is empty or invalid JSON");
-                    return;
-                }
-
-                var latest = jsonNode["promos"]?["latest"]?.ToString();
-                var recommended = jsonNode["promos"]?["recommended"]?.ToString();
-
-                Log.Information("Remote versions loaded. Latest: {Latest}, Recommended: {Recommended}", latest, recommended);
+            Log.Information("Remote versions loaded. Latest: {Latest}, Recommended: {Recommended}", latest, recommended);
                 
-                var currentVersion = AppConfig.Version;
-                var targetVersion = _settings.CheckLatestUpdates ? latest : recommended;
-                var targetVersionDetail = string.Empty;
-                var targetVersionDate = string.Empty;
+            var currentVersion = AppConfig.Version;
+            var targetVersion = _settings.CheckLatestUpdates ? latest : recommended;
+            var targetVersionDetail = string.Empty;
+            var targetVersionDate = string.Empty;
                 
-                var detailObject = jsonNode["detail"]?.AsObject();
-                if (detailObject != null && !string.IsNullOrWhiteSpace(targetVersion))
-                {
-                    var versionInfoNode = detailObject[targetVersion]?.AsObject();
+            var detailObject = jsonNode["detail"]?.AsObject();
+            if (detailObject != null && !string.IsNullOrWhiteSpace(targetVersion))
+            {
+                var versionInfoNode = detailObject[targetVersion]?.AsObject();
                     
-                    if (versionInfoNode != null)
-                    {
-                        targetVersionDetail = versionInfoNode["description"]?.ToString() ?? string.Empty;
-                        targetVersionDate = versionInfoNode["date"]?.ToString() ?? string.Empty;
+                if (versionInfoNode != null)
+                {
+                    targetVersionDetail = versionInfoNode["description"]?.ToString() ?? string.Empty;
+                    targetVersionDate = versionInfoNode["date"]?.ToString() ?? string.Empty;
                         
-                        Log.Debug("Found detail for {TargetVersion}. Date: {Date}, Detail: {Detail}", 
-                            targetVersion, targetVersionDate, targetVersionDetail);
-                    }
-                    else
-                    {
-                        Log.Debug("No detail found in manifest for target version {TargetVersion}", targetVersion);
-                    }
+                    Log.Debug("Found detail for {TargetVersion}. Date: {Date}, Detail: {Detail}", 
+                        targetVersion, targetVersionDate, targetVersionDetail);
                 }
+                else
+                {
+                    Log.Debug("No detail found in manifest for target version {TargetVersion}", targetVersion);
+                }
+            }
                 
-                bool hasUpdate;
+            bool hasUpdate;
 
-                if (Infrastructure.App.IsDeveloperMode)
-                {
-                    hasUpdate = true;
+            if (Infrastructure.App.IsDeveloperMode)
+            {
+                hasUpdate = true;
 
-                    if (string.IsNullOrWhiteSpace(targetVersion))
-                    {
-                        targetVersion = "9.9.9-dev";
-                        targetVersionDetail = "Тестовый режим разработчика: Проверка UI окна обновлений.";
-                        targetVersionDate = "2026-10-26";
-                    }
-                }
-                else
+                if (string.IsNullOrWhiteSpace(targetVersion))
                 {
-                    hasUpdate = !string.IsNullOrWhiteSpace(targetVersion) &&
-                                VersionHelper.IsNewerVersion(currentVersion, targetVersion);
-                }
-
-                if (hasUpdate)
-                {
-                    IsNewVersion = true;
-                    Version = $"EquipmentLibrary v2: {targetVersion}";
-                    _newVersion = $"EquipmentLibrary v2: {targetVersion}";
-                    _releaseNotes = string.IsNullOrEmpty(targetVersionDetail)
-                        ? "There are no change logs for this version."
-                        : targetVersionDetail;
-                    _releaseDate = targetVersionDate;
-
-                    Log.Information("Update found: {Version}. Description: {Description}", targetVersion, targetVersionDetail);
-                }
-                else
-                {
-                    IsNewVersion = false;
-                    Version = AppConfig.DisplayVersion;
-                    Log.Information("No update available for current version {CurrentVersion}", currentVersion);
+                    targetVersion = "9.9.9-dev";
+                    targetVersionDetail = "Тестовый режим разработчика: Проверка UI окна обновлений.";
+                    targetVersionDate = "2026-10-26";
                 }
             }
-            catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+            else
             {
-                Log.Warning(ex, "Version check timed out");
-                WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Version check timed out", 503L)));
+                hasUpdate = !string.IsNullOrWhiteSpace(targetVersion) &&
+                            VersionHelper.IsNewerVersion(currentVersion, targetVersion);
             }
-            catch (Exception ex)
+
+            if (hasUpdate)
             {
-                WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Failed to fetch version info", 503L)));
-                Log.Warning(ex, "Failed to fetch version info");
+                IsNewVersion = true;
+                Version = $"EquipmentLibrary v2: {targetVersion}";
+                _newVersion = $"EquipmentLibrary v2: {targetVersion}";
+                _releaseNotes = string.IsNullOrEmpty(targetVersionDetail)
+                    ? "There are no change logs for this version."
+                    : targetVersionDetail;
+                _releaseDate = targetVersionDate;
+
+                Log.Information("Update found: {Version}. Description: {Description}", targetVersion, targetVersionDetail);
+            }
+            else
+            {
+                IsNewVersion = false;
                 Version = AppConfig.DisplayVersion;
+                Log.Information("No update available for current version {CurrentVersion}", currentVersion);
             }
         }
-
-        private async Task MonitorNetworkAsync()
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
         {
-            try
+            Log.Warning(ex, "Version check timed out");
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Version check timed out", 503L)));
+        }
+        catch (Exception ex)
+        {
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Failed to fetch version info", 503L)));
+            Log.Warning(ex, "Failed to fetch version info");
+            Version = AppConfig.DisplayVersion;
+        }
+    }
+
+    private async Task MonitorNetworkAsync()
+    {
+        try
+        {
+            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(NetworkCheckIntervalSeconds));
+            while (await timer.WaitForNextTickAsync(_networkCheckCts.Token))
             {
-                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(NetworkCheckIntervalSeconds));
-                while (await timer.WaitForNextTickAsync(_networkCheckCts.Token))
+                await CheckNetworkAsync(showNotification: false);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private async Task CheckNetworkAsync(bool showNotification = true)
+    {
+        if (Interlocked.Exchange(ref _networkCheckInProgress, 1) == 1)
+            return;
+
+        try
+        {
+            if (!IsConnected)
+                StatusNetwork = "Проверка...";
+
+            IsConnected = await ConnectivityService.ConnectivityChecker(showNotification);
+            StatusNetwork = IsConnected ? "Подключено" : "Нет соединения";
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _networkCheckInProgress, 0);
+        }
+    }
+
+    public void Receive(ShowOrHideNotification message)
+    {
+        if (message.Action == ErrorAction.Add)
+        {
+            if (message.ViewModel is ErrorUserControlViewModel errorVm)
+            {
+                errorVm.Object = message.Data switch
                 {
-                    await CheckNetworkAsync(showNotification: false);
-                }
+                    (string text, long id)  => $"{text} (Cod: {id})",
+                    string textOnly         => textOnly,
+                    long codeOnly           => $"Cod error: {codeOnly}",
+                    _                       => "An unknown error occurred"
+                };
             }
-            catch (OperationCanceledException)
+
+            if (!ErrorMessages.Contains(message.ViewModel))
             {
+                ErrorMessages.Add(message.ViewModel);
             }
         }
-
-        private async Task CheckNetworkAsync(bool showNotification = true)
+        else
         {
-            if (Interlocked.Exchange(ref _networkCheckInProgress, 1) == 1)
-                return;
-
-            try
-            {
-                if (!IsConnected)
-                    StatusNetwork = "Проверка...";
-
-                IsConnected = await ConnectivityService.ConnectivityChecker(showNotification);
-                StatusNetwork = IsConnected ? "Подключено" : "Нет соединения";
-            }
-            finally
-            {
-                Interlocked.Exchange(ref _networkCheckInProgress, 0);
-            }
-        }
-
-        public void Receive(ShowOrHideNotification message)
-        {
-            if (message.Action == ErrorAction.Add)
-            {
-                if (message.ViewModel is ErrorUserControlViewModel errorVm)
-                {
-                    errorVm.Object = message.Data switch
-                    {
-                        (string text, long id)  => $"{text} (Cod: {id})",
-                        string textOnly         => textOnly,
-                        long codeOnly           => $"Cod error: {codeOnly}",
-                        _                       => "An unknown error occurred"
-                    };
-                }
-
-                if (!ErrorMessages.Contains(message.ViewModel))
-                {
-                    ErrorMessages.Add(message.ViewModel);
-                }
-            }
-            else
-            {
-                ErrorMessages.Remove(message.ViewModel);
-                if (message.ViewModel is IDisposable disposable)
-                    disposable.Dispose();
-            }
-        }
-
-        public void Receive(LogoutMessage message)
-        {
-            CurrentPage = _library.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
-        }
-
-        private static bool IsCurrentUserAllowed(params long[] roles)
-        {
-            var role = AuthService.CurrentSession?.UserRole;
-            return role is not null && roles.Contains(role.Value);
-        }
-
-        public void Receive(OpenAdminPanelMessage message)
-        {
-            if (!IsCurrentUserAllowed(1)) return;
-            CurrentPage = _adminPanel.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.AdminPanel));
-        }
-
-        public void Receive(OpenAnalyticsMessage message)
-        {
-            CurrentPage = _analytics.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
-        }
-
-        public void Receive(OpenLibraryMessage message)
-        {
-            CurrentPage = _library.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
-        }
-
-        public void Receive(OpenWorkAreaMessage message)
-        {
-            if (!IsCurrentUserAllowed(1, 2)) return;
-            CurrentPage = _workArea.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.WorkArea));
-        }
-
-        public void Receive(OpenOrCloseAuthorizationMessage message)
-        {
-            TopOverlayContent = TopOverlayContent == null ? _authorizationUserControlViewModel : null;
-        }
-
-        public void Receive(OpenOrCloseAddOrEditUserMessage message)
-        {
-            if (TopOverlayContent is null)
-            {
-                TopOverlayContent = new AddOrEditUserUserControlViewModel(message.Id, message.Login, message.FirstName, message.LastName, message.Password, message.UserRole);
-                IsOverlayDismissible = message.Id is not null;
-            }
-            else
-            {
-                TopOverlayContent = null;
-                IsOverlayDismissible = true;
-            }
-        }
-
-        public void Receive(OpenOrCloseConfirmDeleteMessage message)
-        {
-            if (message.OnSuccessCallback is null)
-            {
-                Log.Debug("Received CloseConfirmDelete message. Overlay will be closed");
-                TopOverlayContent = null;
-                return;
-            }
-            
-            Log.Debug(
-                "Received OpenConfirmDelete message. Id={Id}, Title={Title}",
-                message.Id,
-                message.Title
-            );
-
-            TopOverlayContent = new ConfirmDeleteUserControlViewModel(
-                message.Id,
-                message.Title,
-                message.DeleteSql,
-                message.OnSuccessCallback,
-                message.AdditionalQueries
-            );
-        }
-
-        public void Receive(OpenMeasurementRegisterMessage message)
-        {
-            if (!IsCurrentUserAllowed(1, 2)) return;
-            CurrentPage = _measurementRegister.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.MeasurementRegister));
-        }
-
-        public void Receive(OpenRegisterOfTestingEquipmentMessage message)
-        {
-            if (!IsCurrentUserAllowed(1, 2)) return;
-            CurrentPage = _registerOfTestingEquipment.Value;
-            WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.RegisterOfTestingEquipment));
-        }
-        
-        public void Receive(OpenOrClosePasswordResetMessage message)
-        {
-            Log.Debug(
-                "Received OpenPasswordReset message. Id={Id}, Title={Title}",
-                message.UserId,
-                message.Login
-            );
-            
-            if (TopOverlayContent is null)
-            {
-                TopOverlayContent = new PasswordResetUserControlViewModel(message.UserId, message.Login);
-                IsOverlayDismissible = false;
-            }
-            else
-            {
-                TopOverlayContent = null;
-                IsOverlayDismissible = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            IsActive = false;
-            
-            _networkCheckCts.Cancel();
-            _networkCheckCts.Dispose();
-
-            DisposePage(_adminPanel);
-            DisposePage(_analytics);
-            DisposePage(_library);
-            DisposePage(_workArea);
-            DisposePage(_measurementRegister);
-            DisposePage(_registerOfTestingEquipment);
-
-            if (RightBoardViewModel is IDisposable rightBoardDisposable)
-                rightBoardDisposable.Dispose();
-
-            GC.SuppressFinalize(this);
-        }
-
-        private static void DisposePage<T>(Lazy<T> lazy) where T : class
-        {
-            if (lazy is { IsValueCreated: true, Value: IDisposable disposable })
+            ErrorMessages.Remove(message.ViewModel);
+            if (message.ViewModel is IDisposable disposable)
                 disposable.Dispose();
         }
     }
+
+    public void Receive(LogoutMessage message)
+    {
+        CurrentPage = _library.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
+    }
+
+    private static bool IsCurrentUserAllowed(params long[] roles)
+    {
+        var role = AuthService.CurrentSession?.UserRole;
+        return role is not null && roles.Contains(role.Value);
+    }
+
+    public void Receive(OpenAdminPanelMessage message)
+    {
+        if (!IsCurrentUserAllowed(1)) return;
+        CurrentPage = _adminPanel.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.AdminPanel));
+    }
+
+    public void Receive(OpenAnalyticsMessage message)
+    {
+        CurrentPage = _analytics.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Analytics));
+    }
+
+    public void Receive(OpenLibraryMessage message)
+    {
+        CurrentPage = _library.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.Library));
+    }
+
+    public void Receive(OpenWorkAreaMessage message)
+    {
+        if (!IsCurrentUserAllowed(1, 2)) return;
+        CurrentPage = _workArea.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.WorkArea));
+    }
+
+    public void Receive(OpenOrCloseAuthorizationMessage message)
+    {
+        TopOverlayContent = TopOverlayContent == null ? _authorizationUserControlViewModel : null;
+    }
+
+    public void Receive(OpenOrCloseAddOrEditUserMessage message)
+    {
+        if (TopOverlayContent is null)
+        {
+            TopOverlayContent = new AddOrEditUserUserControlViewModel(message.Id, message.Login, message.FirstName, message.LastName, message.Password, message.UserRole);
+            IsOverlayDismissible = message.Id is not null;
+        }
+        else
+        {
+            TopOverlayContent = null;
+            IsOverlayDismissible = true;
+        }
+    }
+
+    public void Receive(OpenOrCloseConfirmDeleteMessage message)
+    {
+        if (message.OnSuccessCallback is null)
+        {
+            Log.Debug("Received CloseConfirmDelete message. Overlay will be closed");
+            TopOverlayContent = null;
+            return;
+        }
+            
+        Log.Debug(
+            "Received OpenConfirmDelete message. Id={Id}, Title={Title}",
+            message.Id,
+            message.Title
+        );
+
+        TopOverlayContent = new ConfirmDeleteUserControlViewModel(
+            message.Id,
+            message.Title,
+            message.DeleteSql,
+            message.OnSuccessCallback,
+            message.AdditionalQueries
+        );
+    }
+
+    public void Receive(OpenMeasurementRegisterMessage message)
+    {
+        if (!IsCurrentUserAllowed(1, 2)) return;
+        CurrentPage = _measurementRegister.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.MeasurementRegister));
+    }
+
+    public void Receive(OpenRegisterOfTestingEquipmentMessage message)
+    {
+        if (!IsCurrentUserAllowed(1, 2)) return;
+        CurrentPage = _registerOfTestingEquipment.Value;
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.RegisterOfTestingEquipment));
+    }
+        
+    public void Receive(OpenOrClosePasswordResetMessage message)
+    {
+        Log.Debug(
+            "Received OpenPasswordReset message. Id={Id}, Title={Title}",
+            message.UserId,
+            message.Login
+        );
+            
+        if (TopOverlayContent is null)
+        {
+            TopOverlayContent = new PasswordResetUserControlViewModel(message.UserId, message.Login);
+            IsOverlayDismissible = false;
+        }
+        else
+        {
+            TopOverlayContent = null;
+            IsOverlayDismissible = true;
+        }
+    }
+
+    public void Receive(RequestCurrentPageMessage message)
+    {
+        PageType currentType = CurrentPage switch
+        {
+            AnalyticsPageUserControlViewModel => PageType.Analytics,
+            AdminPanelPageUserControlViewModel => PageType.AdminPanel,
+            WorkAreaUserControlViewModel => PageType.WorkArea,
+            MeasurementRegisterPageUserControlViewModel => PageType.MeasurementRegister,
+            RegisterOfTestingEquipmentPageUserControlViewModel => PageType.RegisterOfTestingEquipment,
+            LibraryPageUserControlViewModel => PageType.Library,
+            _ => PageType.Analytics
+        };
+
+        WeakReferenceMessenger.Default.Send(new PageChangedMessage(currentType));
+    }
+    
+    public void Dispose()
+    {
+        IsActive = false;
+            
+        _networkCheckCts.Cancel();
+        _networkCheckCts.Dispose();
+
+        DisposePage(_adminPanel);
+        DisposePage(_analytics);
+        DisposePage(_library);
+        DisposePage(_workArea);
+        DisposePage(_measurementRegister);
+        DisposePage(_registerOfTestingEquipment);
+
+        if (RightBoardViewModel is IDisposable rightBoardDisposable)
+            rightBoardDisposable.Dispose();
+
+        GC.SuppressFinalize(this);
+    }
+
+    private static void DisposePage<T>(Lazy<T> lazy) where T : class
+    {
+        if (lazy is { IsValueCreated: true, Value: IDisposable disposable })
+            disposable.Dispose();
+    }
+
 }

@@ -85,13 +85,13 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
     {
         if (userId is null)
         {
-            Log.Warning("GeneratePassword aborted: UserId is null.");
+            Log.Warning("GeneratePassword aborted: UserId is null");
             return;
         }
         
         if (length < 16)
         {
-            Log.Debug("Requested password length {Length} is less than minimum, using 16.", length);
+            Log.Debug("Requested password length {Length} is less than minimum, using 16", length);
             length = 16;
         }
 
