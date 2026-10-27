@@ -257,7 +257,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels
                     }
                 }
                 
-                var hasUpdate = false;
+                bool hasUpdate;
 
                 if (Infrastructure.App.IsDeveloperMode)
                 {
