@@ -28,8 +28,8 @@
               WindowDecorationProperties.ElementRole="TitleBar">
             <TextBlock Grid.Column="0" Text="Доступно обновление" Margin="16,0,0,0"
                        FontWeight="SemiBold" Foreground="#CED0D6"
-                       VerticalAlignment="Center" IsHitTestVisible="False"/>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34">
+                       VerticalAlignment="Center" IsHitTestVisible="False" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
                 <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
                     <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
                 </Button>
