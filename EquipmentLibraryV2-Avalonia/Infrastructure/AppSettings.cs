@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 
 namespace EquipmentLibraryV2_Avalonia.Infrastructure;
 
@@ -16,8 +17,9 @@ public class AppSettings
     [JsonIgnore] 
     public string Password { get; set; } = string.Empty;
     
-    private static readonly string SettingsPath = Path.Combine(
-        AppPaths.UserDataDir, "settings.json");
+    public string? EncryptedPassword { get; set; }
+    
+    private static readonly string SettingsPath = Path.Combine(AppPaths.UserDataDir, "settings.json");
 
     public static AppSettings Load()
     {
@@ -25,49 +27,40 @@ public class AppSettings
         {
             if (!File.Exists(SettingsPath)) return new AppSettings();
 
-            var json = File.ReadAllText(SettingsPath);
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppPaths.UserDataDir)
+                .AddJsonFile("settings.json", optional: true, reloadOnChange: false)
+                .Build();
 
-            return new AppSettings
+            var settings = new AppSettings();
+            
+            configuration.Bind(settings);
+
+            if (!string.IsNullOrEmpty(settings.EncryptedPassword))
             {
-                CheckLatestUpdates = TryGetBool(root, "CheckLatestUpdates") ?? true,
-                FolderDownload = TryGetString(root, "FolderDownload") ?? string.Empty,
-                UseRawSelectedFolder = TryGetBool(root, "UseRawSelectedFolder") ?? false,
-                Ip = TryGetString(root, "Ip") ?? string.Empty,
-                Port = TryGetString(root, "Port") ?? string.Empty,
-                Database = TryGetString(root, "Database") ?? string.Empty,
-                User = TryGetString(root, "User") ?? string.Empty,
-                Password = DecodePassword(root),
-            };
+                var decrypted = SettingsProtector.TryDecrypt(settings.EncryptedPassword);
+                if (decrypted is not null)
+                {
+                    settings.Password = decrypted;
+                }
+                else
+                {
+                    Serilog.Log.Warning("Stored encrypted password could not be decrypted (key missing or changed)");
+                    settings.Password = string.Empty;
+                }
+            }
+            else
+            {
+                settings.Password = configuration["Password"] ?? string.Empty;
+            }
+
+            return settings;
         }
         catch (Exception ex)
         {
             Serilog.Log.Error(ex, "Не удалось загрузить настройки");
             return new AppSettings();
         }
-    }
-
-    private static string DecodePassword(JsonElement root)
-    {
-        if (root.TryGetProperty("EncryptedPassword", out var encrypted) &&
-            encrypted.ValueKind == JsonValueKind.String)
-        {
-            var decrypted = SettingsProtector.TryDecrypt(encrypted.GetString());
-            if (decrypted is not null)
-                return decrypted;
-
-            Serilog.Log.Warning("Stored encrypted password could not be decrypted (key missing or changed)");
-            return string.Empty;
-        }
-
-        if (root.TryGetProperty("Password", out var legacy) &&
-            legacy.ValueKind == JsonValueKind.String)
-        {
-            return legacy.GetString() ?? string.Empty;
-        }
-
-        return string.Empty;
     }
 
     public void Save()
@@ -77,6 +70,9 @@ public class AppSettings
             var directory = Path.GetDirectoryName(SettingsPath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
+
+            if (!string.IsNullOrEmpty(Password))
+                EncryptedPassword = SettingsProtector.Encrypt(Password);
 
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions 
             { 
@@ -90,14 +86,4 @@ public class AppSettings
             Serilog.Log.Error(ex, "Не удалось сохранить настройки"); 
         }
     }
-
-    private static string? TryGetString(JsonElement root, string name) =>
-        root.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
-            ? value.GetString()
-            : null;
-
-    private static bool? TryGetBool(JsonElement root, string name) =>
-        root.TryGetProperty(name, out var value) && value.ValueKind is JsonValueKind.True or JsonValueKind.False
-            ? value.GetBoolean()
-            : null;
 }

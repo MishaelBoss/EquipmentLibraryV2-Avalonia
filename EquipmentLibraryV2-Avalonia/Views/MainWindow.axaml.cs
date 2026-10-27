@@ -7,6 +7,7 @@ using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using static System.OperatingSystem;
 
@@ -168,36 +169,46 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var json = File.ReadAllText(_settingsPath);
-            var settings = JsonSerializer.Deserialize<WindowSettings>(json);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile(_settingsPath, optional: true, reloadOnChange: false)
+                .Build();
 
-            if (settings == null)
+            var settings = new WindowSettings();
+            configuration.Bind(settings);
+    
+            if (!Enum.TryParse<WindowState>(settings.WindowState, out var savedState))
+                savedState = WindowState.Normal; 
+            
+            var targetWidth = settings.Width > MinWidth ? settings.Width : MinWidth;
+            var targetHeight = settings.Height > MinHeight ? settings.Height : MinHeight;
+            var targetPoint = new PixelPoint(settings.X, settings.Y);
+            
+            var isPositionVisible = Screens.All.Any(screen => screen.Bounds.Contains(targetPoint));
+
+            if (isPositionVisible)
             {
-                Log.Warning("Window settings deserialization returned null. Using centered startup location");
-                return;
-            }
-
-            WindowStartupLocation = WindowStartupLocation.Manual;
-
-            Width = settings.Width;
-            Height = settings.Height;
-            Position = new PixelPoint(settings.X, settings.Y);
-                
-            if (Enum.TryParse<WindowState>(settings.WindowState, out var state))
-            {
-                WindowState = state;
-                Log.Information(
-                    "Window settings applied. Width={Width}, Height={Height}, X={X}, Y={Y}, WindowState={WindowState}",
-                    settings.Width,
-                    settings.Height,
-                    settings.X,
-                    settings.Y,
-                    state);
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Position = targetPoint;
+            
+                if (savedState != WindowState.Maximized)
+                {
+                    Width = targetWidth;
+                    Height = targetHeight;
+                }
             }
             else
             {
-                Log.Warning("Failed to parse WindowState from settings: {State}", settings.WindowState);
+                Log.Warning("Saved window position ({X}, {Y}) is off-screen. Resetting to CenterScreen", settings.X, settings.Y);
+                WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                Width = targetWidth;
+                Height = targetHeight;
             }
+            
+            WindowState = savedState;
+        
+            Log.Information(
+                "Window settings applied successfully. Size={Width}x{Height}, Position={X},{Y}, State={State}",
+                Width, Height, Position.X, Position.Y, savedState);
         }
         catch (Exception ex) {
             Log.Warning(ex, "Failed to load window settings. Using centered startup location");
@@ -218,26 +229,48 @@ public partial class MainWindow : Window
             {
                 settings.Width = Width;
                 settings.Height = Height;
-            } else {
-                settings.Width = Bounds.Width;
-                settings.Height = Bounds.Height;
+                settings.X = Position.X;
+                settings.Y = Position.Y;
             }
+            else
+            {
+                if (File.Exists(_settingsPath))
+                {
+                    try
+                    {
+                        var oldJson = File.ReadAllText(_settingsPath);
+                        var oldSettings = JsonSerializer.Deserialize<WindowSettings>(oldJson);
+                        if (oldSettings != null)
+                        {
+                            settings.Width = oldSettings.Width;
+                            settings.Height = oldSettings.Height;
+                            settings.X = oldSettings.X;
+                            settings.Y = oldSettings.Y;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Warning("Не удалось прочитать предыдущую геометрию окна для сохранения: {Message}", ex.Message); 
+                    }
+                }
 
-            settings.X = Position.X;
-            settings.Y = Position.Y;
-
+                if (settings.Width == 0)
+                {
+                    settings.Width = Bounds.Width;
+                    settings.Height = Bounds.Height;
+                    settings.X = Position.X;
+                    settings.Y = Position.Y;
+                }
+            }
+            
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_settingsPath, json);
-                
+            
             Log.Information(
-                "Window settings saved. Width={Width}, Height={Height}, X={X}, Y={Y}, WindowState={WindowState}",
-                settings.Width,
-                settings.Height,
-                settings.X,
-                settings.Y,
-                settings.WindowState);
+                "Window settings saved. Width={Width}, Height={Height}, X={X}, Y={Y}, State={State}",
+                settings.Width, settings.Height, settings.X, settings.Y, settings.WindowState);
         }
-        catch (ExternalException ex)
+        catch (Exception ex)
         {
             Log.Error(ex, "Failed to save window settings to {Path}", _settingsPath);
         }
