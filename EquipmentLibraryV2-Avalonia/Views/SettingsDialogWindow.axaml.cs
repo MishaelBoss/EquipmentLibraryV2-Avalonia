@@ -1,8 +1,7 @@
 using Avalonia.Controls;
 using EquipmentLibraryV2_Avalonia.ViewModels;
-using EquipmentLibraryV2_Avalonia.Views;
 
-namespace EquipmentLibraryV2_Avalonia;
+namespace EquipmentLibraryV2_Avalonia.Views;
 
 public partial class SettingsDialogWindow : CustomChromeWindow
 {

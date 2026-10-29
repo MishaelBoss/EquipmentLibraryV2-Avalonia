@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+        xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
         x:DataType="vm:CreateAdminDialogWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="460" d:DesignHeight="400"
         x:Class="EquipmentLibraryV2_Avalonia.Views.CreateAdminDialogWindow"
@@ -24,21 +25,12 @@
 
     <Border BorderThickness="1" CornerRadius="8">
         <Grid RowDefinitions="Auto, *">
-        <Grid Grid.Row="0" Height="38" ColumnDefinitions="*, Auto" ZIndex="20"
-              Background="Transparent"
-              WindowDecorationProperties.ElementRole="TitleBar">
-            <TextBlock Grid.Column="0" Text="Создание администратора" Margin="16,0,0,0"
-                       FontWeight="SemiBold" Foreground="#CED0D6"
-                       VerticalAlignment="Center" IsHitTestVisible="False"/>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
-                    <Panel IsHitTestVisible="False">
-                        <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
-                        <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
-                    </Panel>
-                </Button>
-            </StackPanel>
-        </Grid>
+            <components:TitleBarControlUserControlView
+                Grid.Row="0"
+                Title="создание администратора"
+                IsMinimizeButton="False"
+                IsMaximizeRestoreButton="False"
+                IsCloseButton="True" />
         <Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
               Margin="24, 28, 24, 20">
             <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">

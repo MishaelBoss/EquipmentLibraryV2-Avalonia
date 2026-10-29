@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+        xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
         mc:Ignorable="d" 
         Width="400" Height="180"
         CanResize="False"
@@ -24,34 +25,13 @@
     </Window.Styles>
 
     <Grid RowDefinitions="Auto, *">
-        <Border Grid.Row="0" 
-                Height="38" 
-                Padding="0"
-                Background="Transparent"
-                BorderBrush="#26262B" 
-                BorderThickness="0,0,0,1"
-                ZIndex="20"
-                WindowDecorationProperties.ElementRole="TitleBar">
-            <Grid ColumnDefinitions="*, Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="5" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18"/>
-                    <TextBlock Text="logout"
-                               FontWeight="SemiBold"
-                               Foreground="#CED0D6"
-                               IsHitTestVisible="False"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                    <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
-                        <Panel IsHitTestVisible="False">
-                            <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
-                            <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
-                        </Panel>
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Border>
+        <components:TitleBarControlUserControlView
+            Grid.Row="0"
+            Title="выход"
+            IsMinimizeButton="False"
+            IsMaximizeRestoreButton="False"
+            IsCloseButton="True" />
         <Grid Grid.Row="1" RowDefinitions="*, Auto" Margin="24">
-            
             <StackPanel Grid.Row="0" Spacing="8" VerticalAlignment="Center">
                 <TextBlock Text="Выход из профиля" 
                            Foreground="White" 

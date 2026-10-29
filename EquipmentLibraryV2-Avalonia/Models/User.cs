@@ -2,9 +2,25 @@
 
 namespace EquipmentLibraryV2_Avalonia.Models;
 
-public class User(int id, string login, int userRole) : IUser
+public class User : IUser
 {
-    public int Id { get; set; } = id;
-    public string Login { get; set; } = login;
-    public int UserRole { get; set; } = userRole;
+    public int Id { get; set; }
+    public string Login { get; set; } = string.Empty;
+    public int UserRole { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string MiddleName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public DateTime DateJoined { get; set; }
+    
+    public User(int id, string login, int userRole)
+    {
+        Id = id;
+        Login = login;
+        UserRole = userRole;
+    }
+    
+    public User()
+    {
+    }
 }

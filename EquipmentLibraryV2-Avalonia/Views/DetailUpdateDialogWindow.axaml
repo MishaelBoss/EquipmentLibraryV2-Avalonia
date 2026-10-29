@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
+             xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
              x:DataType="vm:DetailUpdateDialogWindowViewModel"
              mc:Ignorable="d" d:DesignWidth="530" d:DesignHeight="380"
              MinWidth="530" MaxWidth="580"
              MinHeight="320" MaxHeight="500"
              Width="530" Height="380"
              WindowStartupLocation="CenterOwner"
-             ShowInTaskbar="True"
+             ShowInTaskbar="False"
              WindowDecorations="Full"
              ExtendClientAreaToDecorationsHint="True"
              ExtendClientAreaTitleBarHeightHint="-1"
@@ -20,27 +21,13 @@
         <StyleInclude Source="/Styles/Styles.axaml"/>
     </Window.Styles>
     
-    <Border BorderBrush="#2D2D35" BorderThickness="1" CornerRadius="8"
-            BoxShadow="0 0 24 0 #50000000">
-        <Grid RowDefinitions="Auto, *" >
-        <Grid Grid.Row="0" Height="38" ColumnDefinitions="*, Auto" ZIndex="20"
-              Background="Transparent"
-              WindowDecorationProperties.ElementRole="TitleBar">
-            <TextBlock Grid.Column="0" Text="Доступно обновление" Margin="16,0,0,0"
-                       FontWeight="SemiBold" Foreground="#CED0D6"
-                       VerticalAlignment="Center" IsHitTestVisible="False" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}"/>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                <Button x:Name="MinimizeButton" Classes="WB" WindowDecorationProperties.ElementRole="MinimizeButton">
-                    <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
-                </Button>
-                <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
-                    <Panel IsHitTestVisible="False">
-                        <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
-                        <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
-                    </Panel>
-                </Button>
-            </StackPanel>
-        </Grid>
+    <Grid RowDefinitions="Auto, *">
+        <components:TitleBarControlUserControlView
+            Grid.Row="0"
+            Title="доступно обновление"
+            IsMinimizeButton="False"
+            IsMaximizeRestoreButton="False"
+            IsCloseButton="True" />
         <Grid Grid.Row="1" RowDefinitions="Auto, *, Auto" Margin="28,24,28,20">
             <StackPanel Grid.Row="0" Spacing="16">
                 <Grid ColumnDefinitions="Auto, *" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -56,7 +43,6 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-
                 <Border Height="1" Background="#2A2A2A"/>
             </StackPanel>
 
@@ -66,7 +52,6 @@
                         <TextBlock Text="Дата выпуска" Foreground="#888" FontSize="11"/>
                         <TextBlock Text="{Binding ReleaseDate}" Foreground="#CED0D6" FontSize="13"/>
                     </StackPanel>
-
                     <StackPanel Spacing="4">
                         <TextBlock Text="Что нового" Foreground="#888" FontSize="11"/>
                         <TextBlock Text="{Binding ReleaseNotes}" Foreground="#CED0D6" FontSize="13"
@@ -81,7 +66,6 @@
                         <Ellipse Width="8" Height="8" Fill="#28A745"/>
                         <TextBlock Text="Рекомендуется установить" Foreground="#AAA" FontSize="12"/>
                     </StackPanel>
-
                     <Button Grid.Column="1"
                             Command="{Binding OpenAllChangesCommand}"
                             CommandParameter="{Binding $self}"
@@ -105,7 +89,6 @@
                             <TextBlock Text="Все изменения"/>
                         </StackPanel>
                     </Button>
-
                     <Button Grid.Column="2" Content="Закрыть"
                             Command="{Binding CloseCommand}"
                             CommandParameter="{Binding $parent[Window]}"
@@ -129,6 +112,5 @@
                 </Grid>
             </Border>
         </Grid>
-        </Grid>
-    </Border>
+    </Grid>
 </Window>

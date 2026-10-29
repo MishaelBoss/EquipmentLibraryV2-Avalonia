@@ -36,9 +36,7 @@
 			<Grid Grid.Row="0" Grid.ColumnSpan="2" Height="40" ColumnDefinitions="*, Auto" ZIndex="20"
 			      Background="Transparent"
 			      WindowDecorationProperties.ElementRole="TitleBar">
-				<Image Grid.Column="0" Source="/Assets/logo/logo.ico" Width="18" Height="18"
-				       Margin="16,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"
-				       IsHitTestVisible="False" IsVisible="{OnPlatform True, macOS=False}"/>
+				<components:AppTitleControlUserControlView Grid.Column="0" Title="ELA"/>
 				<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
 					<Button Classes="WB"
 					        WindowDecorationProperties.ElementRole="MinimizeButton"
@@ -127,6 +125,7 @@
 					
 					<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
 					            IsVisible="{x:Static infrastructure:App.IsDeveloperMode}">
+						<Image Source="{SvgImage /Assets/debug_dark.svg}" Height="12" Width="12"/>
 						<TextBlock Text="Вы находитесь в режиме dev" Foreground="#4CAF50" FontSize="11"/>
 					</StackPanel>
 					

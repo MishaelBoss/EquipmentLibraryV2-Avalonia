@@ -9,6 +9,7 @@ using EquipmentLibraryV2_Avalonia.Services;
 using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
+using EquipmentLibraryV2_Avalonia.Helpers;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
@@ -110,7 +111,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
                     EquipmentTypes.Add(item);
                 }
             });
-
+            
             Log.Information("Loaded {Count} equipment types", data.Count);
         }
         catch (Exception ex)
@@ -164,8 +165,10 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
                     EquipmentItems.Add(item);
                 }
             });
-
-            Log.Information("Loaded {Count} equipment items", data.Count);
+            
+            var count = data.Count;
+            var dynamicText = count.ToQuantity("оборудование", "оборудования", "оборудования");
+            Log.Information("Загружено {DynamicText}", dynamicText);
         }
         catch (Exception ex)
         {

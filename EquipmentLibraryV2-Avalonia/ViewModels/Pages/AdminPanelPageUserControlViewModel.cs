@@ -7,9 +7,13 @@ using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
 using Avalonia.Threading;
+using Dapper;
+using EquipmentLibraryV2_Avalonia.Helpers;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.Services;
 using Humanizer;
+using Mapster;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
@@ -37,6 +41,11 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
     public AdminPanelPageUserControlViewModel() 
     {
         IsActive = true;
+        
+        TypeAdapterConfig<User, CartUserViewModel>.NewConfig()
+            .Map(dest => dest.UserId, src => src.Id)
+            .Map(dest => dest.DateJoined, src => src.DateJoined.Humanize(false, null, null));
+        
         LoadInitialUsers();
     }
 
@@ -120,7 +129,7 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
             {
                 await LoadUserByIdsAsync(userIds, cancellationToken);
                 
-                var dynamicText = "пользователь".ToQuantity(userIds.Count);
+                var dynamicText = userIds.Count.ToQuantity("пользователь", "пользователя", "пользователей");
                 Log.Information("Поиск успешно завершен. Найдено: {QuantityText}", dynamicText);
             }
         }
@@ -199,47 +208,28 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
 
     private async Task LoadUserByIdsAsync(List<long> userIds, CancellationToken cancellationToken = default)
     {
-        if (userIds.Count == 0)
-        {
-            return;
-        }
+        if (userIds.Count == 0) return;
 
         try
         {
-            const string sql = "SELECT DISTINCT * FROM public.users WHERE id = ANY(@ids) ORDER BY last_name, first_name";
-
+            const string sql = @"
+                SELECT id, 
+                       login, 
+                       user_type_id AS UserRole, 
+                       first_name AS FirstName, 
+                       last_name AS LastName, 
+                       middle_name AS MiddleName, 
+                       is_active AS IsActive, 
+                       date_joined AS DateJoined 
+                FROM public.users 
+                WHERE id = ANY(@ids) 
+                ORDER BY last_name, first_name";
+            
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             await connection.OpenAsync(cancellationToken);
-
-            await using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@ids", userIds);
-
-            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-            var newUsers = new List<CartUserViewModel>();
-            var loadedUserIds = new HashSet<long>();
-
-            while (await reader.ReadAsync(cancellationToken))
-            {
-                var userId = reader.IsDBNull(0) ? 0 : reader.GetInt64(0);
-
-                if (userId == 0 || !loadedUserIds.Add(userId))
-                    continue;
-                
-                var userViewModel = new CartUserViewModel
-                {
-                    UserId = userId,
-                    UserRole = reader.IsDBNull(1) ? 0 : Convert.ToInt32(reader.GetValue(1)),
-                    Login = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-                    FirstName = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-                    LastName = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
-                    MiddleName = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
-                    IsActive = !reader.IsDBNull(7) && reader.GetBoolean(7),
-                    DateJoined = reader.IsDBNull(8) ? string.Empty : reader.GetDateTime(8).Humanize(utcDate: false),
-                };
-
-                newUsers.Add(userViewModel);
-            }
+            
+            var usersFromDb = await connection.QueryAsync<User>(new CommandDefinition(sql, new {ids = userIds }, cancellationToken: cancellationToken));
+            var newUsers = usersFromDb.Adapt<List<CartUserViewModel>>();
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

@@ -9,6 +9,7 @@ using Serilog;
 using System.Collections.ObjectModel;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Validators.Components;
+using Mapster;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
@@ -47,7 +48,6 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
         => !string.IsNullOrEmpty(Login)
            && !string.IsNullOrEmpty(FirstName)
            && !string.IsNullOrEmpty(LastName)
-           && !string.IsNullOrEmpty(Password)
            && SelectUserRole != null;
 
     public AddOrEditUserUserControlViewModel(
@@ -62,7 +62,7 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
         Login = login ?? string.Empty;
         FirstName = firstName ?? string.Empty;
         LastName = lastName ?? string.Empty;
-        Password = password ?? string.Empty;
+        Password = _id > 0 ? UnchangedPasswordMask : (password ?? string.Empty);
         _initialUserRoleId = userRole ?? 0;
 
         try
@@ -71,7 +71,7 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Failed to load user roles for user {Login}", Login);
+            Log.Error(ex, "Failed to load user roles during window initialization");
         }
     }
 
@@ -194,11 +194,12 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
     {
         const string sql = "SELECT * FROM public.user_type";
         await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+        
         var result = await connection.QueryAsync<UserRole>(sql);
+        var mappedRoles = result.Adapt<List<UserRole>>();
 
         UserRoles.Clear();
-
-        foreach (var role in result)
+        foreach (var role in mappedRoles)
         {
             UserRoles.Add(role);
         }

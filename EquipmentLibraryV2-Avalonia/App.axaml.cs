@@ -17,15 +17,19 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        SetupGlobalExceptionHandlers();
-        
         var russianCulture = new CultureInfo("ru-RU");
         Thread.CurrentThread.CurrentCulture = russianCulture;
         Thread.CurrentThread.CurrentUICulture = russianCulture;
 
         CultureInfo.DefaultThreadCurrentCulture = russianCulture;
         CultureInfo.DefaultThreadCurrentUICulture = russianCulture;
-            
+        
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.InputEncoding = System.Text.Encoding.UTF8;
+        
+        SetupGlobalExceptionHandlers();
+
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var mainWindow = new MainWindow

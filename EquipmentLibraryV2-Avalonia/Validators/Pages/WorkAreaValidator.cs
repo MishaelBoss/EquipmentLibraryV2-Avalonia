@@ -20,5 +20,9 @@ public class WorkAreaValidator : AbstractValidator<WorkAreaUserControlViewModel>
         
         RuleFor(x => x.InvNumber)
             .NotEmpty().WithMessage("Введите инвентарный номер объекта");
+        
+        RuleFor(x => x.SelectedEquipmentType)
+            .NotNull().WithMessage("Необходимо выбрать тип оборудования")
+            .Must(type => type is { Id: > 0 }).WithMessage("Выбран некорректный тип оборудования");
     }
 }

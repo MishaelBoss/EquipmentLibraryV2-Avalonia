@@ -5,6 +5,7 @@
         xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels"
         xmlns:settings="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Settings"
         xmlns:settingsVm="clr-namespace:EquipmentLibraryV2_Avalonia.ViewModels.Settings"
+        xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
         x:DataType="vm:SettingsDialogWindowViewModel"
         mc:Ignorable="d" 
         d:DesignWidth="1000" d:DesignHeight="600"
@@ -16,7 +17,7 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="#2D2D35"
-        x:Class="EquipmentLibraryV2_Avalonia.SettingsDialogWindow"
+        x:Class="EquipmentLibraryV2_Avalonia.Views.SettingsDialogWindow"
         Title="">
     
     <Window.Styles>
@@ -37,32 +38,12 @@
     </Window.DataTemplates>
 
     <Grid RowDefinitions="Auto, *, Auto">
-        <Border Grid.Row="0" 
-                Height="38" 
-                Background="#2D2D35" 
-                Padding="0"
-                BorderBrush="#26262B" 
-                BorderThickness="0,0,0,1"
-                ZIndex="20"
-                WindowDecorationProperties.ElementRole="TitleBar">
-            <Grid ColumnDefinitions="*, Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="5" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                    <Image Source="/Assets/logo/logo.ico" Width="18" Height="18"/>
-                    <TextBlock Text="settings"
-                               FontWeight="SemiBold"
-                               Foreground="#CED0D6"
-                               IsHitTestVisible="False"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Height="34" IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
-                    <Button x:Name="CloseButton" Classes="WB CloseButton" WindowDecorationProperties.ElementRole="CloseButton">
-                        <Panel IsHitTestVisible="False">
-                            <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
-                            <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
-                        </Panel>
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Border>
+        <components:TitleBarControlUserControlView
+            Grid.Row="0"
+            Title="настройки"
+            IsMinimizeButton="False"
+            IsMaximizeRestoreButton="False"
+            IsCloseButton="True" />
         <Grid Grid.Row="1" ColumnDefinitions="250, *">
             <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#2D2D35" Margin="0,0,0,0">
                 <TextBox Grid.Row="0" 

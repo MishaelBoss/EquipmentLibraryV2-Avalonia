@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:components="clr-namespace:EquipmentLibraryV2_Avalonia.Views.Components"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Components.TitleBarControlUserControlView">
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
+    </UserControl.Styles>
+
+    <Border Height="38"
+            Padding="0"
+            Background="Transparent"
+            BorderBrush="#26262B" 
+            BorderThickness="0,0,0,1"
+            ZIndex="1"
+            WindowDecorationProperties.ElementRole="TitleBar">
+        <Grid ColumnDefinitions="*, Auto">
+            <components:AppTitleControlUserControlView Grid.Column="0" 
+                                                   Title="{Binding Title, RelativeSource={RelativeSource AncestorType=UserControl}}"></components:AppTitleControlUserControlView>
+            <StackPanel Grid.Column="1" 
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Top"
+                        IsVisible="{OnPlatform True, macOS=False, Linux=False, Windows=True}">
+                <Button Classes="WB"
+                        WindowDecorationProperties.ElementRole="MinimizeButton"
+                        IsVisible="{Binding IsMinimizeButton, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        x:Name="MinimizeButton">
+                    <Image Source="{SvgImage /Assets/windows/minimize_dark.svg}" Width="16" Height="16" IsHitTestVisible="False"/>
+                </Button>
+                <Button Classes="WB"
+                        WindowDecorationProperties.ElementRole="MaximizeButton"
+                        IsVisible="{Binding IsMaximizeRestoreButton, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        x:Name="MaximizeRestoreButton">
+                    <Grid IsHitTestVisible="False">
+                        <Image x:Name="MaximizeIcon" Source="{SvgImage /Assets/windows/maximize_dark.svg}" Width="16" Height="16"/>
+                        <Image x:Name="RestoreIcon" Source="{SvgImage /Assets/windows/restore_dark.svg}" Width="16" Height="16" IsVisible="False"/>
+                    </Grid>
+                </Button>
+                <Button Classes="WB CloseButton"
+                        x:Name="CloseButton"
+                        IsVisible="{Binding IsCloseButton, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        WindowDecorationProperties.ElementRole="CloseButton">
+                    <Panel IsHitTestVisible="False">
+                        <Image Classes="normal" Source="{SvgImage /Assets/windows/closeActive_dark.svg}" Width="16" Height="16"/>
+                        <Image Classes="hover" Source="{SvgImage /Assets/windows/closeHover.svg}" Width="16" Height="16"/>
+                    </Panel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

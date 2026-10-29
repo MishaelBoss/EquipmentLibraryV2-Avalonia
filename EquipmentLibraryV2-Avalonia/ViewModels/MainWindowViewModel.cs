@@ -14,8 +14,8 @@ using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 using System.Collections.ObjectModel;
 using System.Net;
-using System.Text.Json.Nodes;
 using Dapper;
+using EquipmentLibraryV2_Avalonia.Services.Updates;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 
@@ -242,17 +242,17 @@ public partial class MainWindowViewModel : ViewModelBase,
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();
-            var jsonNode = JsonNode.Parse(jsonString);
-
-            if (jsonNode == null)
+            var manifest = VersionManifestParser.Parse(jsonString);
+            
+            if (manifest == null)
             {
                 Log.Warning("Version manifest is empty or invalid JSON");
                 return;
             }
 
-            var latest = jsonNode["promos"]?["latest"]?.ToString();
-            var recommended = jsonNode["promos"]?["recommended"]?.ToString();
-
+            manifest.Promos.TryGetValue("latest", out var latest);
+            manifest.Promos.TryGetValue("recommended", out var recommended);
+            
             Log.Information("Remote versions loaded. Latest: {Latest}, Recommended: {Recommended}", latest, recommended);
                 
             var currentVersion = AppConfig.Version;
@@ -260,27 +260,16 @@ public partial class MainWindowViewModel : ViewModelBase,
             var targetVersionDetail = string.Empty;
             var targetVersionDate = string.Empty;
                 
-            var detailObject = jsonNode["detail"]?.AsObject();
-            if (detailObject != null && !string.IsNullOrWhiteSpace(targetVersion))
+            if (!string.IsNullOrWhiteSpace(targetVersion) && manifest.Detail.TryGetValue(targetVersion, out var info))
             {
-                var versionInfoNode = detailObject[targetVersion]?.AsObject();
-                    
-                if (versionInfoNode != null)
-                {
-                    targetVersionDetail = versionInfoNode["description"]?.ToString() ?? string.Empty;
-                    targetVersionDate = versionInfoNode["date"]?.ToString() ?? string.Empty;
-                        
-                    Log.Debug("Found detail for {TargetVersion}. Date: {Date}, Detail: {Detail}", 
-                        targetVersion, targetVersionDate, targetVersionDetail);
-                }
-                else
-                {
-                    Log.Debug("No detail found in manifest for target version {TargetVersion}", targetVersion);
-                }
+                targetVersionDetail = info.Description;
+                targetVersionDate = info.Date;
+            
+                Log.Debug("Found detail for {TargetVersion}. Date: {Date}, Detail: {Detail}", 
+                    targetVersion, targetVersionDate, targetVersionDetail);
             }
                 
             bool hasUpdate;
-
             if (Infrastructure.App.IsDeveloperMode)
             {
                 hasUpdate = true;
@@ -344,6 +333,11 @@ public partial class MainWindowViewModel : ViewModelBase,
         }
         catch (OperationCanceledException)
         {
+            Log.Debug("Network monitoring cancelled");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Network monitoring failed");
         }
     }
 
@@ -511,7 +505,7 @@ public partial class MainWindowViewModel : ViewModelBase,
 
     public void Receive(RequestCurrentPageMessage message)
     {
-        PageType currentType = CurrentPage switch
+        var currentType = CurrentPage switch
         {
             AnalyticsPageUserControlViewModel => PageType.Analytics,
             AdminPanelPageUserControlViewModel => PageType.AdminPanel,

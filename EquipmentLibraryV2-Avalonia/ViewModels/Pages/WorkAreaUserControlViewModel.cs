@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Services;
 using EquipmentLibraryV2_Avalonia.Validators.Pages;
+using Mapster;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 
@@ -58,6 +59,11 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
         SerialNumber = string.Empty;
         Model = string.Empty;
         InvNumber = string.Empty;
+
+        TypeAdapterConfig<WorkAreaUserControlViewModel, EquipmentDb>.NewConfig()
+            .Ignore(dest => dest.EquipmentTypeId) 
+            .Map(dest => dest.InvNum, src => src.InvNumber)
+            .Map(dest => dest.EquipmentTypeId, src => src.SelectedEquipmentType != null ? src.SelectedEquipmentType.Id : 0); 
         
         Task.Run(async () =>
         {
@@ -95,16 +101,20 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
             const string sql = "SELECT id, type FROM public.equipment_type";
             
             Log.Debug("Executing SQL to load equipment types: {Sql}", sql);
-            var data = (await connection.QueryAsync<EquipmentType>(sql)).ToList();
             
-            Log.Information("Loaded {Count} equipment types from database", data.Count);
+            var dbResult = await connection.QueryAsync<EquipmentType>(sql);
+            var result = dbResult.Adapt<List<EquipmentType>>();
 
+            Log.Information("Loaded {Count} equipment types from database", result.Count);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                foreach (var item in data)
+                foreach (var item in result)
                 {
                     EquipmentTypes.Add(item);
                 }
+
+                SelectedEquipmentType ??= EquipmentTypes.FirstOrDefault();
+
                 Log.Debug("EquipmentTypes collection updated on UI thread. Count={Count}", EquipmentTypes.Count);
             });
         }
@@ -141,58 +151,36 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
 
     private async Task AddAsync()
     {
-        Log.Debug("AddAsync started. Title={Title}, EquipmentTypeId={EquipmentTypeId}, InvNumber={InvNumber}",
+        Log.Debug("Add Async started. Title={Title}, EquipmentTypeId={EquipmentTypeId}, InvNumber={InvNumber}",
             Title, SelectedEquipmentType?.Id, InvNumber);
         
-        if (string.IsNullOrWhiteSpace(Title) ||
-            string.IsNullOrWhiteSpace(SerialNumber) ||
-            string.IsNullOrWhiteSpace(Model) ||
-            string.IsNullOrWhiteSpace(InvNumber) ||
-            SelectedEquipmentType is null)
+        if (AuthService.CurrentSession is null || SelectedEquipmentType?.Id is null)
         {
-            Log.Warning(
-                "AddAsync aborted: invalid form data. Title={Title}, EquipmentTypeId={EquipmentTypeId}, SerialNumberIsEmpty={SerialEmpty}, ModelIsEmpty={ModelEmpty}, InvNumberIsEmpty={InvEmpty}",
-                Title,
-                SelectedEquipmentType?.Id,
-                string.IsNullOrWhiteSpace(SerialNumber),
-                string.IsNullOrWhiteSpace(Model),
-                string.IsNullOrWhiteSpace(InvNumber));
+            Log.Warning("Add Async aborted: User is not authenticated or type is missing");
             return;
         }
         
         try
         {
+            var equipmentDto = new EquipmentDb
+            {
+                Title = Title,
+                Model = Model,
+                SerialNumber = SerialNumber,
+                InvNum = InvNumber,
+                EquipmentTypeId = SelectedEquipmentType.Id, 
+                UserId = AuthService.CurrentSession.Id
+            };
+
+            const string sql = @"INSERT INTO public.equipment (title, user_id, equipment_type_id, serial_number, model, inv_num) 
+                VALUES (@Title, @UserId, @EquipmentTypeId, @SerialNumber, @Model, @InvNum)";
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
-            const string sql = "INSERT INTO public.equipment (title, user_id, equipment_type_id, serial_number, model, inv_num) VALUES (@title, @user_id, @equipment_type_id, @serial_number, @model, @inv_num)";
             await connection.OpenAsync();
-            await using var command = new NpgsqlCommand(sql, connection);
-
-            if (AuthService.CurrentSession is null)
-            {
-                Log.Warning("AddAsync aborted: CurrentSession is null, user is not authenticated.");
-                return;
-            }
-
-            if (SelectedEquipmentType?.Id is null)
-            {
-                Log.Warning(
-                    "AddAsync aborted: SelectedEquipmentType.Id is null. SelectedEquipmentTypeType={Type}",
-                    SelectedEquipmentType?.Type);
-                return;
-            }
             
-            command.Parameters.AddWithValue("@title", Title);
-            command.Parameters.AddWithValue("@user_id", AuthService.CurrentSession.Id);
-            command.Parameters.AddWithValue("@equipment_type_id", SelectedEquipmentType.Id);
-            command.Parameters.AddWithValue("@serial_number", SerialNumber);
-            command.Parameters.AddWithValue("@model", Model);
-            command.Parameters.AddWithValue("@inv_num", InvNumber);
+            Log.Debug("Executing Dapper INSERT for equipment. Title={Title}, UserId={UserId}", equipmentDto.Title, equipmentDto.UserId);
             
-            Log.Debug("Executing INSERT for equipment. Title={Title}, UserId={UserId}, EquipmentTypeId={EquipmentTypeId}",
-                Title, AuthService.CurrentSession.Id, SelectedEquipmentType.Id);
+            var rows = await connection.ExecuteAsync(sql, equipmentDto);
 
-            var rows = await command.ExecuteNonQueryAsync();
-            
             Log.Information("Equipment inserted. RowsAffected={RowsAffected}", rows);
 
             Clear();

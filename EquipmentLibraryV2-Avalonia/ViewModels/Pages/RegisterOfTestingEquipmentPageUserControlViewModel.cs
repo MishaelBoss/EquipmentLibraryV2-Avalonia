@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
+using EquipmentLibraryV2_Avalonia.Helpers;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
@@ -75,16 +76,23 @@ public partial class RegisterOfTestingEquipmentPageUserControlViewModel : ViewMo
     {
         await _debounceCts.CancelAsync();
         _debounceCts = new CancellationTokenSource();
+        
         var token = _debounceCts.Token;
+        
         try
         {
             await Task.Delay(300, token);
             Log.Debug("Filter changed, reloading data");
+            
             if (!token.IsCancellationRequested)
+            {
                 await LoadAllEquipmentsAsync();
+                Log.Debug("Equipment data reloaded after filter change");
+            }
         }
         catch (TaskCanceledException)
         {
+            Log.Debug("Filter debounce cancelled");
         }
     }
 
@@ -133,7 +141,9 @@ public partial class RegisterOfTestingEquipmentPageUserControlViewModel : ViewMo
                 }
             });
 
-            Log.Information("Loaded {Count} equipment items", data.Count);
+            var count = data.Count;
+            var dynamicText = count.ToQuantity("оборудование", "оборудования", "оборудования");
+            Log.Information("Загружено {DynamicText} ИО (Испытательное оборудование)", dynamicText);
         }
         catch (Exception ex)
         {
