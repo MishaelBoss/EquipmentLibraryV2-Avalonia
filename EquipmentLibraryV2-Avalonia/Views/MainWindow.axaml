@@ -92,15 +92,18 @@
 					</Grid>
 				</Border>
 				
-				<Border Grid.Column="2">
-					<components:NotificationUserControlView Grid.Column="1" IsVisible="{Binding OpenOrCloseNotification}"
-					                                        HorizontalAlignment="Stretch"
-					                                        VerticalAlignment="Stretch"
-					                                        Width="300"
-					                                        ZIndex="1"/>		
+				<Border Grid.Column="2"
+				        Width="300"
+				        Margin="8,0,0,8"
+				        Background="Black"
+				        IsVisible="{Binding OpenOrCloseNotification}">
+
+					<components:NotificationUserControlView
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch" />
 				</Border>
 
-				<Grid Grid.Column="2" 
+				<Grid Grid.Column="3" 
 				      Background="#000000"
 				      Width="40">
 					<Button Background="Transparent"
