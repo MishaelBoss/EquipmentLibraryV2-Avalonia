@@ -17,4 +17,26 @@
         <Setter Property="TextBlock.Foreground" Value="Yellow"/> 
     </Style>
 
+    <Style Selector="ListBoxItem">
+        <Setter Property="Width" Value="185"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Foreground" Value="#9E9EB0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+                        
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1A1A1C"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+                        
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1E3A5F"/>
+        <Setter Property="BorderBrush" Value="#345B8C"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
 </Styles>

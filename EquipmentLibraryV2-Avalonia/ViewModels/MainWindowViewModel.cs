@@ -35,6 +35,7 @@ public partial class MainWindowViewModel : ViewModelBase,
     IRecipient<OpenRegisterOfTestingEquipmentMessage>,
     IRecipient<OpenOrClosePasswordResetMessage>,
     IRecipient<RequestCurrentPageMessage>,
+    IRecipient<OpenOrCloseNotificationMessage>,
     IDisposable
 {
     [ObservableProperty] public partial bool IsLoading { get; set; }
@@ -51,6 +52,8 @@ public partial class MainWindowViewModel : ViewModelBase,
     private string _newVersion = string.Empty;
     private string _releaseNotes = string.Empty;
     private string _releaseDate = string.Empty;
+
+    [ObservableProperty] public partial bool OpenOrCloseNotification { get; set; } = false;
 
     private readonly Lazy<AdminPanelPageUserControlViewModel> _adminPanel;
     private readonly Lazy<AnalyticsPageUserControlViewModel> _analytics;
@@ -74,6 +77,10 @@ public partial class MainWindowViewModel : ViewModelBase,
     {
         await CheckNetworkAsync();
     }
+
+    [RelayCommand]
+    public void OpenNotification()
+        => WeakReferenceMessenger.Default.Send(new OpenOrCloseNotificationMessage());
 
     [RelayCommand]
     public async Task VersionAction()
@@ -482,7 +489,7 @@ public partial class MainWindowViewModel : ViewModelBase,
         CurrentPage = _registerOfTestingEquipment.Value;
         WeakReferenceMessenger.Default.Send(new PageChangedMessage(PageType.RegisterOfTestingEquipment));
     }
-        
+
     public void Receive(OpenOrClosePasswordResetMessage message)
     {
         Log.Debug(
@@ -518,7 +525,12 @@ public partial class MainWindowViewModel : ViewModelBase,
 
         WeakReferenceMessenger.Default.Send(new PageChangedMessage(currentType));
     }
-    
+
+    public void Receive(OpenOrCloseNotificationMessage message)
+    {
+        OpenOrCloseNotification = !OpenOrCloseNotification;
+    }
+
     public void Dispose()
     {
         IsActive = false;
@@ -544,5 +556,4 @@ public partial class MainWindowViewModel : ViewModelBase,
         if (lazy is { IsValueCreated: true, Value: IDisposable disposable })
             disposable.Dispose();
     }
-
 }

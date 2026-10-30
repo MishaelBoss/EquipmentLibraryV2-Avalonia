@@ -1,0 +1,139 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
+             x:DataType="vm:NotificationUserControlViewModel"
+             mc:Ignorable="d"
+             d:DesignWidth="200"
+             d:DesignHeight="570"
+             Opacity="0.8"
+             x:Class="EquipmentLibraryV2_Avalonia.Views.Components.NotificationUserControlView">
+
+    <Design.DataContext>
+        <vm:NotificationUserControlViewModel />
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="8,*">
+
+        <!-- Выступающий угол сверху слева -->
+        <Path Grid.Column="0"
+              Width="8"
+              Height="8"
+              VerticalAlignment="Top"
+              Fill="Black"
+              Data="M 0,0 H 8 V 8 A 8,8 0 0 0 0,0 Z"
+              IsHitTestVisible="False" />
+
+        <!-- Выступающий угол снизу слева -->
+        <Path Grid.Column="0"
+              Width="8"
+              Height="8"
+              VerticalAlignment="Bottom"
+              Fill="Black"
+              Data="M 0,8 H 8 V 0 A 8,8 0 0 1 0,8 Z"
+              IsHitTestVisible="False" />
+
+        <!-- Основная часть панели -->
+        <Border Grid.Column="1"
+                Background="Black">
+
+            <Grid RowDefinitions="Auto,*">
+
+                <!-- Заголовок и кнопки -->
+                <Border Grid.Row="0"
+                        Height="64"
+                        Padding="10">
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+
+                        <TextBlock Grid.Column="0"
+                                   Text="Уведомление"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center" />
+
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+
+                            <Button Background="Transparent"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Height="25"
+                                    Padding="0"
+                                    ToolTip.Tip="Опции">
+
+                                <Image Source="{SvgImage /Assets/action/more.svg}"
+                                       Width="20"
+                                       Height="20"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            </Button>
+
+                            <Button Background="Transparent"
+                                    Command="{Binding HideCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Height="25"
+                                    Padding="0"
+                                    ToolTip.Tip="Скрыть">
+
+                                <Image Source="{SvgImage /Assets/hide.svg}"
+                                       Width="20"
+                                       Height="20"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            </Button>
+
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Список уведомлений -->
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Buttons}"
+                         SelectedItem="{Binding SelectedButton}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Padding="0"
+                         Margin="7,10,0,0">
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*">
+
+                                <Svg Grid.Column="0"
+                                     Path="{Binding IconPath}"
+                                     Width="18"
+                                     Height="18"
+                                     Stretch="Uniform"
+                                     VerticalAlignment="Center" />
+
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding ButtonText}"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"
+                                           FontSize="13"
+                                           FontWeight="Medium" />
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -5,94 +5,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="570"
              x:DataType="vm:RightBoardUserControlViewModel"
+             Background="Black" 
+             Opacity="0.8"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Components.RightBoardUserControl">
     
     <UserControl.Styles>
         <StyleInclude Source="/Styles/RightBoardStyles.axaml"/>
     </UserControl.Styles>
 
-    <Grid>
-        <Border Background="Black" Opacity="0.8"/>
-        <Grid RowDefinitions="Auto,Auto,*,Auto">        
-            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,0,1" Height="64">
-                <StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="ELA V2" FontSize="15" FontWeight="SemiBold" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Image Source="{SvgImage /Assets/alpha.svg}" 
-                           Width="40" Height="40"/>
-                </StackPanel>
-            </Border>
-
-            <StackPanel Grid.Row="2" Spacing="8" HorizontalAlignment="Left" Margin="7,10,0,0">
-                <!-- Заменили ItemsControl на ListBox и добавили SelectedItem -->
-                <ListBox ItemsSource="{Binding Buttons}" 
-                         SelectedItem="{Binding SelectedButton}"
-                         Background="Transparent" 
-                         BorderThickness="0"
-                         Padding="0">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <!-- Выстраиваем кнопки вертикально с отступами -->
-                            <StackPanel Spacing="8"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    
-                    <ListBox.Styles>
-                        <!-- Стилизуем сам ListBoxItem под вашу кнопку Classes="BTN" -->
-                        <Style Selector="ListBoxItem">
-                            <Setter Property="Width" Value="185"/>
-                            <Setter Property="Height" Value="40"/>
-                            <Setter Property="Padding" Value="12,0"/>
-                            <Setter Property="Background" Value="Transparent"/> <!-- Обычное состояние -->
-                            <Setter Property="BorderBrush" Value="Transparent"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="CornerRadius" Value="6"/>
-                            <Setter Property="Foreground" Value="#9E9EB0"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        </Style>
-                        
-                        <!-- Эффект наведения мыши на кнопку меню -->
-                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#1A1A1C"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Style>
-                        
-                        <!-- ЭФФЕКТ ВЫДЕЛЕНИЯ: Активная (нажатая) кнопка страницы -->
-                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#1E3A5F"/> <!-- Синий акцент Rider -->
-                            <Setter Property="BorderBrush" Value="#345B8C"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Style>
-                    </ListBox.Styles>
-
-                    <ListBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:DashboardButtonViewModel">
-                            <!-- Внутри убрали сам тег Button, так как ListBoxItem теперь сам является кнопкой -->
-                            <Grid ColumnDefinitions="Auto, *">
-                                <Svg Grid.Column="0" Path="{Binding IconPath}" Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{Binding ButtonText}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="13" FontWeight="Medium"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+    <Grid RowDefinitions="Auto,Auto,*,Auto">        
+        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,0,1" Height="64">
+            <StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="ELA V2" FontSize="15" FontWeight="SemiBold" Foreground="White"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Image Source="{SvgImage /Assets/alpha.svg}" 
+                       Width="40" Height="40"/>
             </StackPanel>
+        </Border>
 
-            <Border Grid.Row="3" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">
-                <StackPanel Spacing="8" HorizontalAlignment="Left" Margin="2,0,0,0">
-                   <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="185" Height="40" Classes="BTN">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{SvgImage /Assets/user-round.svg}" Width="20" Height="20"/>
-                            <TextBlock Text="Профиль" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Command="{Binding OpenSettingsCommand}" Width="185" Height="40" Classes="BTN">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{SvgImage /Assets/settings.svg}" Width="20" Height="20"/>
-                            <TextBlock Text="Настройки" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </Border>
-        </Grid>
+        <StackPanel Grid.Row="2" Spacing="8" HorizontalAlignment="Left" Margin="7,10,0,0">
+            <ListBox ItemsSource="{Binding Buttons}" 
+                     SelectedItem="{Binding SelectedButton}"
+                     Background="Transparent" 
+                     BorderThickness="0"
+                     Padding="0">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="8"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DashboardButtonViewModel">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <Svg Grid.Column="0" Path="{Binding IconPath}" Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{Binding ButtonText}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="13" FontWeight="Medium"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <Border Grid.Row="3" BorderBrush="Gray" BorderThickness="0,1,0,0" Padding="5">
+            <StackPanel Spacing="8" HorizontalAlignment="Left" Margin="2,0,0,0">
+               <Button Command="{Binding OpenProfileOrAuthorizationCommand}" Width="185" Height="40" Classes="BTN">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{SvgImage /Assets/user-round.svg}" Width="20" Height="20"/>
+                        <TextBlock Text="Профиль" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding OpenSettingsCommand}" Width="185" Height="40" Classes="BTN">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{SvgImage /Assets/settings.svg}" Width="20" Height="20"/>
+                        <TextBlock Text="Настройки" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

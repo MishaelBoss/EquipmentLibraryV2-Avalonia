@@ -62,20 +62,24 @@
 				</StackPanel>
 			</Grid>
 
-			<Grid Grid.Row="1" ColumnDefinitions="Auto, *">
-				<Grid Grid.Column="0">
-					<components:RightBoardUserControl DataContext="{Binding RightBoardViewModel}"/>
-				</Grid>
+			<Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto, 40">
+				<components:RightBoardUserControl Grid.Column="0" DataContext="{Binding RightBoardViewModel}"/>
 
 				<Border Grid.Column="1"
 						Background="#2B2D31"
 						CornerRadius="8"
-						Margin="8, 0, 8, 8"
+						Margin="8, 0, 0, 8"
 						ClipToBounds="True">
 					<Grid>
-						<equipmentLibraryV2Avalonia:FadeContentControl Content="{Binding CurrentPage}" ZIndex="0"/>
-						<ScrollViewer ZIndex="999" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-						              MaxHeight="300" Margin="12">
+						<Grid ColumnDefinitions="*,Auto">
+							<equipmentLibraryV2Avalonia:FadeContentControl Grid.Column="0" Content="{Binding CurrentPage}" 
+							                                               ZIndex="0"/>
+						</Grid>
+						<ScrollViewer ZIndex="2"
+						              VerticalAlignment="Bottom" 
+						              HorizontalAlignment="Right"
+						              MaxHeight="300" 
+						              Margin="12">
 							<ItemsControl ItemsSource="{Binding ErrorMessages}"
 							              VerticalAlignment="Bottom">
 								<ItemsControl.ItemsPanel>
@@ -87,6 +91,30 @@
 						</ScrollViewer>
 					</Grid>
 				</Border>
+				
+				<Border Grid.Column="2">
+					<components:NotificationUserControlView Grid.Column="1" IsVisible="{Binding OpenOrCloseNotification}"
+					                                        HorizontalAlignment="Stretch"
+					                                        VerticalAlignment="Stretch"
+					                                        Width="300"
+					                                        ZIndex="1"/>		
+				</Border>
+
+				<Grid Grid.Column="2" 
+				      Background="#000000"
+				      Width="40">
+					<Button Background="Transparent"
+					        Command="{Binding OpenNotificationCommand}"
+					        HorizontalAlignment="Stretch"
+					        HorizontalContentAlignment="Center"
+					        VerticalAlignment="Top"
+					        Height="40"
+					        Padding="0"
+					        ToolTip.Tip="Уведомление">
+						<Image Source="{SvgImage /Assets/notifications_dark.svg}" Width="20" Height="20"
+						       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Button>
+				</Grid>
 			</Grid>
 
 			<ContentControl Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2"
@@ -95,8 +123,24 @@
 			
 			<Border Grid.Row="2" Grid.ColumnSpan="2"
 			        Background="#000000"
-			        Padding="16,0" Height="28">
+			        Padding="16,0, 0, 0" Height="28">
 				<Grid ColumnDefinitions="Auto, Auto, * ,Auto">
+					<StackPanel Grid.Column="1" 
+					            x:Name="RefreshIndicator" 
+					            Orientation="Horizontal"
+					            VerticalAlignment="Center"
+					            Spacing="6"
+					            Margin="16,0"
+					            Opacity="0" 
+					            IsVisible="False">
+						<StackPanel.Transitions>
+							<Transitions>
+								<DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+							</Transitions>
+						</StackPanel.Transitions>
+						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
+						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
+					</StackPanel>
 					<Grid Grid.Column="0">
 						<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" IsVisible="{Binding IsConnected}">
 							<Ellipse Width="8" Height="8" Fill="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"/>
@@ -111,18 +155,7 @@
 							</StackPanel>
 						</Button>
 					</Grid>
-					
-					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
-					            x:Name="RefreshIndicator" Opacity="0" IsVisible="False">
-						<StackPanel.Transitions>
-							<Transitions>
-								<DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
-							</Transitions>
-						</StackPanel.Transitions>
-						<TextBlock Text="✓" Foreground="#4CAF50" FontSize="12" FontWeight="Bold"/>
-						<TextBlock Text="Обновлено" Foreground="#4CAF50" FontSize="11"/>
-					</StackPanel>
-					
+
 					<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="16,0,0,0"
 					            IsVisible="{x:Static infrastructure:App.IsDeveloperMode}">
 						<Image Source="{SvgImage /Assets/debug_dark.svg}" Height="12" Width="12"/>
