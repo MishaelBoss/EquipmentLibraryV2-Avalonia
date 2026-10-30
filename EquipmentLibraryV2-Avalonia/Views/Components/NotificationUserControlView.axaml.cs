@@ -8,6 +8,6 @@ public partial class NotificationUserControlView : UserControl
     public NotificationUserControlView()
     {
         InitializeComponent();
-        // DataContext = new NotificationUserControlViewModel();
+        DataContext = new NotificationUserControlViewModel();
     }
 }

@@ -13,17 +13,19 @@
     <Design.DataContext>
         <vm:NotificationUserControlViewModel />
     </Design.DataContext>
-
-    <Grid ColumnDefinitions="8,*">
-        <Border Grid.Column="1"
-                Background="Black">
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
+    </UserControl.Styles>
+    
+    <Grid ColumnDefinitions="*">
+        <Border Background="Black">
             <Grid RowDefinitions="Auto,*">
                 <Border Grid.Row="0"
                         Height="64"
                         Padding="10,0,10,10">
 
                     <Grid ColumnDefinitions="Auto,*,Auto">
-
                         <TextBlock Grid.Column="0"
                                    Text="Уведомление"
                                    FontSize="12"
@@ -42,7 +44,9 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalAlignment="Top"
                                     Height="25"
+                                    Width="25"
                                     Padding="0"
+                                    Classes="WB2"
                                     ToolTip.Tip="Опции">
 
                                 <Image Source="{SvgImage /Assets/action/more.svg}"
@@ -58,7 +62,9 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalAlignment="Top"
                                     Height="25"
+                                    Width="25"
                                     Padding="0"
+                                    Classes="WB2"
                                     ToolTip.Tip="Скрыть">
 
                                 <Image Source="{SvgImage /Assets/hide.svg}"
@@ -107,7 +113,6 @@
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
-
                 </ListBox>
             </Grid>
         </Border>

@@ -21,8 +21,8 @@ register management.</Description>
     <PackageTags>avalonia csharp dotnet postgresql equipment-management </PackageTags>
     <Company>Michael Development</Company>
     <Product>Equipment Library v2</Product>
-    <AssemblyVersion>1.9.6.6</AssemblyVersion>
-    <FileVersion>1.9.6.6</FileVersion>
+    <AssemblyVersion>1.9.6.14</AssemblyVersion>
+    <FileVersion>1.9.6.14</FileVersion>
     <NeutralLanguage>ru</NeutralLanguage>
   </PropertyGroup>
 
