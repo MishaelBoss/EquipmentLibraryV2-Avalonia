@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
 using Avalonia.Media;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
@@ -114,6 +115,18 @@ public partial class AuthorizationUserControlViewModel : ViewModelBase
         {
             if (await AuthService.LoginAsync(Login, Password))
             {
+                var login = Login;
+
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Success,
+                            Title = "Вход выполнен",
+                            Object = $"Добро пожаловать, {login}!"
+                        }));
+
                 WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
                 ClearForm();
             }
@@ -126,6 +139,16 @@ public partial class AuthorizationUserControlViewModel : ViewModelBase
         {
             MessageError = "Ошибка соединения с сервером";
             Log.Warning(ex, "Authorization failed due to exception");
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Ошибка соединения с сервером",
+                        Object = ex.Message
+                    }));
         }
         finally
         {

@@ -99,7 +99,17 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
         {
             var firstError = validationResult.Errors.FirstOrDefault()?.ErrorMessage ?? "Ошибка валидации";
             Log.Warning("Валидация формы добавления/редактирования не пройдена: {Error}", firstError);
-            
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Warning,
+                        Title = "Проверьте данные пользователя",
+                        Object = firstError
+                    }));
+
             return;
         }
         
@@ -167,6 +177,16 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
                 // ReSharper disable once NullableWarningSuppressionIsUsed
                 SelectUserRole!.Id);
 
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Success,
+                        Title = isNew ? "Пользователь добавлен" : "Пользователь обновлён",
+                        Object = $"Логин: {Login}"
+                    }));
+
             WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
             WeakReferenceMessenger.Default.Send(new RefreshUserListMessage());
             Log.Debug(
@@ -187,6 +207,16 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
                 FirstName,
                 LastName,
                 SelectUserRole?.Id);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Не удалось сохранить пользователя",
+                        Object = ex.Message
+                    }));
         }
     }
 

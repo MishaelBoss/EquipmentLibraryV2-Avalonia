@@ -1,11 +1,15 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using Npgsql;
 using Serilog;
 using Dapper;
+using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
 using EquipmentLibraryV2_Avalonia.Validators;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels;
 
@@ -60,15 +64,32 @@ public partial class CreateAdminDialogWindowViewModel : ViewModelBase
 
             Log.Information("Administrator account created: {Login}", Login);
             IsSuccess = true;
-            StatusText = "Администратор создан";
+            
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Success,
+                        Title = "Администратор создан"
+                    }));
 
-            await Task.Delay(500);
             window?.Close();
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Failed to create administrator account");
             StatusText = "Не удалось создать администратора: " + ex.Message;
+            
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Не удалось создать администратора",
+                        Object = ex
+                    }));
         }
         finally
         {

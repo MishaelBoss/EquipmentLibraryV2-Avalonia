@@ -102,17 +102,23 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
         TestStatus = ok ? ConnectionTestStatusType.Success : ConnectionTestStatusType.Failure;
         IsTesting = false;
 
-        Log.Information(ok ? "Successful connect" : "Not connection to database");
+        if (ok)
+        {
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Success,
+                        Title = "Подключение установлено",
+                        Object = $"База данных: {Database}"
+                    }));
+        }
+
+        Log.Information("Database connection check completed. Success={Success}", ok);
     }
 
     #region Test
-
-    private bool IsConfigInvalid() =>
-        string.IsNullOrWhiteSpace(Ip) ||
-        string.IsNullOrWhiteSpace(Port) ||
-        string.IsNullOrWhiteSpace(Database) ||
-        string.IsNullOrWhiteSpace(User) ||
-        string.IsNullOrWhiteSpace(Password);
 
     public async Task<bool> ConnectivityChecker()
     {
@@ -126,13 +132,31 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
                 var firstError = validationResult.Errors.First().ErrorMessage;
                 Log.Error("Валидация настроек подключения не пройдена: {Error}", firstError);
 
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, (firstError, 400L)));
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Warning,
+                            Title = "Проверьте настройки подключения",
+                            Object = firstError
+                        }));
+                
                 return false;
             }
 
             if (!int.TryParse(Port, out var port)) port = 5432;
             if (await IsTcpReachableAsync(Ip, port)) return await TestPostgreSqlConnection();
-            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Сервер PostgreSQL недоступен",
+                        Object = "Проверьте адрес, порт и доступность сервера. " +
+                                 "Убедитесь, что PostgreSQL запущен."
+                    }));
             return false;
 
         }
@@ -150,17 +174,17 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
         try
         {
             await tcp.ConnectAsync(host, port, cts.Token);
-            Log.Information($"TCP connect to ({host},{port}) succeeded");
+            Log.Information("TCP connect to ({Host},{Port}) succeeded", host, port);
             return tcp.Connected;
         }
         catch (OperationCanceledException)
         {
-            Log.Warning($"TCP connect to ({host},{port}) timed out after 3s");
+            Log.Warning("TCP connect to ({Host},{Port}) timed out after 3s", host, port);
             return false;
         }
         catch (Exception ex)
         {
-            Log.Warning($"TCP connect to ({host},{port}) failed: {ex.Message}");
+            Log.Warning("TCP connect to ({Host},{Port}) failed: {ExMessage}", host, port, ex.Message);
             return false;
         }
     }
@@ -179,13 +203,22 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
             await using var cmd = new NpgsqlCommand("SELECT 1", connection);
             var result = await cmd.ExecuteScalarAsync();
 
-            Log.Information($"PostgreSQL connection test successful, result {result}");
+            Log.Information("PostgreSQL connection test successful, result {Result}", result);
             return true;
         }
         catch (Exception ex)
         {
-            Log.Warning($"PostgreSQL connection failed: {ex.Message}");
-            WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
+            Log.Warning("PostgreSQL connection failed: {ExMessage}", ex.Message);
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Ошибка подключения к PostgreSQL",
+                        Object = "Не удалось подключиться к базе данных. Проверьте настройки подключения и доступность сервера."
+                    }));
+            
             return false;
         }
     }

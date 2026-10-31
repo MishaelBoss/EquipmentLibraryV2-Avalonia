@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using Npgsql;
 using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
@@ -90,11 +92,31 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
 
                         _onSuccessCallback.Invoke();
 
+                        WeakReferenceMessenger.Default.Send(
+                            new ShowOrHideNotification(
+                                ErrorAction.Add,
+                                new MessageUserControlViewModel
+                                {
+                                    Type = NotificationType.Success,
+                                    Title = "Удалено",
+                                    Object = $"Удалена запись: {title}"
+                                }));
+
                         WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
                     }
                     else
                     {
                         Log.Error($"No records found to delete for ID: {id}");
+
+                        WeakReferenceMessenger.Default.Send(
+                            new ShowOrHideNotification(
+                                ErrorAction.Add,
+                                new MessageUserControlViewModel
+                                {
+                                    Type = NotificationType.Warning,
+                                    Title = "Запись не найдена",
+                                    Object = "Возможно, запись уже была удалена."
+                                }));
 
                         WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
                     }
@@ -111,10 +133,30 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
             catch (PostgresException pgEx)
             {
                 Log.Error($"Database error (SQLState: {pgEx.SqlState}): {pgEx.MessageText}");
+
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Error,
+                            Title = "Не удалось удалить запись",
+                            Object = pgEx.MessageText
+                        }));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
+
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Error,
+                            Title = "Не удалось удалить запись",
+                            Object = ex.Message
+                        }));
             }
         }
     }

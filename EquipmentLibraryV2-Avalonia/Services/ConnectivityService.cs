@@ -65,8 +65,20 @@ internal static class ConnectivityService
             if (!int.TryParse(AppConfig.Port, out var port)) port = 5432;
             if (await IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
                 return await TestPostgreSqlConnection(showNotification);
+            
             if (showNotification)
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL server is not running. Start PostgreSQL to create the database", 503L)));
+            {
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Error,
+                            Title = "Сервер PostgreSQL недоступен",
+                            Object = "Запустите PostgreSQL, чтобы создать базу данных."
+                        }));
+            }
+            
             return false;
 
         }
@@ -118,8 +130,20 @@ internal static class ConnectivityService
         catch (Exception ex)
         {
             Log.Warning(ex, "PostgreSQL connection failed"); 
+
             if (showNotification)
-                WeakReferenceMessenger.Default.Send(new ShowOrHideNotification(ErrorAction.Add, ErrorUserControlViewModel.Instance, ("PostgreSQL connection failed", 504L)));
+            {
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Error,
+                            Title = "Сервер PostgreSQL недоступен",
+                            Object = "Запустите PostgreSQL, чтобы создать базу данных."
+                        }));
+            }
+            
             return false;
         }
     }

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
 
@@ -39,10 +40,31 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
         {
             await GeneratePassword();
             Log.Information("Password generation and update completed successfully. UserId={UserId}, Login={Login}", userId, Login);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Success,
+                        Title = "Пароль обновлён",
+                        Object = $"Пользователь: {Login}"
+                    }));
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Password generation failed. UserId={UserId}, Login={Login}", userId, Login);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Не удалось изменить пароль",
+                        Object = ex.Message
+                    }));
+
             throw;
         }
         finally
@@ -58,6 +80,16 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
         {
             TextCopy.ClipboardService.SetText(GeneratedPassword);
             Log.Information("Password copied to clipboard and dialog closed. UserId={UserId}, Login={Login}", userId, Login);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Info,
+                        Title = "Пароль скопирован",
+                        Object = "Пароль скопирован в буфер обмена."
+                    }));
         }
         else
         {
@@ -74,6 +106,16 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
         {
             TextCopy.ClipboardService.SetText(GeneratedPassword);
             Log.Information("Password copied to clipboard. UserId={UserId}, Login={Login}", userId, Login);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Info,
+                        Title = "Пароль скопирован",
+                        Object = "Пароль скопирован в буфер обмена."
+                    }));
         }
         else
         {

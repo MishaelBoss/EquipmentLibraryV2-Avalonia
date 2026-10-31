@@ -3,7 +3,10 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using EquipmentLibraryV2_Avalonia.ViewModels.Settings;
 using EquipmentLibraryV2_Avalonia.Services.Interfaces;
 using EquipmentLibraryV2_Avalonia.Models;
@@ -79,6 +82,17 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
     public void Ok(Window? window)
     {
         Apply();
+
+        WeakReferenceMessenger.Default.Send(
+            new ShowOrHideNotification(
+                ErrorAction.Add,
+                new MessageUserControlViewModel
+                {
+                    Type = NotificationType.Success,
+                    Title = "Настройки сохранены",
+                    Object = "Изменения применены."
+                }));
+
         window?.Close();
     }
 }

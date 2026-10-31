@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -317,12 +318,22 @@ public partial class MainWindowViewModel : ViewModelBase,
         {
             Log.Warning(ex, "Version check timed out");
             WeakReferenceMessenger.Default.Send(
-                new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Version check timed out", 503L)));
+                new ShowOrHideNotification(ErrorAction.Add, new MessageUserControlViewModel
+                {
+                    Type = NotificationType.Warning,
+                    Title = "Проверка обновлений",
+                    Object = "Превышено время ожидания ответа сервера. Попробуйте позже."
+                }));
         }
         catch (Exception ex)
         {
             WeakReferenceMessenger.Default.Send(
-                new ShowOrHideNotification(ErrorAction.Add, new ErrorUserControlViewModel(), ("Failed to fetch version info", 503L)));
+                new ShowOrHideNotification(ErrorAction.Add, new MessageUserControlViewModel
+                {
+                    Type = NotificationType.Warning,
+                    Title = "Не удалось проверить обновления",
+                    Object = "Не удалось получить информацию о новой версии. Попробуйте позже."
+                }));
             Log.Warning(ex, "Failed to fetch version info");
             Version = AppConfig.DisplayVersion;
         }
@@ -369,22 +380,28 @@ public partial class MainWindowViewModel : ViewModelBase,
 
     public void Receive(ShowOrHideNotification message)
     {
+        if (message.ViewModel is not MessageUserControlViewModel controlViewModel)
+            return;
+        
         if (message.Action == ErrorAction.Add)
         {
-            if (message.ViewModel is ErrorUserControlViewModel errorVm)
+            if (controlViewModel.Object is null)
             {
-                errorVm.Object = message.Data switch
+                controlViewModel.Object = message.Data switch
                 {
-                    (string text, long id)  => $"{text} (Cod: {id})",
-                    string textOnly         => textOnly,
-                    long codeOnly           => $"Cod error: {codeOnly}",
-                    _                       => "An unknown error occurred"
+                    (string text, long code) => $"{text} (Код: {code})",
+                    string textOnly => textOnly,
+                    long codeOnly => $"Код: {codeOnly}",
+                    _ => "Нет описания уведомления."
                 };
             }
 
             if (!ErrorMessages.Contains(message.ViewModel))
             {
                 ErrorMessages.Add(message.ViewModel);
+
+                if (controlViewModel.Type is NotificationType.Success or NotificationType.Info)
+                    _ = AutoDismissAsync(controlViewModel);
             }
         }
         else
@@ -393,6 +410,17 @@ public partial class MainWindowViewModel : ViewModelBase,
             if (message.ViewModel is IDisposable disposable)
                 disposable.Dispose();
         }
+    }
+
+    private async Task AutoDismissAsync(MessageUserControlViewModel viewModel, int seconds = 5)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(seconds));
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (ErrorMessages.Remove(viewModel) && viewModel is IDisposable disposable)
+                disposable.Dispose();
+        });
     }
 
     public void Receive(LogoutMessage message)

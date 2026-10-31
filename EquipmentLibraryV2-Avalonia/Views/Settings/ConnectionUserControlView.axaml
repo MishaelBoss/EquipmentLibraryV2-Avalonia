@@ -6,10 +6,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:ConnectionUserControlViewModel"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Settings.ConnectionUserControlView">
+    
     <UserControl.Styles>
         <StyleInclude Source="/Styles/SettingsStyles.axaml"/>
     </UserControl.Styles>
-
+    
     <StackPanel Spacing="20">
         <TextBlock Text="Настройка подключения к серверу базы данных. Укажите параметры доступа и проверьте соединение."
                    Foreground="#9E9EB0"

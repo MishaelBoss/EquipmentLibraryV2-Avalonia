@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Dapper;
 using EquipmentLibraryV2_Avalonia.Messages;
+using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
@@ -70,6 +71,16 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                     Login,
                     newIsActive,
                     rows);
+
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Success,
+                            Title = newIsActive ? "Пользователь активирован" : "Пользователь деактивирован",
+                            Object = $"Логин: {Login}"
+                        }));
             }
             catch (Exception ex)
             {
@@ -79,6 +90,16 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
                     UserId,
                     Login,
                     newIsActive);
+
+                WeakReferenceMessenger.Default.Send(
+                    new ShowOrHideNotification(
+                        ErrorAction.Add,
+                        new MessageUserControlViewModel
+                        {
+                            Type = NotificationType.Error,
+                            Title = "Не удалось изменить статус пользователя",
+                            Object = ex.Message
+                        }));
             }
         }
     }

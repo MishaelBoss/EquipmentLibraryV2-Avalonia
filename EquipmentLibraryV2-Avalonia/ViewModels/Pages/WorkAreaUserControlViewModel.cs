@@ -6,9 +6,12 @@ using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Services;
 using EquipmentLibraryV2_Avalonia.Validators.Pages;
+using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using Mapster;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
@@ -35,7 +38,17 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
         {
             var firstError = result.Errors.FirstOrDefault()?.ErrorMessage ?? "Ошибка валидации";
             Log.Warning("Валидация формы не пройдена: {Error}", firstError);
-            
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Warning,
+                        Title = "Проверьте данные оборудования",
+                        Object = firstError
+                    }));
+
             return;
         }
 
@@ -48,6 +61,16 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
         {
             Log.Error(ex, "Add command failed. Title={Title}, EquipmentTypeId={EquipmentTypeId}",
                 Title, SelectedEquipmentType?.Id);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Не удалось добавить оборудование",
+                        Object = ex.Message
+                    }));
         }
     }
 
@@ -182,6 +205,16 @@ public partial class WorkAreaUserControlViewModel : ViewModelBase
             var rows = await connection.ExecuteAsync(sql, equipmentDto);
 
             Log.Information("Equipment inserted. RowsAffected={RowsAffected}", rows);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Success,
+                        Title = "Оборудование добавлено",
+                        Object = equipmentDto.Title
+                    }));
 
             Clear();
             Log.Debug("Form cleared after insert");
