@@ -10,6 +10,11 @@
     <Style Selector="Button.BTN /template/ ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="TextBlock.Foreground" Value="White"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
     </Style>
     
     <Style Selector="Button.BTN:pointerover /template/ ContentPresenter">
@@ -27,6 +32,15 @@
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Foreground" Value="#9E9EB0"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="ListBoxItem /template/ ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
     </Style>
                         
     <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">

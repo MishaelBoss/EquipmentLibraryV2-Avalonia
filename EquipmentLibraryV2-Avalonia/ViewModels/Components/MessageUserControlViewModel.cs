@@ -79,7 +79,7 @@ public partial class MessageUserControlViewModel : ViewModelBase
 
         IsClosing = true;
 
-        await Task.Delay(300);
+        await Task.Delay(180);
 
         WeakReferenceMessenger.Default.Send(
             new ShowOrHideNotification(ErrorAction.Remove, this));

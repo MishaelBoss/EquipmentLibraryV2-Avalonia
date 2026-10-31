@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:converters="clr-namespace:EquipmentLibraryV2_Avalonia.Converters"
              xmlns:vm="using:EquipmentLibraryV2_Avalonia.ViewModels.Components"
              x:DataType="vm:MessageUserControlViewModel"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="50"
@@ -18,25 +17,25 @@
         <vm:MessageUserControlViewModel/>
     </Design.DataContext>
     
-    <UserControl.Resources>
-        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
-    </UserControl.Resources>
+    <UserControl.Transitions>
+        <Transitions>
+            <DoubleTransition
+                Property="Opacity"
+                Duration="0:0:0.15"
+                Easing="CubicEaseOut" />
+            <TransformOperationsTransition
+                Property="RenderTransform"
+                Duration="0:0:0.15"
+                Easing="CubicEaseOut" />
+        </Transitions>
+    </UserControl.Transitions>
     
     <Border
         Background="#1E1E24"
         BorderBrush="#2D2D35"
         BorderThickness="1"
         CornerRadius="8"
-        Padding="10"
-        Opacity="{Binding IsClosing, Converter={StaticResource BoolToOpacityConverter}}">
-
-        <Border.Transitions>
-            <Transitions>
-                <DoubleTransition
-                    Property="Opacity"
-                    Duration="0:0:0.3" />
-            </Transitions>
-        </Border.Transitions>
+        Padding="10">
 
         <Grid ColumnDefinitions="Auto,*,Auto">
             <Svg

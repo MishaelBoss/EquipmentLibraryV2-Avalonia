@@ -1,47 +1,73 @@
 using System;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Media.Transformation;
 
 namespace EquipmentLibraryV2_Avalonia;
 
 public class FadeContentControl : ContentControl
 {
-    private bool _first = true;
+    private static readonly TransformOperations HiddenTransform =
+        TransformOperations.Parse("translateY(8px)");
 
-    private readonly DoubleTransition _fadeTransition = new()
+    private static readonly TransformOperations ShownTransform =
+        TransformOperations.Parse("translateY(0px)");
+
+    private readonly DoubleTransition _opacityTransition = new()
     {
         Property = OpacityProperty,
-        Duration = TimeSpan.FromSeconds(0.2)
+        Duration = TimeSpan.FromMilliseconds(180),
+        Easing = new CubicEaseOut()
     };
 
-    public FadeContentControl()
+    private readonly TransformOperationsTransition _transformTransition = new()
     {
-        Transitions = new Transitions();
-    }
+        Property = RenderTransformProperty,
+        Duration = TimeSpan.FromMilliseconds(180),
+        Easing = new CubicEaseOut()
+    };
+
+    private bool _first = true;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == ContentProperty)
+        if (change.Property != ContentProperty)
+            return;
+
+        if (_first)
         {
-            if (_first)
-            {
-                _first = false;
-                Opacity = 1;
-                return;
-            }
-
-            var saved = Transitions;
-            Transitions = null;
-            Opacity = 0.0;
-            Transitions = saved;
-
-            if (Transitions is not null && !Transitions.Contains(_fadeTransition))
-                Transitions.Add(_fadeTransition);
-
-            Opacity = 1.0;
+            _first = false;
+            Opacity = 1;
+            return;
         }
+
+        // Значения выставляются без transition, а затем transition включаются обратно,
+        // чтобы анимация шла от начального состояния к конечному, а не наоборот.
+        var transitions = Transitions;
+        Transitions = null;
+
+        Opacity = 0;
+        RenderTransform = HiddenTransform;
+
+        Transitions = transitions;
+        EnsureTransitions();
+
+        Opacity = 1;
+        RenderTransform = ShownTransform;
+    }
+
+    private void EnsureTransitions()
+    {
+        Transitions ??= new Transitions();
+
+        if (!Transitions.Contains(_opacityTransition))
+            Transitions.Add(_opacityTransition);
+
+        if (!Transitions.Contains(_transformTransition))
+            Transitions.Add(_transformTransition);
     }
 }

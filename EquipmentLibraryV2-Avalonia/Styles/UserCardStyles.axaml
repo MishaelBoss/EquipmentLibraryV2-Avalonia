@@ -8,7 +8,9 @@
         <Setter Property="Margin" Value="4,4,4,8"/>
         <Setter Property="Transitions">
             <Transitions>
-                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" Easing="CubicEaseOut"/>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" Easing="CubicEaseOut"/>
             </Transitions>
         </Setter>
     </Style>
@@ -16,6 +18,7 @@
     <Style Selector="Border.UserCard:pointerover">
         <Setter Property="Background" Value="#3D3D3D"/>
         <Setter Property="BorderBrush" Value="#28A745"/>
+        <Setter Property="RenderTransform" Value="translateY(-1px)"/>
     </Style>
     
     <Style Selector="Button.action, ToggleButton.action">

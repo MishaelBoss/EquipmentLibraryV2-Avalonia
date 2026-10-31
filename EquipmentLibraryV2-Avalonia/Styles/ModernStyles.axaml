@@ -34,6 +34,15 @@
         <Setter Property="Background" Value="#3A3A3A"/>
     </Style>
 
+    <Style Selector="TextBox.modernInput /template/ Border#PART_BorderElement">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
     <Style Selector="ComboBox.modernSelect">
         <Setter Property="Background" Value="#3A3A3A"/>
         <Setter Property="Foreground" Value="White"/>
@@ -55,6 +64,15 @@
         <Setter Property="BorderBrush" Value="#555"/>
     </Style>
 
+    <Style Selector="ComboBox.modernSelect /template/ Border#Layer_1">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
     <Style Selector="Button.modernPrimary">
         <Setter Property="Background" Value="#28A745"/>
         <Setter Property="CornerRadius" Value="6"/>
@@ -71,6 +89,14 @@
     
     <Style Selector="Button.modernPrimary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#218838"/>
+    </Style>
+
+    <Style Selector="Button.modernPrimary /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
     </Style>
     
     <Style Selector="Button.modernClosed">
@@ -127,5 +153,13 @@
     
     <Style Selector="Button.modernFlyoutItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#2E2E2E"/>
+    </Style>
+
+    <Style Selector="Button.modernFlyoutItem /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
     </Style>
 </Styles>
