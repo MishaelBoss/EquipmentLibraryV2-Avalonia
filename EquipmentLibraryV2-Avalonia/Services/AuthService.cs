@@ -3,6 +3,8 @@ using Dapper;
 using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
@@ -11,6 +13,8 @@ namespace EquipmentLibraryV2_Avalonia.Services;
 
 public static class AuthService
 {
+    private static readonly TimeSpan SessionLifetime = TimeSpan.FromDays(7);
+
     public static UserSession? CurrentSession { get; private set; }
 
     private static CancellationTokenSource? _healthCheckCts;
@@ -46,11 +50,15 @@ public static class AuthService
                 Login: user.Login,
                 UserRole: user.UserRole
             );
-            
+
+            var token = GenerateSessionToken();
+
+            await SaveSessionAsync(connection, user.Id, token);
+
             Log.Information("User {Username} logged in successfully. Session id: {UserId}, role: {UserRole}",
                 user.Login, user.Id, user.UserRole);
 
-            await SaveLoginCookieAsync(CurrentSession.Id, CurrentSession.Login, Guid.NewGuid().ToString(), DateTime.Now.AddDays(7));
+            await SaveLoginCookieAsync(CurrentSession.Id, CurrentSession.Login, token, DateTime.Now.Add(SessionLifetime));
 
             WeakReferenceMessenger.Default.Send(new LoginMessage());
 
@@ -62,6 +70,63 @@ public static class AuthService
         {
             Log.Error(ex, "LoginAsync failed for user {Username}", username);
             return false;
+        }
+    }
+
+    private static string GenerateSessionToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+    }
+
+    private static string HashToken(string token)
+    {
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
+    }
+
+    private static async Task SaveSessionAsync(NpgsqlConnection connection, int userId, string token)
+    {
+        await using var cleanup = new NpgsqlCommand("DELETE FROM public.user_sessions WHERE expires_at < now()", connection);
+        await cleanup.ExecuteNonQueryAsync();
+
+        await connection.ExecuteAsync(
+            "INSERT INTO public.user_sessions (user_id, token_hash, expires_at) VALUES (@userId, @tokenHash, @expiresAt)",
+            new
+            {
+                userId,
+                tokenHash = HashToken(token),
+                expiresAt = DateTime.UtcNow.Add(SessionLifetime)
+            });
+    }
+
+    private static async Task DeleteSessionByTokenAsync(string token)
+    {
+        try
+        {
+            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await connection.OpenAsync();
+
+            await connection.ExecuteAsync(
+                "DELETE FROM public.user_sessions WHERE token_hash = @tokenHash",
+                new { tokenHash = HashToken(token) });
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Failed to revoke session token in database");
+        }
+    }
+
+    private static void DeleteLoginCookie()
+    {
+        try
+        {
+            if (!File.Exists(CookiePath)) return;
+            
+            File.Delete(CookiePath);
+            Log.Debug("Login cookie deleted at {CookiePath}", CookiePath);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to delete login cookie at {CookiePath}", CookiePath);
         }
     }
 
@@ -105,15 +170,18 @@ public static class AuthService
             var json = await File.ReadAllTextAsync(CookiePath);
             var data = JsonSerializer.Deserialize<CookieData>(json);
 
-            if (data == null)
+            if (data == null || string.IsNullOrWhiteSpace(data.Token))
             {
-                Log.Warning("Auto-login cookie deserialization returned null");
+                Log.Warning("Auto-login cookie is invalid or has no session token");
+                DeleteLoginCookie();
                 return false;
             }
 
             if (data.Expires <= DateTime.Now)
             {
                 Log.Warning("Auto-login cookie expired for user {Login}. Expired at {Expires}", data.Login, data.Expires);
+                DeleteLoginCookie();
+                _ = DeleteSessionByTokenAsync(data.Token);
                 return false;
             }
 
@@ -124,6 +192,13 @@ public static class AuthService
             }
 
             var result = await VerifySessionInDbAsync(data);
+
+            if (!result)
+            {
+                DeleteLoginCookie();
+                await DeleteSessionByTokenAsync(data.Token);
+            }
+
             Log.Information("TryAutoLoginAsync finished with result {Result}", result);
 
             return result;
@@ -141,37 +216,41 @@ public static class AuthService
         
         try
         {
-            const string sql = "SELECT id, login, user_type_id FROM public.users WHERE id = @id AND is_active = true";
+            const string sql = """
+                SELECT u.id AS Id, u.login AS Login, u.user_type_id AS UserRole
+                FROM public.users u
+                INNER JOIN public.user_sessions s ON s.user_id = u.id
+                WHERE s.token_hash = @tokenHash
+                  AND s.expires_at > now()
+                  AND u.is_active = true
+                """;
 
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             await connection.OpenAsync();
 
-            await using var cmd = new NpgsqlCommand(sql, connection);
-            cmd.Parameters.AddWithValue("@id", data.Id);
+            var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { tokenHash = HashToken(data.Token) });
 
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (!await reader.ReadAsync())
+            if (user == null)
             {
-                Log.Warning("Auto-login verification failed: user id {UserId} not found in DB", data.Id);
+                Log.Warning("Auto-login verification failed: no active session found for the stored token");
                 return false;
             }
-            var loginInDb = reader.GetString(1);
 
-            if (loginInDb != data.Login)
+            if (!string.Equals(user.Login, data.Login, StringComparison.Ordinal))
             {
                 Log.Warning("Auto-login verification failed: cookie login {CookieLogin} does not match DB login {DbLogin}",
-                    data.Login, loginInDb);
+                    data.Login, user.Login);
                 return false;
             }
 
             CurrentSession = new UserSession(
-                Id: reader.GetInt64(0),
-                Login: loginInDb,
-                UserRole: reader.GetInt64(2)
+                Id: user.Id,
+                Login: user.Login,
+                UserRole: user.UserRole
             );
             
             Log.Information("Auto-login successful for user {Login}, session id {UserId}, role {UserRole}",
-                loginInDb, CurrentSession.Id, CurrentSession.UserRole);
+                user.Login, CurrentSession.Id, CurrentSession.UserRole);
 
             StartSessionHealthCheck();
             
@@ -192,11 +271,15 @@ public static class AuthService
 
         try
         {
-            if (File.Exists(CookiePath))
+            var token = ReadCookieToken();
+
+            if (token is not null)
             {
-                File.Delete(CookiePath);
-                Log.Debug("Login cookie deleted at {CookiePath}", CookiePath);
+                _ = DeleteSessionByTokenAsync(token);
             }
+
+            DeleteLoginCookie();
+
             CurrentSession = null;
             WeakReferenceMessenger.Default.Send(new LogoutMessage());
             
@@ -205,6 +288,22 @@ public static class AuthService
         catch (Exception ex)
         {
             Log.Error(ex, "Logout failed");
+        }
+    }
+
+    private static string? ReadCookieToken()
+    {
+        try
+        {
+            if (!File.Exists(CookiePath)) return null;
+
+            var json = File.ReadAllText(CookiePath);
+            return JsonSerializer.Deserialize<CookieData>(json)?.Token;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Failed to read login cookie for session revocation");
+            return null;
         }
     }
 
@@ -229,19 +328,21 @@ public static class AuthService
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(10), ct);
-                if (CurrentSession is null)
+                var session = CurrentSession;
+                if (session is null)
                     continue;
 
                 await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
-                const string sql = "SELECT is_active FROM public.users WHERE id = @id";
-                var isActive = await connection.ExecuteScalarAsync<bool?>(sql, new { id = CurrentSession.Id });
+                await connection.OpenAsync();
 
-                if (isActive == false)
-                {
-                    Log.Warning("Session {UserId} deactivated by admin. Forcing logout", CurrentSession.Id);
-                    Logout();
-                    break;
-                }
+                const string sql = "SELECT is_active FROM public.users WHERE id = @id";
+                var isActive = await connection.ExecuteScalarAsync<bool?>(sql, new { id = session.Id });
+
+                if (isActive == true) continue;
+                
+                Log.Warning("Session {UserId} is no longer valid (user missing or deactivated). Forcing logout", session.Id);
+                Logout();
+                break;
             }
             catch (OperationCanceledException)
             {
