@@ -48,13 +48,13 @@ public class App : Application
 
     private void SetupGlobalExceptionHandlers()
     {
-        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
         {
             var ex = args.ExceptionObject as Exception;
             Log.Fatal(ex, "Unhandled AppDomain exception. Terminating={IsTerminating}", args.IsTerminating);
         };
 
-        TaskScheduler.UnobservedTaskException += (sender, args) =>
+        TaskScheduler.UnobservedTaskException += (_, args) =>
         {
             Log.Fatal(args.Exception, "Unobserved task exception");
             args.SetObserved();
