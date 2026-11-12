@@ -7,6 +7,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              d:Background="#2D2D35"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Settings.UpdatesUserControlView">
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/Styles.axaml"/>
+    </UserControl.Styles>
+    
     <StackPanel Spacing="20">
         <TextBlock Text="Настройка автоматической проверки обновлений приложения."
                    Foreground="#9E9EB0"
@@ -30,6 +35,7 @@
                 <CheckBox Grid.Column="2"
                           IsChecked="{Binding CheckLatestUpdates}"
                           VerticalAlignment="Center"
+                          Classes="WhiteOutline"
                           Margin="16,0,0,0"/>
             </Grid>
         </Border>

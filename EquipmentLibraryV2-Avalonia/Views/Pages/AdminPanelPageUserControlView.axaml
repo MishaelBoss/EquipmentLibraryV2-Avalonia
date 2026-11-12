@@ -11,6 +11,7 @@
 	<UserControl.Styles>
 		<StyleInclude Source="/Styles/UserCardStyles.axaml"/>
 		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
+		<StyleInclude Source="/Styles/Styles.axaml"/>
 	</UserControl.Styles>
 
 	<Grid>
@@ -84,9 +85,11 @@
 									<StackPanel Orientation="Horizontal" 
 									            Spacing="10">
 										<CheckBox Content="Активные" 
-										          IsChecked="{Binding ShowActiveUsers}"/>
+										          IsChecked="{Binding ShowActiveUsers}"
+										          Classes="WhiteOutline"/>
 										<CheckBox Content="Неактивные" 
-										          IsChecked="{Binding ShowInactiveUsers}"/>
+										          IsChecked="{Binding ShowInactiveUsers}"
+										          Classes="WhiteOutline"/>
 									</StackPanel>
 									<Button Content="Сбросить"
 									        VerticalContentAlignment="Center"
@@ -142,19 +145,19 @@
 																	  Command="{Binding ChangeActiveUserCommand}"
 																	  Classes="action isActive">
 															<Panel>
-																<Image Source="/Assets/toggle-on-64.png" Width="20" IsVisible="{Binding IsActive}"/>
-																<Image Source="/Assets/toggle-off-64.png" Width="20" IsVisible="{Binding !IsActive}"/>
+																<Image Source="{SvgImage /Assets/toggle-right.svg}" Width="19" Height="19" IsVisible="{Binding IsActive}"/>
+																<Image Source="{SvgImage /Assets/toggle-left.svg}" Width="19" Height="19" IsVisible="{Binding !IsActive}"/>
 															</Panel>
 														</ToggleButton>
 
 														<Button Command="{Binding EditCommand}"
 																Classes="action edit" Background="#34C759">
-															<Image Source="/Assets/edit-user-64.png"/>
+															<Image Source="{SvgImage /Assets/user-pen.svg}" Width="19" Height="19"/>
 														</Button>
 
 														<Button Command="{Binding DeleteCommand}"
 																Classes="action delete" Background="#FF3B30">
-															<Image Source="/Assets/remove-64.png"/>
+															<Image Source="{SvgImage /Assets/trash.svg}" Width="19" Height="19"/>
 														</Button>
 														
 														<Button Command="{Binding PasswordResetCommand}"

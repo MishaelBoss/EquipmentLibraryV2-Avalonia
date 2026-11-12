@@ -2,162 +2,154 @@
 using CommunityToolkit.Mvvm.Messaging;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
-using EquipmentLibraryV2_Avalonia.ViewModels.Components;
 using Npgsql;
 using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 
-namespace EquipmentLibraryV2_Avalonia.ViewModels.Components
+namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
+
+public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, string? deleteSql, Action onSuccessCallback, string[]? additionalQueries = null) : ViewModelBase
 {
-    public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, string? deleteSql, Action onSuccessCallback, string[]? additionalQueries = null) : ViewModelBase
+    public string Text { get; set; } = $"Delete: {title}";
+
+    [RelayCommand]
+    public async Task Close()
     {
-        public string Text { get; set; } = $"Delete: {title}";
+        WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
+    }
 
-        private readonly Action _onSuccessCallback = onSuccessCallback;
-        private readonly string? _deleteSql = deleteSql;
-        private readonly string[]? _additionalQueries = additionalQueries;
-
-        [RelayCommand]
-        public async Task Close()
+    [RelayCommand]
+    public async Task Confirm() 
+    {
+        if (id == null)
         {
-            WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
+            return;
         }
-
-        [RelayCommand]
-        public async Task Confirm() 
-        {
-            if (id == null)
-            {
-                return;
-            }
             
+        try
+        {
+            await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
+            await connection.OpenAsync();
+
+            NpgsqlTransaction? transaction = null;
+            if (additionalQueries is not null && additionalQueries.Length > 0)
+            {
+                transaction = await connection.BeginTransactionAsync();
+            }
+
             try
             {
-                await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
-                await connection.OpenAsync();
+                var totalRowsAffected = 0;
 
-                NpgsqlTransaction? transaction = null;
-                if (_additionalQueries is not null && _additionalQueries.Length > 0)
+                if (additionalQueries is not null && additionalQueries.Length > 0)
                 {
-                    transaction = await connection.BeginTransactionAsync();
-                }
-
-                try
-                {
-                    var totalRowsAffected = 0;
-
-                    if (_additionalQueries is not null && _additionalQueries.Length > 0)
+                    foreach (var query in additionalQueries)
                     {
-                        foreach (var query in _additionalQueries)
+                        try
                         {
-                            try
-                            {
-                                await using var command = new NpgsqlCommand(query, connection, transaction);
-                                command.Parameters.AddWithValue("@id", id);
-                                var rows = await command.ExecuteNonQueryAsync();
-                                totalRowsAffected += rows;
+                            await using var command = new NpgsqlCommand(query, connection, transaction);
+                            command.Parameters.AddWithValue("@id", id);
+                            var rows = await command.ExecuteNonQueryAsync();
+                            totalRowsAffected += rows;
 
-                                Log.Debug($"Additional query executed: {query}, rows affected: {rows}");
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error($"Failed to execute additional query: {query} {ex.Message}");
-                                throw;
-                            }
+                            Log.Debug("Additional query executed: {Query}, rows affected: {Rows}", query, rows);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error("Failed to execute additional query: {Query} {ExMessage}", query, ex.Message);
+                            throw;
                         }
                     }
+                }
 
-                    await using (var mainCommand = new NpgsqlCommand(_deleteSql, connection))
+                await using (var mainCommand = new NpgsqlCommand(deleteSql, connection))
+                {
+                    if (transaction is not null)
                     {
-                        if (transaction is not null)
-                        {
-                            mainCommand.Transaction = transaction;
-                        }
+                        mainCommand.Transaction = transaction;
+                    }
 
-                        mainCommand.Parameters.AddWithValue("@id", id);
-                        var mainRows = await mainCommand.ExecuteNonQueryAsync();
-                        totalRowsAffected += mainRows;
+                    mainCommand.Parameters.AddWithValue("@id", id);
+                    var mainRows = await mainCommand.ExecuteNonQueryAsync();
+                    totalRowsAffected += mainRows;
                             
-                        Log.Debug($"Main query executed: {_deleteSql}, rows affected: {mainRows}");
-                    }
-
-                    if (transaction is not null)
-                    {
-                        await transaction.CommitAsync();
-                    }
-
-                    if (totalRowsAffected > 0)
-                    {
-                        Log.Information($"Successfully deleted records. Total rows affected: {totalRowsAffected}");
-
-                        _onSuccessCallback.Invoke();
-
-                        WeakReferenceMessenger.Default.Send(
-                            new ShowOrHideNotification(
-                                ErrorAction.Add,
-                                new MessageUserControlViewModel
-                                {
-                                    Type = NotificationType.Success,
-                                    Title = "Удалено",
-                                    Object = $"Удалена запись: {title}"
-                                }));
-
-                        WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
-                    }
-                    else
-                    {
-                        Log.Error($"No records found to delete for ID: {id}");
-
-                        WeakReferenceMessenger.Default.Send(
-                            new ShowOrHideNotification(
-                                ErrorAction.Add,
-                                new MessageUserControlViewModel
-                                {
-                                    Type = NotificationType.Warning,
-                                    Title = "Запись не найдена",
-                                    Object = "Возможно, запись уже была удалена."
-                                }));
-
-                        WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
-                    }
+                    Log.Debug("Main query executed: {DeleteSql}, rows affected: {MainRows}", deleteSql, mainRows);
                 }
-                catch (Exception)
+
+                if (transaction is not null)
                 {
-                    if (transaction is not null)
-                    {
-                        await transaction.RollbackAsync();
-                    }
-                    throw;
+                    await transaction.CommitAsync();
                 }
-            }
-            catch (PostgresException pgEx)
-            {
-                Log.Error($"Database error (SQLState: {pgEx.SqlState}): {pgEx.MessageText}");
 
-                WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(
-                        ErrorAction.Add,
-                        new MessageUserControlViewModel
-                        {
-                            Type = NotificationType.Error,
-                            Title = "Не удалось удалить запись",
-                            Object = pgEx.MessageText
-                        }));
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.ToString());
+                if (totalRowsAffected > 0)
+                {
+                    Log.Information("Successfully deleted records. Total rows affected: {TotalRowsAffected}", totalRowsAffected);
 
-                WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(
-                        ErrorAction.Add,
-                        new MessageUserControlViewModel
-                        {
-                            Type = NotificationType.Error,
-                            Title = "Не удалось удалить запись",
-                            Object = ex.Message
-                        }));
+                    onSuccessCallback.Invoke();
+
+                    WeakReferenceMessenger.Default.Send(
+                        new ShowOrHideNotification(
+                            ErrorAction.Add,
+                            new MessageUserControlViewModel
+                            {
+                                Type = NotificationType.Success,
+                                Title = "Удалено",
+                                Object = $"Удалена запись: {title}"
+                            }));
+                }
+                else
+                {
+                    Log.Error("No records found to delete for ID: {Id}", id);
+
+                    WeakReferenceMessenger.Default.Send(
+                        new ShowOrHideNotification(
+                            ErrorAction.Add,
+                            new MessageUserControlViewModel
+                            {
+                                Type = NotificationType.Warning,
+                                Title = "Запись не найдена",
+                                Object = "Возможно, запись уже была удалена."
+                            }));
+                }
+
+                WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage());
             }
+            catch (Exception)
+            {
+                if (transaction is not null)
+                {
+                    await transaction.RollbackAsync();
+                }
+                throw;
+            }
+        }
+        catch (PostgresException pgEx)
+        {
+            Log.Error("Database error (SQLState: {PgExSqlState}): {PgExMessageText}", pgEx.SqlState, pgEx.MessageText);
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Не удалось удалить запись",
+                        Object = pgEx.MessageText
+                    }));
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error occured during confirm delete");
+
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Не удалось удалить запись",
+                        Object = ex.Message
+                    }));
         }
     }
 }

@@ -46,6 +46,16 @@ public partial class MainWindowViewModel : ViewModelBase,
     [ObservableProperty] public partial bool IsOverlayDismissible { get; private set; } = true;
     public ObservableCollection<ViewModelBase> ErrorMessages { get; } = [];
 
+    /// <summary>
+    /// История уведомлений для боковой панели. Попапы (ErrorMessages) исчезают
+    /// автоматически, а здесь запись остаётся до ручного закрытия или «Очистить всё».
+    /// </summary>
+    public ObservableCollection<MessageUserControlViewModel> NotificationHistory { get; } = [];
+
+    public NotificationUserControlViewModel NotificationViewModel { get; }
+
+    private const int MaxNotificationHistory = 100;
+
     [ObservableProperty] public partial string Version { get; set; } = AppConfig.Version;
     [ObservableProperty] public partial string StatusNetwork { get; set; } = "Проверка...";
     [ObservableProperty] public partial bool IsConnected { get; set; }
@@ -141,6 +151,8 @@ public partial class MainWindowViewModel : ViewModelBase,
         _registerOfTestingEquipment = new Lazy<RegisterOfTestingEquipmentPageUserControlViewModel>(sp.GetRequiredService<RegisterOfTestingEquipmentPageUserControlViewModel>);
             
         _authorizationUserControlViewModel = sp.GetRequiredService<AuthorizationUserControlViewModel>();
+
+        NotificationViewModel = new NotificationUserControlViewModel(NotificationHistory);
 
         IsLoading = true;
         CurrentPage = _analytics.Value;
@@ -399,6 +411,10 @@ public partial class MainWindowViewModel : ViewModelBase,
             if (!ErrorMessages.Contains(message.ViewModel))
             {
                 ErrorMessages.Add(message.ViewModel);
+                AddToHistory(controlViewModel);
+
+                if (OpenOrCloseNotification)
+                    controlViewModel.IsRead = true;
 
                 if (controlViewModel.Type is NotificationType.Success or NotificationType.Info)
                     _ = AutoDismissAsync(controlViewModel);
@@ -407,20 +423,30 @@ public partial class MainWindowViewModel : ViewModelBase,
         else
         {
             ErrorMessages.Remove(message.ViewModel);
+            NotificationHistory.Remove(controlViewModel);
             if (message.ViewModel is IDisposable disposable)
                 disposable.Dispose();
         }
+    }
+
+    private void AddToHistory(MessageUserControlViewModel viewModel)
+    {
+        if (NotificationHistory.Contains(viewModel))
+            return;
+
+        NotificationHistory.Insert(0, viewModel);
+
+        while (NotificationHistory.Count > MaxNotificationHistory)
+            NotificationHistory.RemoveAt(NotificationHistory.Count - 1);
     }
 
     private async Task AutoDismissAsync(MessageUserControlViewModel viewModel, int seconds = 5)
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (ErrorMessages.Remove(viewModel) && viewModel is IDisposable disposable)
-                disposable.Dispose();
-        });
+        // Из попапов убираем, но в истории оставляем — как в Rider:
+        // уведомление можно посмотреть позже в боковой панели.
+        await Dispatcher.UIThread.InvokeAsync(() => ErrorMessages.Remove(viewModel));
     }
 
     public void Receive(LogoutMessage message)
@@ -557,6 +583,9 @@ public partial class MainWindowViewModel : ViewModelBase,
     public void Receive(OpenOrCloseNotificationMessage message)
     {
         OpenOrCloseNotification = !OpenOrCloseNotification;
+
+        if (OpenOrCloseNotification)
+            NotificationViewModel.MarkAllAsRead();
     }
 
     public void Dispose()

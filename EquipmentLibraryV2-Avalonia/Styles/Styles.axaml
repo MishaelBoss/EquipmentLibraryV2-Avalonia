@@ -114,4 +114,20 @@
         <Style Selector="RepeatButton:pressed">
                 <Setter Property="RenderTransform" Value="none"/>
         </Style>
+        
+        <Style Selector="CheckBox.WhiteOutline">
+                <Style.Resources>
+                        <SolidColorBrush
+                                x:Key="CheckBoxCheckBackgroundStrokeUnchecked"
+                                Color="White" />
+
+                        <SolidColorBrush
+                                x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver"
+                                Color="White" />
+
+                        <SolidColorBrush
+                                x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed"
+                                Color="White" />
+                </Style.Resources>
+        </Style>
 </Styles>

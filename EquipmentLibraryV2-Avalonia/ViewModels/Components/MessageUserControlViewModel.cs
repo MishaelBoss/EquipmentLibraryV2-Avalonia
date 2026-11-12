@@ -9,7 +9,7 @@ namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
 public partial class MessageUserControlViewModel : ViewModelBase
 {
-        private static readonly IBrush ErrorBrush =
+    private static readonly IBrush ErrorBrush =
         new SolidColorBrush(Color.Parse("#DB5C5C"));
 
     private static readonly IBrush WarningBrush =
@@ -40,6 +40,14 @@ public partial class MessageUserControlViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial bool IsClosing { get; set; }
+
+    /// <summary>Прочитано ли уведомление в боковой панели (для счётчика на колокольчике).</summary>
+    [ObservableProperty]
+    public partial bool IsRead { get; set; }
+
+    public DateTime CreatedAt { get; } = DateTime.Now;
+
+    public string TimeText => CreatedAt.ToString("HH:mm");
 
     public IBrush AccentBrush => Type switch
     {

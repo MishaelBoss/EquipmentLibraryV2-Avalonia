@@ -29,6 +29,14 @@
 		<Style Selector="Border.notificationPanel.open">
 			<Setter Property="Width" Value="300"/>
 		</Style>
+
+		<Style Selector="ScrollViewer.notificationToasts">
+			<Setter Property="Margin" Value="12,0,52,12"/>
+		</Style>
+
+		<Style Selector="ScrollViewer.notificationToasts.panelOpen">
+			<Setter Property="Margin" Value="12,0,352,12"/>
+		</Style>
 	</Window.Styles>
 
     <Design.DataContext>
@@ -83,20 +91,6 @@
 							<equipmentLibraryV2Avalonia:FadeContentControl Grid.Column="0" Content="{Binding CurrentPage}" 
 							                                               ZIndex="0"/>
 						</Grid>
-						<ScrollViewer ZIndex="2"
-						              VerticalAlignment="Bottom" 
-						              HorizontalAlignment="Right"
-						              MaxHeight="300" 
-						              Margin="12">
-							<ItemsControl ItemsSource="{Binding ErrorMessages}"
-							              VerticalAlignment="Bottom">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Spacing="8" VerticalAlignment="Bottom"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-							</ItemsControl>
-						</ScrollViewer>
 					</Grid>
 				</Border>
 				
@@ -115,7 +109,7 @@
 					</Border.Transitions>
 
 					<components:NotificationUserControlView
-						IsVisible="{Binding OpenOrCloseNotification}"
+						DataContext="{Binding NotificationViewModel}"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch" />
 				</Border>
@@ -136,11 +130,50 @@
 					        Classes="WB2"
 					        Classes.active="{Binding OpenOrCloseNotification}"
 					        ToolTip.Tip="Уведомление">
-						<Image Source="{SvgImage /Assets/notifications_dark.svg}" Width="20" Height="20"
-						       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<Panel IsHitTestVisible="False">
+							<Image Source="{SvgImage /Assets/notifications_dark.svg}" Width="20" Height="20"
+							       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							<Border Background="#007ACC"
+							        CornerRadius="7"
+							        MinWidth="8"
+							        Height="8"
+							        Padding="4,0"
+							        HorizontalAlignment="Right"
+							        VerticalAlignment="Top"
+							        Margin="0,6,2,0"
+							        IsVisible="{Binding NotificationViewModel.HasUnread}">
+							</Border>
+						</Panel>
 					</Button>
 				</Grid>
 			</Grid>
+
+			<!-- Попапы уведомлений в правом нижнем углу окна (как в Rider):
+			     выше контента и боковой панели, но ниже модальных оверлеев. -->
+			<ScrollViewer Grid.Row="1"
+			              ZIndex="5"
+			              Classes="notificationToasts"
+			              Classes.panelOpen="{Binding OpenOrCloseNotification}"
+			              HorizontalAlignment="Right"
+			              VerticalAlignment="Bottom"
+			              HorizontalScrollBarVisibility="Disabled"
+			              VerticalScrollBarVisibility="Auto"
+			              MaxWidth="450"
+			              MaxHeight="320">
+				<ScrollViewer.Transitions>
+					<Transitions>
+						<ThicknessTransition Property="Margin" Duration="0:0:0.18" Easing="CubicEaseOut"/>
+					</Transitions>
+				</ScrollViewer.Transitions>
+				<ItemsControl ItemsSource="{Binding ErrorMessages}"
+				              HorizontalAlignment="Right">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Spacing="8" VerticalAlignment="Bottom"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
+			</ScrollViewer>
 
 			<ContentControl Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2"
 							Content="{Binding TopOverlayContent}"
