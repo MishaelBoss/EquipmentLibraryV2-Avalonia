@@ -16,6 +16,7 @@
     <UserControl.Styles>
         <StyleInclude Source="/Styles/Styles.axaml"/>
         <StyleInclude Source="/Styles/ConnectionErrorStyles.axaml"/>
+        <StyleInclude Source="/Styles/ModernStyles.axaml"/>
     </UserControl.Styles>
 
     <Grid ColumnDefinitions="*">
@@ -58,9 +59,8 @@
                                     Orientation="Horizontal"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
-
+                            
                             <Button Background="Transparent"
-                                    Command="{Binding ClearAllCommand}"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Center"
                                     VerticalAlignment="Top"
@@ -68,14 +68,34 @@
                                     Width="25"
                                     Padding="0"
                                     Classes="WB2"
-                                    IsVisible="{Binding HasMessages}"
-                                    ToolTip.Tip="Очистить все">
-
-                                <Image Source="{SvgImage /Assets/delete_dark.svg}"
+                                    ToolTip.Tip="Опции">
+                                
+                                <Image Source="{SvgImage /Assets/action/more.svg}"
                                        Width="16"
                                        Height="16"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
+                                
+                                <Button.Flyout>
+                                    <Flyout Placement="Bottom">
+                                        <StackPanel Spacing="2" MinWidth="160">
+                                            <Button Classes="modernFlyoutItem"
+                                                    IsEnabled="{Binding HasMessages}"
+                                                    Command="{Binding ClearAllCommand}"
+                                                    ToolTip.Tip="Очистить все">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Image Source="{SvgImage /Assets/delete_dark.svg}"
+                                                           Width="16"
+                                                           Height="16"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" />
+                                                    
+                                                    <TextBlock Text="Очистить все" FontSize="13"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Flyout>
+                                </Button.Flyout>
                             </Button>
 
                             <Button Background="Transparent"
@@ -95,7 +115,6 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             </Button>
-
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -160,6 +179,7 @@
                                                 Classes="CloseBtn"
                                                 Command="{Binding CloseCommand}"
                                                 VerticalAlignment="Top"
+                                                HorizontalAlignment="Right"
                                                 ToolTip.Tip="Закрыть">
 
                                             <Grid IsHitTestVisible="False">
