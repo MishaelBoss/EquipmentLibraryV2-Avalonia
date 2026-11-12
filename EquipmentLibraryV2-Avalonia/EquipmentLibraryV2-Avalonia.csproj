@@ -21,8 +21,8 @@ register management.</Description>
     <PackageTags>avalonia csharp dotnet postgresql equipment-management </PackageTags>
     <Company>Michael Development</Company>
     <Product>Equipment Library v2</Product>
-    <AssemblyVersion>1.9.9.4</AssemblyVersion>
-    <FileVersion>1.9.9.4</FileVersion>
+    <AssemblyVersion>1.9.9.5</AssemblyVersion>
+    <FileVersion>1.9.9.5</FileVersion>
     <NeutralLanguage>ru</NeutralLanguage>
   </PropertyGroup>
 
@@ -33,10 +33,10 @@ register management.</Description>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.4" />
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />
+    <PackageReference Include="Avalonia" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.6" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
     <PackageReference Include="ClosedXML" Version="0.105.1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -47,10 +47,10 @@ register management.</Description>
     <PackageReference Include="FluentValidation" Version="12.2.0" />
     <PackageReference Include="Humanizer" Version="3.0.10" />
     <PackageReference Include="Humanizer.Core.ru" Version="3.0.10" />
-    <PackageReference Include="Mapster" Version="10.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.14" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+    <PackageReference Include="Mapster" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
     <PackageReference Include="QuestPDF" Version="2026.9.1" />
