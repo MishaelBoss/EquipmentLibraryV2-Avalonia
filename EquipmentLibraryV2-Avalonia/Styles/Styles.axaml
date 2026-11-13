@@ -130,4 +130,16 @@
                                 Color="White" />
                 </Style.Resources>
         </Style>
+        
+        <Style Selector="CheckBox.WhiteOutline /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="CheckBox.WhiteOutline:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="CheckBox.WhiteOutline:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Foreground" Value="White"/>
+        </Style>
 </Styles>
