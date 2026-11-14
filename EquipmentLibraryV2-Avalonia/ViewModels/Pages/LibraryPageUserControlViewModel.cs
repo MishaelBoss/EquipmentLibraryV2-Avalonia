@@ -9,6 +9,7 @@ using EquipmentLibraryV2_Avalonia.Services;
 using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using EquipmentLibraryV2_Avalonia.Helpers;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Pages;
@@ -38,6 +39,20 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
     partial void OnSearchTextChanged(string? value) => _ = DebounceFilterChanged();
     partial void OnSelectedEquipmentTypeChanged(EquipmentType? value) => _ = DebounceFilterChanged();
     
+    
+    [RelayCommand]
+    private async Task UpdateListEquipmentItems()
+    {
+        try
+        {
+            await LoadAllEquipmentsAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error receiving data");
+        }
+    }
+    
     public async void Receive(RefreshDataMessage message)
     {
         try
@@ -46,7 +61,7 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex, "Error receiving data");
         }
     }
 
@@ -78,8 +93,9 @@ public partial class LibraryPageUserControlViewModel : ViewModelBase, IRecipient
             if (!token.IsCancellationRequested)
                 await LoadAllEquipmentsAsync();
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            Log.Error(ex, "Filter changed");
         }
     }
 

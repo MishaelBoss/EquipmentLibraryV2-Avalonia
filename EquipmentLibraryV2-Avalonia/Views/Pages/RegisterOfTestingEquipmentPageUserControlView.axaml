@@ -7,8 +7,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:RegisterOfTestingEquipmentPageUserControlViewModel"
              x:Class="EquipmentLibraryV2_Avalonia.Views.Pages.RegisterOfTestingEquipmentPageUserControlView">
+	
+	<Design.DataContext>
+		<vm:RegisterOfTestingEquipmentPageUserControlViewModel/>
+	</Design.DataContext>
     
-    <UserControl.Styles>
+	<UserControl.Styles>
 		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
 		<Style Selector="Grid.TableRow:pointerover">
 			<Setter Property="Background" Value="#2A2A3A"/>
@@ -22,7 +26,6 @@
 	</UserControl.Styles>
 
 	<Grid Margin="22" RowDefinitions="Auto, *">
-
 		<Grid Margin="2" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="0">
 			<Border CornerRadius="20" Background="#8E9198" Padding="16,8"
 			        BoxShadow="0 2 8 0 #30000000">
@@ -32,6 +35,7 @@
 					         Text="{Binding SearchText, Mode=TwoWay}"
 					         CornerRadius="14" BorderThickness="1.5"
 					         BorderBrush="#B0B3B8" FontSize="15"/>
+					
 					<Button Height="38" Cursor="Hand" Padding="16,0"
 					        Background="#2B2D31" Foreground="White" BorderBrush="#B0B3B8"
 					        BorderThickness="1.5" CornerRadius="14"
@@ -56,6 +60,16 @@
 								</StackPanel>
 							</Flyout>
 						</Button.Flyout>
+					</Button>
+					
+					<Button Height="38" Cursor="Hand" Padding="16,0"
+					        Background="#2B2D31" Foreground="White" BorderBrush="#B0B3B8"
+					        BorderThickness="1.5" CornerRadius="14"
+					        VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+					        Command="{Binding UpdateListEquipmentItemsCommand}">
+						<Image Source="{SvgImage /Assets/refresh_dark.svg}" 
+						       Width="14" Height="14" 
+						       Svg.Css="path { stroke: #CED0D6; stroke-width: 1.5; stroke-linejoin: round; }"/>
 					</Button>
 				</StackPanel>
 			</Border>

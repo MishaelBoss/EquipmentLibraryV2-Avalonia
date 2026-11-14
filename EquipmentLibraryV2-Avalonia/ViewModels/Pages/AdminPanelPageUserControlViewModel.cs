@@ -250,7 +250,7 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
         }
     }
         
-    [RelayCommand]
+    /*[RelayCommand]
     private async Task ResetFilters()
     {
         try
@@ -258,14 +258,14 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
             ShowActiveUsers = true;
             ShowInactiveUsers = true;
             SearchText = string.Empty;
-
+    
             await LoadUsersWithResetAsync();
         }
         catch (Exception ex)
         {
             Log.Error("Error resetting filters {ExMessage}", ex.Message);
         }
-    }
+    }*/
 
     public void Dispose()
     {

@@ -23,6 +23,19 @@ public partial class MeasurementRegisterPageUserControlViewModel : ViewModelBase
     public bool IsEmpty => EquipmentItems.Count == 0 && !IsLoading;
 
     [RelayCommand]
+    private async Task UpdateListEquipmentItems()
+    {
+        try
+        {
+            await LoadAllEquipmentsAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error receiving data");
+        }
+    }
+
+    [RelayCommand]
     private void DownloadPdf()
     {
         Log.Information("Download PDF (stub)");
@@ -54,7 +67,7 @@ public partial class MeasurementRegisterPageUserControlViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex, "Error receiving data");
         }
     }
     

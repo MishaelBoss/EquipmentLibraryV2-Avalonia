@@ -21,6 +21,19 @@ public partial class RegisterOfTestingEquipmentPageUserControlViewModel : ViewMo
     [ObservableProperty] public partial bool IsLoading { get; set; }
     
     public bool IsEmpty => EquipmentItems.Count == 0 && !IsLoading;
+    
+    [RelayCommand]
+    private async Task UpdateListEquipmentItems()
+    {
+        try
+        {
+            await LoadAllEquipmentsAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error receiving data");
+        }
+    }
 
     [RelayCommand]
     private void DownloadPdf()
