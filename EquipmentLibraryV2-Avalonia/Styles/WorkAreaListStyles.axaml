@@ -1,0 +1,22 @@
+<Styles xmlns="https://github.com/avaloniaui">
+    <Style Selector="ListBoxItem">
+        <Setter Property="Padding" Value="24,0"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#9E9EB0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#2D2D30"/>
+        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Height" Value="42"/>
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1A1A1C"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1E3A5F"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+</Styles>

@@ -1,0 +1,9 @@
+<Styles xmlns="https://github.com/avaloniaui">
+    <Style Selector="Button.logoutCancel:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#2D2D35"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.logoutConfirm:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#C84141"/>
+    </Style>
+</Styles>

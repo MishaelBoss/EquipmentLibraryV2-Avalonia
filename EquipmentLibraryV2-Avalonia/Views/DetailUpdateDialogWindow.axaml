@@ -19,6 +19,7 @@
     
     <Window.Styles>
         <StyleInclude Source="/Styles/Styles.axaml"/>
+        <StyleInclude Source="/Styles/DetailUpdateDialogStyles.axaml"/>
     </Window.Styles>
     
     <Grid RowDefinitions="Auto, *">
@@ -77,13 +78,7 @@
                             CornerRadius="6"
                             Margin="0,0,10,0"
                             FontSize="13"
-                            Cursor="Hand">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#1E3A5F"/>
-                                <Setter Property="Foreground" Value="White"/>
-                            </Style>
-                        </Button.Styles>
+                            Cursor="Hand" Classes="openChanges">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Image Source="{SvgImage /Assets/github.svg}"/>
                             <TextBlock Text="Все изменения"/>
@@ -99,15 +94,7 @@
                             CornerRadius="6"
                             FontSize="13"
                             FontWeight="SemiBold"
-                            Cursor="Hand">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#218838"/>
-                            </Style>
-                            <Style Selector="Button:pressed /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#19721F"/>
-                            </Style>
-                        </Button.Styles>
+                            Cursor="Hand" Classes="updateClose">
                     </Button>
                 </Grid>
             </Border>

@@ -22,6 +22,7 @@
     
     <Window.Styles>
         <StyleInclude Source="/Styles/Styles.axaml"/>
+        <StyleInclude Source="/Styles/LogoutDialogStyles.axaml"/>
     </Window.Styles>
 
     <Grid RowDefinitions="Auto, *">
@@ -50,7 +51,7 @@
                         Margin="0,16,0,0">
                 
                 <Button Content="Отмена" 
-                        Name="CancelButton"
+                        Name="CancelButton" Classes="logoutCancel"
                         Command="{Binding CloseCommand}"
                         CommandParameter="{Binding $parent[Window]}"
                         Background="Transparent" 
@@ -59,16 +60,10 @@
                         BorderThickness="1"
                         Padding="20,8"
                         CornerRadius="6">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#2D2D35"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Style>
-                    </Button.Styles>
                 </Button>
 
                 <Button Content="Выйти" 
-                        Name="LogoutButton"
+                        Name="LogoutButton" Classes="logoutConfirm"
                         Command="{Binding LogoutCommand}"
                         CommandParameter="{Binding $parent[Window]}"
                         Background="#E05252" 
@@ -76,11 +71,6 @@
                         Padding="24,8"
                         CornerRadius="6"
                         FontWeight="Medium">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#C84141"/>
-                        </Style>
-                    </Button.Styles>
                 </Button>
                 
             </StackPanel>

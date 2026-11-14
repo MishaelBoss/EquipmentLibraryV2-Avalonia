@@ -1,0 +1,9 @@
+<Styles xmlns="https://github.com/avaloniaui">
+    <Style Selector="Button.createAdminCancel:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#2D2D35"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.createAdminConfirm:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#218838"/>
+    </Style>
+</Styles>

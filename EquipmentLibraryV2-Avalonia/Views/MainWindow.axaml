@@ -21,22 +21,7 @@
 
 	<Window.Styles>
 		<StyleInclude Source="/Styles/Styles.axaml"/>
-
-		<Style Selector="Border.notificationPanel">
-			<Setter Property="Width" Value="0"/>
-		</Style>
-
-		<Style Selector="Border.notificationPanel.open">
-			<Setter Property="Width" Value="300"/>
-		</Style>
-
-		<Style Selector="ScrollViewer.notificationToasts">
-			<Setter Property="Margin" Value="12,0,52,12"/>
-		</Style>
-
-		<Style Selector="ScrollViewer.notificationToasts.panelOpen">
-			<Setter Property="Margin" Value="12,0,352,12"/>
-		</Style>
+		<StyleInclude Source="/Styles/MainWindowStyles.axaml"/>
 	</Window.Styles>
 
     <Design.DataContext>

@@ -21,6 +21,7 @@
     
     <Window.Styles>
         <StyleInclude Source="/Styles/Styles.axaml"/>
+        <StyleInclude Source="/Styles/CreateAdminDialogStyles.axaml"/>
     </Window.Styles>
 
     <Border BorderThickness="1" CornerRadius="8">
@@ -77,19 +78,13 @@
                         Spacing="10">
                 <Button Content="Закрыть"
                         Command="{Binding CloseCommand}"
-                        CommandParameter="{Binding $parent[Window]}"
+                        CommandParameter="{Binding $parent[Window]}" Classes="createAdminCancel"
                         Background="Transparent"
                         Foreground="#9E9EB0"
                         BorderBrush="#3D3D45"
                         BorderThickness="1"
                         Padding="24,8"
                         CornerRadius="6">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#2D2D35"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Style>
-                    </Button.Styles>
                 </Button>
                 <Button Content="Создать"
                         Command="{Binding CreateCommand}"
@@ -97,14 +92,9 @@
                         IsEnabled="{Binding !IsBusy}"
                         Background="#28A745"
                         Foreground="White"
-                        BorderThickness="0"
+                        BorderThickness="0" Classes="createAdminConfirm"
                         Padding="24,8"
                         CornerRadius="6">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#218838"/>
-                        </Style>
-                    </Button.Styles>
                 </Button>
             </StackPanel>
         </Grid>

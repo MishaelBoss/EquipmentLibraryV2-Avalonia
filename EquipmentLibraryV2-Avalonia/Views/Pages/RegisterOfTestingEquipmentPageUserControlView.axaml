@@ -14,15 +14,7 @@
     
 	<UserControl.Styles>
 		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
-		<Style Selector="Grid.TableRow:pointerover">
-			<Setter Property="Background" Value="#2A2A3A"/>
-		</Style>
-		<Style Selector="TextBlock.CellText">
-			<Setter Property="Foreground" Value="#CCC"/>
-			<Setter Property="FontSize" Value="13"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-		</Style>
+		<StyleInclude Source="/Styles/TableStyles.axaml"/>
 	</UserControl.Styles>
 
 	<Grid Margin="22" RowDefinitions="Auto, *">

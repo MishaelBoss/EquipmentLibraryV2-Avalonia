@@ -1,0 +1,12 @@
+<Styles xmlns="https://github.com/avaloniaui">
+    <Style Selector="Button.openChanges:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1E3A5F"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.updateClose:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#218838"/>
+    </Style>
+    <Style Selector="Button.updateClose:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="#19721F"/>
+    </Style>
+</Styles>
