@@ -10,6 +10,11 @@
     </Application.DataTemplates>
   
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Styles/Theme.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
         <!-- Hides Avalonia's drawn titlebar while keeping native DWM animations (issue #21212).
              Use together with WindowDecorations="Full" + ExtendClientAreaToDecorationsHint="True". -->
         <ControlTheme x:Key="{x:Type WindowDrawnDecorations}" TargetType="WindowDrawnDecorations">
@@ -29,5 +34,6 @@
 
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="/Styles/Typography.axaml" />
     </Application.Styles>
 </Application>

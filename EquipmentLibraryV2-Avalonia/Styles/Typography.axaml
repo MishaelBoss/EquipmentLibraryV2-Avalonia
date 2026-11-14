@@ -2,40 +2,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style Selector="TextBlock.PageTitle">
-        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizePageTitle}"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
     </Style>
 
     <Style Selector="TextBlock.SectionTitle">
-        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeSubtitle}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
     </Style>
 
     <Style Selector="TextBlock.Subtitle">
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeSubtitle}"/>
         <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
     </Style>
 
     <Style Selector="TextBlock.Body">
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Foreground" Value="#CED0D6"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeBody}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
     </Style>
 
     <Style Selector="TextBlock.Label">
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Foreground" Value="#999"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeLabel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
     </Style>
 
     <Style Selector="TextBlock.Caption">
-        <Setter Property="FontSize" Value="11"/>
-        <Setter Property="Foreground" Value="#888"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeCaption}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
     </Style>
 
     <Style Selector="TextBlock.Muted">
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="#666"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeSmall}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextDim}"/>
     </Style>
 </Styles>

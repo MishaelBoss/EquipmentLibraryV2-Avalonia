@@ -35,6 +35,27 @@
     <Color x:Key="SearchPillBackground">#8E9198</Color>
     <Color x:Key="SearchPillBorder">#B0B3B8</Color>
 
+    <!-- Shared brushes. Keep control styles bound to semantic tokens. -->
+    <SolidColorBrush x:Key="BrushSurface0" Color="{DynamicResource Surface0}" />
+    <SolidColorBrush x:Key="BrushSurface1" Color="{DynamicResource Surface1}" />
+    <SolidColorBrush x:Key="BrushSurface2" Color="{DynamicResource Surface2}" />
+    <SolidColorBrush x:Key="BrushSurface3" Color="{DynamicResource Surface3}" />
+    <SolidColorBrush x:Key="BrushSurfaceContent" Color="{DynamicResource SurfaceContent}" />
+    <SolidColorBrush x:Key="BrushTextPrimary" Color="{DynamicResource TextPrimary}" />
+    <SolidColorBrush x:Key="BrushTextSecondary" Color="{DynamicResource TextSecondary}" />
+    <SolidColorBrush x:Key="BrushTextMuted" Color="{DynamicResource TextMuted}" />
+    <SolidColorBrush x:Key="BrushTextDim" Color="{DynamicResource TextDim}" />
+    <SolidColorBrush x:Key="BrushTextError" Color="{DynamicResource TextError}" />
+    <SolidColorBrush x:Key="BrushAccentGreen" Color="{DynamicResource AccentGreen}" />
+    <SolidColorBrush x:Key="BrushAccentGreenHover" Color="{DynamicResource AccentGreenHover}" />
+    <SolidColorBrush x:Key="BrushAccentGreenPressed" Color="{DynamicResource AccentGreenPressed}" />
+    <SolidColorBrush x:Key="BrushAccentBlue" Color="{DynamicResource AccentBlue}" />
+    <SolidColorBrush x:Key="BrushAccentRedHover" Color="{DynamicResource AccentRedHover}" />
+    <SolidColorBrush x:Key="BrushAccentRedPressed" Color="{DynamicResource AccentRedPressed}" />
+    <SolidColorBrush x:Key="BrushBorderDefault" Color="{DynamicResource BorderDefault}" />
+    <SolidColorBrush x:Key="BrushBorderFocus" Color="{DynamicResource BorderFocus}" />
+    <SolidColorBrush x:Key="BrushBorderInput" Color="{DynamicResource BorderInput}" />
+
     <!-- Corner radii -->
     <CornerRadius x:Key="RadiusSmall">4</CornerRadius>
     <CornerRadius x:Key="RadiusMedium">8</CornerRadius>

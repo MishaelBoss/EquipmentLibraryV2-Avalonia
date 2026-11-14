@@ -1,10 +1,10 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="TextBox">
-        <Setter Property="Background" Value="#252525"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource BrushSurface1}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
         <Setter Property="PlaceholderForeground" Value="#80FFFFFF"/> 
-        <Setter Property="BorderBrush" Value="#3D3D42"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderInput}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Height" Value="35"/>
@@ -16,23 +16,23 @@
     </Style>
     
     <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="#252525"/>
-        <Setter Property="BorderBrush" Value="#3D3D42"/>
+        <Setter Property="Background" Value="{DynamicResource BrushSurface1}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderInput}"/>
         <Setter Property="BorderThickness" Value="2"/>
     </Style>
 
     <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="Background" Value="{DynamicResource BrushSurface1}"/>
         <Setter Property="BorderBrush" Value="#8D8D9A"/>
         <Setter Property="BorderThickness" Value="2"/>
     </Style>
     
     <Style Selector="ComboBox">
-        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="Background" Value="{DynamicResource BrushSurface1}"/>
         <Setter Property="PlaceholderForeground" Value="#80FFFFFF"/> 
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
     </Style>
 
     <Style Selector="ComboBox /template/ Border#PopupBorder">
@@ -44,7 +44,7 @@
 
     <Style Selector="ComboBox ComboBoxItem">
          <Setter Property="Padding" Value="10,8"/>
-         <Setter Property="Foreground" Value="#CED0D6"/>
+         <Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
          <Setter Property="Background" Value="Transparent"/>
     </Style>
 
@@ -54,7 +54,7 @@
     </Style>
 
     <Style Selector="ComboBox ComboBoxItem:selected /template/ ContentPresenter">
-        <Setter Property="Background" Value="#007ACC"/>
+         <Setter Property="Background" Value="{DynamicResource BrushAccentBlue}"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
 
@@ -64,7 +64,7 @@
     </Style>
     
     <Style Selector="Button.Add">
-        <Setter Property="Background" Value="#4CAF50"/>
+        <Setter Property="Background" Value="{DynamicResource BrushAccentGreen}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="CornerRadius" Value="3"/>
     </Style>
@@ -75,7 +75,7 @@
     </Style>
     
     <Style Selector="Button.Add:pressed /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="#19721F"/>
+        <Setter Property="Background" Value="{DynamicResource BrushAccentGreenPressed}"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
 </Styles>
