@@ -5,6 +5,7 @@ using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
@@ -21,6 +22,21 @@ public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, 
     [RelayCommand]
     public async Task Confirm() 
     {
+        if (!AuthService.IsAdministrator)
+        {
+            Log.Warning("Delete denied: current session is not an administrator");
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Недостаточно прав",
+                        Object = "Удаление записей разрешено только администратору."
+                    }));
+            return;
+        }
+
         if (id == null)
         {
             return;

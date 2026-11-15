@@ -113,9 +113,15 @@ internal static class ConnectivityService
 
     private static async Task<bool> TestPostgreSqlConnection(bool showNotification = true)
     {
-        var connString = $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
-                                  $"User Id={AppConfig.User};Password={AppConfig.Password};" +
-                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5;SslMode=Prefer";
+        var connString = AppConfig.BuildConnectionString(
+            AppConfig.Ip,
+            AppConfig.Port,
+            AppConfig.Database,
+            AppConfig.User,
+            AppConfig.Password,
+            timeoutSeconds: 10,
+            commandTimeoutSeconds: 10,
+            maxPoolSize: 5);
         
         try
         {

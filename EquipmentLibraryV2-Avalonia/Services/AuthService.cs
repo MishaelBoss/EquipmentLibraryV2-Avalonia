@@ -17,6 +17,14 @@ public static class AuthService
 
     public static UserSession? CurrentSession { get; private set; }
 
+    public static bool IsInRole(params long[] roles)
+    {
+        var role = CurrentSession?.UserRole;
+        return role is not null && roles.Contains(role.Value);
+    }
+
+    public static bool IsAdministrator => IsInRole(1);
+
     private static CancellationTokenSource? _healthCheckCts;
     private static Task? _healthCheckTask;
 

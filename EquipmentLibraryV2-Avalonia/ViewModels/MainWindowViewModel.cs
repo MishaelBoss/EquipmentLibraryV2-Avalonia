@@ -14,11 +14,8 @@ using EquipmentLibraryV2_Avalonia.ViewModels.Pages;
 using EquipmentLibraryV2_Avalonia.Views;
 using Serilog;
 using System.Collections.ObjectModel;
-using System.Net;
-using Dapper;
 using EquipmentLibraryV2_Avalonia.Services.Updates;
 using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels;
 
@@ -80,7 +77,7 @@ public partial class MainWindowViewModel : ViewModelBase,
     private readonly AuthorizationUserControlViewModel _authorizationUserControlViewModel;
 
     public RightBoardUserControlViewModel RightBoardViewModel { get; }
-
+    
     private readonly AppSettings _settings;
 
     [RelayCommand]
@@ -175,7 +172,6 @@ public partial class MainWindowViewModel : ViewModelBase,
             
         try {
             await Task.WhenAll(LoadVersion(), CheckNetworkAsync());
-            await EnsureDatabaseReadyAsync();
             Log.Information("Initialization completed successfully");
         }
         catch (Exception ex)
@@ -189,76 +185,14 @@ public partial class MainWindowViewModel : ViewModelBase,
         }
     }
 
-    private async Task EnsureDatabaseReadyAsync()
-    {
-        try
-        {
-            if (!int.TryParse(AppConfig.Port, out var port))
-                port = 5432;
-
-            if (!await ConnectivityService.IsTcpReachableAsync(AppConfig.Ip, port, TimeSpan.FromSeconds(3)))
-            {
-                Log.Warning("PostgreSQL is not running. Start PostgreSQL and restart the app — the database schema will be created automatically");
-                return;
-            }
-
-            var connectionString =
-                $"Server={AppConfig.Ip};Port={AppConfig.Port};Database={AppConfig.Database};" +
-                $"User Id={AppConfig.User};Password={AppConfig.Password};" +
-                $"SslMode=Prefer;Timeout=10;CommandTimeout=30";
-
-            if (!MigrationRunner.Run(connectionString))
-                return;
-
-            await using var connection = new NpgsqlConnection(connectionString);
-            var users = await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM public.users");
-
-            if (users == 0)
-                await ShowCreateAdminDialog();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Database readiness check failed");
-        }
-    }
-
-    private async Task ShowCreateAdminDialog()
-    {
-        try
-        {
-            var dialog = new CreateAdminDialogWindow();
-
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-            
-            var mainWindow = desktop.MainWindow;
-            if (mainWindow == null) return; 
-            
-            await dialog.ShowDialog(mainWindow);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Failed to show create-admin dialog");
-        }
-    }
-
     private async Task LoadVersion()
     {
         Version = AppConfig.DisplayVersion;
         Log.Information("Starting version check. Current version: {CurrentVersion}", AppConfig.Version);
 
-        var handler = new SocketsHttpHandler
-        {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(1),
-            ConnectTimeout = TimeSpan.FromSeconds(10)
-        };
-
-        using var client = new HttpClient(handler);
-        client.DefaultRequestVersion = HttpVersion.Version30;
-        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
-
         try
         {
-            var response = await client.GetAsync("https://pastebin.com/raw/5CArBfWP");
+            var response = await CreateHttpClient.Shared.GetAsync("https://pastebin.com/raw/5CArBfWP");
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -494,6 +428,12 @@ public partial class MainWindowViewModel : ViewModelBase,
 
     public void Receive(OpenOrCloseAddOrEditUserMessage message)
     {
+        if (!IsCurrentUserAllowed(1))
+        {
+            Log.Warning("User management access denied for user {Login}", AuthService.CurrentSession?.Login);
+            return;
+        }
+
         if (TopOverlayContent is null)
         {
             TopOverlayContent = new AddOrEditUserUserControlViewModel(message.Id, message.Login, message.FirstName, message.LastName, message.Password, message.UserRole);
@@ -508,6 +448,12 @@ public partial class MainWindowViewModel : ViewModelBase,
 
     public void Receive(OpenOrCloseConfirmDeleteMessage message)
     {
+        if (!IsCurrentUserAllowed(1))
+        {
+            Log.Warning("Delete confirmation access denied for user {Login}", AuthService.CurrentSession?.Login);
+            return;
+        }
+
         if (message.OnSuccessCallback is null)
         {
             Log.Debug("Received CloseConfirmDelete message. Overlay will be closed");
@@ -546,6 +492,12 @@ public partial class MainWindowViewModel : ViewModelBase,
 
     public void Receive(OpenOrClosePasswordResetMessage message)
     {
+        if (!IsCurrentUserAllowed(1))
+        {
+            Log.Warning("Password reset access denied for user {Login}", AuthService.CurrentSession?.Login);
+            return;
+        }
+
         Log.Debug(
             "Received OpenPasswordReset message. Id={Id}, Title={Title}",
             message.UserId,

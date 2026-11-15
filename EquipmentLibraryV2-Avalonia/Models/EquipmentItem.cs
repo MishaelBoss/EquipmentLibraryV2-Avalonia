@@ -1,5 +1,3 @@
-using System;
-
 namespace EquipmentLibraryV2_Avalonia.Models;
 
 public class EquipmentItem

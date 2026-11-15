@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace EquipmentLibraryV2_Avalonia.Services.Interfaces;
 
-namespace EquipmentLibraryV2_Avalonia.Services.Interfaces
+public interface ICookieData
 {
-    public interface ICookieData
-    {
-        double Id { get; set; }
-        string Login { get; set; }
-        string Token { get; set; }
-        DateTime Expires { get; set; }
-    }
+    double Id { get; set; }
+    string Login { get; set; }
+    string Token { get; set; }
+    DateTime Expires { get; set; }
 }

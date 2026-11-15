@@ -7,6 +7,7 @@ using Dapper;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
 using EquipmentLibraryV2_Avalonia.Messages;
 using EquipmentLibraryV2_Avalonia.Models;
+using EquipmentLibraryV2_Avalonia.Services;
 using Npgsql;
 using Serilog;
 
@@ -28,6 +29,21 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
     [RelayCommand]
     public async Task Generate()
     {
+        if (!AuthService.IsAdministrator)
+        {
+            Log.Warning("Password reset denied: current session is not an administrator");
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Недостаточно прав",
+                        Object = "Сброс паролей разрешён только администратору."
+                    }));
+            return;
+        }
+
         if (userId is null)
         {
             Log.Warning("Generate password aborted: UserId is null. Login={Login}", Login);
@@ -125,6 +141,9 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
 
     private async Task GeneratePassword(int length = 16)
     {
+        if (!AuthService.IsAdministrator)
+            throw new UnauthorizedAccessException("Password reset is allowed only for administrators.");
+
         if (userId is null)
         {
             Log.Warning("GeneratePassword aborted: UserId is null");

@@ -7,6 +7,7 @@ using EquipmentLibraryV2_Avalonia.Models;
 using Npgsql;
 using Serilog;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
@@ -33,24 +34,33 @@ public partial class CartUserViewModel : ViewModelBase
     [RelayCommand]
     public void Edit()
     {
+        if (!AuthService.IsAdministrator) return;
         WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage(UserId, Login, FirstName, LastName, Password, UserRole));
     }
 
     [RelayCommand]
     public void Delete()
     {
+        if (!AuthService.IsAdministrator) return;
         WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage(UserId, Login, "DELETE FROM public.users WHERE id = @id", () => WeakReferenceMessenger.Default.Send(new RefreshUserListMessage())));
     }
 
     [RelayCommand]
     public void PasswordReset()
     {
+        if (!AuthService.IsAdministrator) return;
         WeakReferenceMessenger.Default.Send(new OpenOrClosePasswordResetMessage(UserId, Login));
     }
 
     [RelayCommand]
     private async Task ChangeActiveUserAsync()
     {
+        if (!AuthService.IsAdministrator)
+        {
+            Log.Warning("User activation change denied: current session is not an administrator");
+            return;
+        }
+
         var newIsActive = IsActive ?? true;
 
         Log.Information(

@@ -26,11 +26,11 @@
 - **Авторизация** — логин и пароль, проверка через `crypt()` PostgreSQL (`pgcrypto`, bcrypt)
 - **Ролевая модель** — Администратор, Инженер, Пользователь; видимость разделов зависит от роли
 - **Автовход** — сессия на 7 дней; токен хранится в `login.cookie`, в БД — только его SHA-256
-  (`public.user_sessions`). Токен проверяется при каждом запуске и раз в 10 секунд; при выходе отзывается.
-  Пересоздание БД или удаление/деактивация пользователя автоматически завершают сохранённую сессию
+  (`public.user_sessions`). Токен проверяется при каждом запуске и раз в 10 секунд; при выходе
+  приложение пытается отозвать сессию, при сбое токен действует до истечения 7 дней.
+  Пересоздание БД или удаление/деактивация пользователя завершают сохранённую сессию
 - **Панель администратора** — список пользователей, поиск, фильтры «активные/неактивные», добавление и
   редактирование, смена статуса, сброс пароля с копированием в буфер обмена, удаление с подтверждением
-- **Первый запуск** — если в БД нет пользователей, приложение предлагает создать администратора
 
 ### Интерфейс
 
@@ -82,15 +82,15 @@
 | CommunityToolkit.Mvvm | 8.4.2 |
 | Npgsql | 10.0.3 |
 | Dapper | 2.1.89 |
-| DbUp (PostgreSQL) | 5.0.41 / 7.0.1 |
+| DotNetEnv | 3.2.0 |
 | FluentValidation | 12.2.0 |
-| Mapster | 10.0.13 |
+| Mapster | 10.0.14 |
 | Serilog (Console, File, Async) | 4.4.0 |
 | QuestPDF | 2026.9.1 |
 | ClosedXML | 0.105.1 |
 | Humanizer | 3.0.10 |
 | TextCopy | 6.2.1 |
-| Microsoft.Extensions.DependencyInjection | 10.0.14 |
+| Microsoft.Extensions.DependencyInjection | 11.0.0 |
 | Newtonsoft.Json / System.Text.Json | 13.0.4 / встроенный |
 
 ## Структура проекта
@@ -101,9 +101,8 @@ EquipmentLibraryV2-Avalonia/
 ├── Program.cs                     # Конфигурация Serilog, старт Avalonia
 ├── ViewLocator.cs                 # Резолвер View → ViewModel
 ├── Controls/                      # Кастомные контролы (FadeContentControl — анимация страниц)
-├── Migrations/                    # SQL-миграции DbUp (встраиваются в сборку)
 ├── Models/                        # User, UserRole, EquipmentItem, CookieData, NotificationType и др.
-├── Services/                      # AuthService, ConnectivityService, MigrationRunner, Services/Updates
+├── Services/                      # AuthService, ConnectivityService, Services/Updates
 ├── Infrastructure/                # AppConfig, AppSettings, AppPaths, SettingsProtector, UserSession
 ├── Messages/                      # Сообщения WeakReferenceMessenger
 ├── ViewModels/                    # ViewModel'и страниц, компонентов и настроек
@@ -119,32 +118,68 @@ EquipmentLibraryV2-Avalonia/
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - PostgreSQL 13+ с расширением `pgcrypto`
-- Пользователь БД с правами на создание базы (или заранее созданная БД `ELA_V2`)
+- Подготовленная БД `ELA_V2` и runtime-роль без прав superuser/DDL. Схему и первого администратора
+  создаёт отдельный серверный пакет `EquipmentLibraryV2-Server`
 
 ## Запуск
 
 ```bash
 git clone https://github.com/MishaelBoss/EquipmentLibraryV2-Avalonia.git
-cd EquipmentLibraryV2-Avalonia/EquipmentLibraryV2-Avalonia
+cd EquipmentLibraryV2-Avalonia
+cp .env.example .env
+cd EquipmentLibraryV2-Avalonia
 dotnet run
 ```
 
+`DEBUG`-сборка ищет `.env` вверх по дереву каталогов. `RELEASE`-сборка `.env` не читает — задавайте
+`DB_*` через переменные окружения ОС или через окно **Настройки → Подключение**. Файл `.env` в git не
+коммитится и в output не копируется.
+
 ## База данных
 
-Схема создаётся автоматически при старте приложения: `MigrationRunner` через **DbUp** создаёт базу
-(`EnsureDatabase`) и применяет встроенные миграции из [`Migrations/`](EquipmentLibraryV2-Avalonia/Migrations)
-с учётом журнала `schemaversions`.
+Приложение не создаёт схему и не выполняет миграции: оно только подключается к уже подготовленной БД.
+Схема, роли PostgreSQL и первый администратор создаются отдельным серверным пакетом
+`EquipmentLibraryV2-Server` (`EquipmentLibraryV2.Migrator` + `deploy/`).
 
-- `0001_InitialSchema.sql` — таблицы `user_type`, `users`, `equipment_type`, `equipment`, `maintenance_log`
-  и справочные данные
-- `0002_UserSessions.sql` — таблица `user_sessions` для серверной проверки автовхода
+Для локального запуска:
 
-Чтобы добавить изменение схемы, положите новый файл `000N_Название.sql` в `Migrations/` — он применится
-один раз при следующем запуске. Файл [`db.sql`](db.sql) в корне — старый дамп, приложением не используется.
+1. Разверните серверный пакет `EquipmentLibraryV2-Server` (см. его README) или подготовьте БД
+   `ELA_V2` и роли вручную.
+2. Из папки серверного пакета примените миграции и создайте администратора:
 
-Параметры подключения задаются в окне **Настройки → Подключение** и хранятся в
-`%LOCALAPPDATA%\EquipmentLibraryV2_Avalonia\settings.json`; пароль шифруется (`SettingsProtector`,
-ключ — `settings.key` рядом с файлом настроек).
+   ```bash
+   dotnet run --project EquipmentLibraryV2.Migrator -- migrate
+   dotnet run --project EquipmentLibraryV2.Migrator -- create-admin --login admin
+   ```
+
+   Либо через Docker:
+
+   ```bash
+   cd deploy
+   docker compose up -d --build
+   docker compose run --rm migrator create-admin --login admin
+   ```
+
+3. Укажите подключение в `.env`:
+
+   ```dotenv
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=ELA_V2
+   DB_USER=ela_app
+   DB_PASSWORD=...
+   DB_SSL_MODE=Prefer
+   ```
+
+4. Запустите приложение.
+
+Runtime-роль `ela_app` должна иметь только `CONNECT`, `USAGE` на схему `public`,
+`SELECT/INSERT/UPDATE/DELETE` на таблицы и `USAGE/SELECT` на последовательности; DDL-права
+ей не нужны. Для удалённого сервера используйте `DB_SSL_MODE=VerifyFull` и VPN/firewall.
+
+C#-проверки ролей закрывают основные обходы через UI/сообщения, а отдельная runtime-роль
+ограничивает ущерб при утечке кредов. Это не полноценная серверная авторизация: для строгой
+защиты нужны RLS или API.
 
 ## Настройки
 
@@ -179,7 +214,7 @@ Serilog пишет в `%LOCALAPPDATA%\<имя_процесса>\logs\`:
 
 ```bash
 dotnet build
-dotnet run
+dotnet run --project EquipmentLibraryV2-Avalonia
 ```
 
 Не используйте `dotnet build -t:Compile` для проверки: при этом пропускается прекомпиляция XAML,

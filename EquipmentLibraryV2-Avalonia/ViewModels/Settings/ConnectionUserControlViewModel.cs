@@ -91,14 +91,6 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
 
         var ok = await ConnectivityChecker();
 
-        if (ok)
-        {
-            var connString = $"Server={Ip};Port={Port};Database={Database};" +
-                             $"User Id={User};Password={Password};" +
-                             $"SslMode=Prefer;Timeout=10;CommandTimeout=30";
-            MigrationRunner.Run(connString);
-        }
-
         TestStatus = ok ? ConnectionTestStatusType.Success : ConnectionTestStatusType.Failure;
         IsTesting = false;
 
@@ -191,9 +183,15 @@ public partial class ConnectionUserControlViewModel: ViewModelBase, ISettingsPag
 
     private async Task<bool> TestPostgreSqlConnection()
     {
-        var connString = $"Server={Ip};Port={Port};Database={Database};" +
-                                  $"User Id={User};Password={Password};" +
-                                  $"Timeout=10;CommandTimeout=10;Pooling=true;MaxPoolSize=5;SslMode=Prefer";
+        var connString = AppConfig.BuildConnectionString(
+            Ip,
+            Port,
+            Database,
+            User,
+            Password,
+            timeoutSeconds: 10,
+            commandTimeoutSeconds: 10,
+            maxPoolSize: 5);
         
         try
         {

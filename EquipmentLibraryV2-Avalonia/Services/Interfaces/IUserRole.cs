@@ -1,8 +1,7 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Services.Interfaces
+﻿namespace EquipmentLibraryV2_Avalonia.Services.Interfaces;
+
+public interface IUserRole
 {
-    public interface IUserRole
-    {
-        public int Id { get; set; }
-        public string Type { get; set; }
-    }
+    public int Id { get; set; }
+    public string Type { get; set; }
 }

@@ -8,6 +8,7 @@ using Npgsql;
 using Serilog;
 using System.Collections.ObjectModel;
 using EquipmentLibraryV2_Avalonia.Infrastructure;
+using EquipmentLibraryV2_Avalonia.Services;
 using EquipmentLibraryV2_Avalonia.Validators.Components;
 using Mapster;
 
@@ -84,6 +85,21 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
     [RelayCommand]
     public async Task Confirm() 
     {
+        if (!AuthService.IsAdministrator)
+        {
+            Log.Warning("User save denied: current session is not an administrator");
+            WeakReferenceMessenger.Default.Send(
+                new ShowOrHideNotification(
+                    ErrorAction.Add,
+                    new MessageUserControlViewModel
+                    {
+                        Type = NotificationType.Error,
+                        Title = "Недостаточно прав",
+                        Object = "Управление пользователями разрешено только администратору."
+                    }));
+            return;
+        }
+
         Log.Debug(
             "Confirm command started. Id={Id}, Login={Login}, FirstName={FirstName}, LastName={LastName}, UserRoleId={UserRoleId}",
             _id,
@@ -126,14 +142,21 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
             var updatePassword = !isNew && Password is not null && Password != UnchangedPasswordMask && Password != string.Empty;
             var sql = isNew ? addUserSql : updatePassword ? updateUserWithPasswordSql : updateUserWithoutPasswordSql;
 
+            var sqlName = isNew
+                ? "addUserSql"
+                : updatePassword
+                    ? "updateUserWithPasswordSql"
+                    : "updateUserWithoutPasswordSql";
+
             Log.Debug(
                 "Confirm will {Action} user. Id={Id}, Login={Login}, UserRoleId={UserRoleId}, UpdatePassword={UpdatePassword}, Sql={SqlName}",
+                isNew ? "insert" : "update",
                 _id,
                 Login,
                 // ReSharper disable once NullableWarningSuppressionIsUsed
                 SelectUserRole!.Id,
                 updatePassword,
-                isNew ? "INSERT" : "UPDATE");
+                sqlName);
 
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             await connection.OpenAsync();
@@ -222,6 +245,9 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
 
     private async Task LoadUserRoles() 
     {
+        if (!AuthService.IsAdministrator)
+            return;
+
         const string sql = "SELECT * FROM public.user_type";
         await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
         

@@ -10,9 +10,9 @@
     <AssemblyTitle>EquipmentLibraryV2_Avalonia</AssemblyTitle>
     <AssemblyName>EquipmentLibraryV2_Avalonia</AssemblyName>
     <ApplicationIcon>Assets\Logo\logo.ico</ApplicationIcon>
-    <Version>2.0.6-pre</Version>
+    <Version>2.1.0-pre</Version>
     <Title>Equipment Library v2</Title>
-    <Authors>Michael</Authors>
+    <Authors>MishaelBoss</Authors>
     <Description>Cross-platform desktop application for equipment accounting and measurement
 register management.</Description>
     <Copyright>Copyright © 2026 Michael</Copyright>
@@ -21,15 +21,14 @@ register management.</Description>
     <PackageTags>avalonia csharp dotnet postgresql equipment-management </PackageTags>
     <Company>Michael Development</Company>
     <Product>Equipment Library v2</Product>
-    <AssemblyVersion>2.0.6.1</AssemblyVersion>
-    <FileVersion>2.0.6.1</FileVersion>
+    <AssemblyVersion>2.1.0.5</AssemblyVersion>
+    <FileVersion>2.1.0.5</FileVersion>
     <NeutralLanguage>ru</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <Content Include="Assets\logo\logo.ico" />
-    <EmbeddedResource Include="Migrations\**\*.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,8 +41,7 @@ register management.</Description>
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Dapper" Version="2.1.89" />
-    <PackageReference Include="dbup" Version="5.0.41" />
-    <PackageReference Include="dbup-postgresql" Version="7.0.1" />
+    <PackageReference Include="DotNetEnv" Version="3.2.0" />
     <PackageReference Include="FluentValidation" Version="12.2.0" />
     <PackageReference Include="Humanizer" Version="3.0.10" />
     <PackageReference Include="Humanizer.Core.ru" Version="3.0.10" />
@@ -69,4 +67,5 @@ register management.</Description>
       <DependentUpon>AddOrEditUserUserControlView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
 </Project>

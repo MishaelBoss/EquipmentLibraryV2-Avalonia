@@ -35,6 +35,7 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
     [RelayCommand]
     public void AddUser() 
     {
+        if (!AuthService.IsAdministrator) return;
         WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
     }
 
@@ -111,6 +112,9 @@ public partial class AdminPanelPageUserControlViewModel : ViewModelBase, IRecipi
     [RelayCommand]
     private async Task LoadUsersWithResetAsync(CancellationToken cancellationToken = default)
     {
+        if (!AuthService.IsAdministrator)
+            return;
+
         if (!await ConnectivityService.IsServerReachableAsync())
             return;
 
