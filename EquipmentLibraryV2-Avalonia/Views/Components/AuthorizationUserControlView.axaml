@@ -9,7 +9,12 @@
     
     <UserControl.Styles>
         <StyleInclude Source="/Styles/ModernStyles.axaml"/>
+        <StyleInclude Source="/Styles/EyeStyles.axaml"/>
     </UserControl.Styles>
+    
+    <Design.DataContext>
+        <vm:AuthorizationUserControlViewModel/>
+    </Design.DataContext>
     
     <Grid PointerPressed="CloseAuthorization_PointerPressed">
         <Border Background="#1A1A1A" Opacity="0.8"/>
@@ -95,11 +100,12 @@
                                      CaretBrush="White"/>
                             <Button Width="32" Height="32"
                                     HorizontalAlignment="Right"
+                                    Classes="Eye"
                                     Margin="0,0,4,0"
                                     Command="{Binding TogglePasswordVisibilityCommand}">
                                 <Panel Width="16" Height="16" Margin="0">
-                                    <Image Source="{SvgImage /Assets/show.svg}" IsVisible="{Binding IsPasswordVisible, Converter={x:Static BoolConverters.Not}}"/>
-                                    <Image Source="{SvgImage /Assets/show.svg}" IsVisible="{Binding IsPasswordVisible}"/>
+                                    <Image Source="{SvgImage /Assets/eye-off.svg}" IsVisible="{Binding IsPasswordVisible, Converter={x:Static BoolConverters.Not}}"/>
+                                    <Image Source="{SvgImage /Assets/eye.svg}" IsVisible="{Binding IsPasswordVisible}"/>
                                 </Panel>
                             </Button>
                         </Grid>

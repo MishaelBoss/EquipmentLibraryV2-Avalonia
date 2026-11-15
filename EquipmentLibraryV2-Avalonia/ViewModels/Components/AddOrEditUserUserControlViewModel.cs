@@ -38,6 +38,9 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
     public partial string? Password { get; set; }
+    
+    [ObservableProperty] 
+    public partial bool IsPasswordVisible { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsActiveConfirmButton))]
@@ -80,6 +83,12 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
     public void Close() 
     {
         WeakReferenceMessenger.Default.Send(new OpenOrCloseAddOrEditUserMessage());
+    }
+    
+    [RelayCommand]
+    public void TogglePasswordVisibility()
+    {
+        IsPasswordVisible = !IsPasswordVisible;
     }
 
     [RelayCommand]

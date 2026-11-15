@@ -142,4 +142,28 @@
         <Style Selector="CheckBox.WhiteOutline:pressed /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="Foreground" Value="White"/>
         </Style>
+            
+        <Style Selector="Button.WB3">
+                <Setter Property="Background" Value="#2B2D31"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="#B0B3B8"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="BorderThickness" Value="1.5"/>
+                <Setter Property="CornerRadius" Value="14"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        
+        <Style Selector="Button.WB3:pointerover /template/ TextBlock">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontFamily" Value="SemiBold"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    
+        <Style Selector="Button.WB3:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="#313338"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="#B0B3B8"/>
+        </Style>
 </Styles>

@@ -6,7 +6,12 @@
     
     <UserControl.Styles>
 		<StyleInclude Source="/Styles/ModernStyles.axaml"/>
+        <StyleInclude Source="/Styles/EyeStyles.axaml"/>
 	</UserControl.Styles>
+    
+    <Design.DataContext>
+        <vm:AddOrEditUserUserControlViewModel/>
+    </Design.DataContext>
 
     <Grid>
         <Border Background="#1A1A1A" Opacity="0.8"/>
@@ -46,7 +51,24 @@
                 <UniformGrid Columns="2">
                     <StackPanel Margin="0,0,8,0">
                         <TextBlock Text="Password" Classes="modernFieldLabel"/>
-                        <TextBox PasswordChar="•" Text="{Binding Password}" Classes="modernInput"/>
+                        <Grid>
+                            <TextBox Text="{Binding Password}"
+                                     PasswordChar="•"
+                                     RevealPassword="{Binding IsPasswordVisible}"
+                                     PlaceholderText="Введите пароль..."
+                                     Classes="modernInput"
+                                     Height="40"/>
+                            <Button Width="40" Height="40"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,4,0"
+                                    Classes="Eye"
+                                    Command="{Binding TogglePasswordVisibilityCommand}">
+                                <Panel Width="20" Height="20" Margin="0">
+                                    <Image Source="{SvgImage /Assets/eye-off.svg}" IsVisible="{Binding IsPasswordVisible, Converter={x:Static BoolConverters.Not}}"/>
+                                    <Image Source="{SvgImage /Assets/eye.svg}" IsVisible="{Binding IsPasswordVisible}"/>
+                                </Panel>
+                            </Button>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel Margin="8,0,0,0">

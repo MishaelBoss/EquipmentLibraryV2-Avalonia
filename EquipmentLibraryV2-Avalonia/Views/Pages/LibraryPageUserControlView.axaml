@@ -14,6 +14,7 @@
 
 	<UserControl.Styles>
 		<StyleInclude Source="/Styles/TableStyles.axaml"/>
+		<StyleInclude Source="/Styles/Styles.axaml"/>
 	</UserControl.Styles>
 
 	<Grid Margin="22" RowDefinitions="Auto, *">
@@ -32,10 +33,11 @@
 					          BorderBrush="#B0B3B8"
 					          ItemsSource="{Binding EquipmentTypes}" SelectedItem="{Binding SelectedEquipmentType}"/>
 					
-					<Button Height="38" Cursor="Hand" Padding="16,0"
-					        Background="#2B2D31" Foreground="White" BorderBrush="#B0B3B8"
-					        BorderThickness="1.5" CornerRadius="14"
-					        VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+					<Button Height="38"
+					        Padding="16,0"
+					        Classes="WB3"
+					        VerticalContentAlignment="Center" 
+					        HorizontalContentAlignment="Center"
 					        Command="{Binding UpdateListEquipmentItemsCommand}">
 						<Image Source="{SvgImage /Assets/refresh_dark.svg}" 
 						       Width="14" Height="14" 

@@ -71,17 +71,19 @@
 									</StackPanel>
 								</StackPanel>
 								
-								<Button  Grid.Row="0" Grid.Column="1" Height="38" Cursor="Hand" Padding="16,0"
-								         Background="#2B2D31" Foreground="White" BorderBrush="#B0B3B8"
-								         BorderThickness="1.5" CornerRadius="14"
-								         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+								<Button  Grid.Row="0" Grid.Column="1" 
+								         Height="38"
+								         Padding="16,0"
+								         VerticalContentAlignment="Center" 
+								         HorizontalContentAlignment="Center"
+								         Classes="WB3"
 								         Command="{Binding AddUserCommand}">
 									<StackPanel Orientation="Horizontal" Spacing="6">
 										<Image Source="{SvgImage /Assets/add_dark.svg}" 
 										       Width="14" 
 										       Height="14"
 										       Svg.Css="path { stroke: #CED0D6; stroke-width: 1.5; stroke-linejoin: round; }"/>
-										<TextBlock Text="Добавить" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+										<TextBlock Text="Добавить"/>
 									</StackPanel>
 								</Button>
 							</Grid>
