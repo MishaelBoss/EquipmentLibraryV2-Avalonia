@@ -2,7 +2,7 @@ using System.Net;
 
 namespace EquipmentLibraryV2_Avalonia.Services;
 
-public class CreateHttpClient
+public abstract class CreateHttpClient
 {
     public static HttpClient Shared { get; } = Create();
     
