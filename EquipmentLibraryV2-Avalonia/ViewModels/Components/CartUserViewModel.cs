@@ -42,7 +42,7 @@ public partial class CartUserViewModel : ViewModelBase
     public void Delete()
     {
         if (!AuthService.IsAdministrator) return;
-        WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage(UserId, Login, "DELETE FROM public.users WHERE id = @id", () => WeakReferenceMessenger.Default.Send(new RefreshUserListMessage())));
+        WeakReferenceMessenger.Default.Send(new OpenOrCloseConfirmDeleteMessage(UserId, Login, DeleteEntityType.User, () => WeakReferenceMessenger.Default.Send(new RefreshUserListMessage())));
     }
 
     [RelayCommand]

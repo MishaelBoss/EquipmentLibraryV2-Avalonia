@@ -1,3 +1,5 @@
-﻿namespace EquipmentLibraryV2_Avalonia.Messages;
+﻿using EquipmentLibraryV2_Avalonia.Models;
 
-public record OpenOrCloseConfirmDeleteMessage(long? Id = null, string? Title = null, string? DeleteSql = null, Action? OnSuccessCallback = null, string[]? AdditionalQueries = null);
+namespace EquipmentLibraryV2_Avalonia.Messages;
+
+public record OpenOrCloseConfirmDeleteMessage(long? Id = null, string? Title = null, DeleteEntityType EntityType = DeleteEntityType.User, Action? OnSuccessCallback = null, string[]? AdditionalQueries = null);

@@ -9,9 +9,21 @@ using EquipmentLibraryV2_Avalonia.Services;
 
 namespace EquipmentLibraryV2_Avalonia.ViewModels.Components;
 
-public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, string? deleteSql, Action onSuccessCallback, string[]? additionalQueries = null) : ViewModelBase
+public partial class ConfirmDeleteUserControlViewModel(
+    long? id,
+    string? title,
+    Action onSuccessCallback,
+    string[]? additionalQueries = null,
+    DeleteEntityType entityType = DeleteEntityType.User) : ViewModelBase
 {
     public string Text { get; set; } = $"Delete: {title}";
+    
+    private static string GetDeleteSql(DeleteEntityType type) => type switch
+    {
+        DeleteEntityType.User => "DELETE FROM public.users WHERE id = @id",
+        DeleteEntityType.Equipment => "",
+        _ => throw new ArgumentOutOfRangeException(nameof(type))
+    };
 
     [RelayCommand]
     public async Task Close()
@@ -41,6 +53,8 @@ public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, 
         {
             return;
         }
+        
+        var deleteSql = GetDeleteSql(entityType);
             
         try
         {
@@ -57,7 +71,7 @@ public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, 
             {
                 var totalRowsAffected = 0;
 
-                if (additionalQueries is not null && additionalQueries.Length > 0)
+                /*if (additionalQueries is not null && additionalQueries.Length > 0)
                 {
                     foreach (var query in additionalQueries)
                     {
@@ -76,7 +90,7 @@ public partial class ConfirmDeleteUserControlViewModel(long? id, string? title, 
                             throw;
                         }
                     }
-                }
+                }*/
 
                 await using (var mainCommand = new NpgsqlCommand(deleteSql, connection))
                 {

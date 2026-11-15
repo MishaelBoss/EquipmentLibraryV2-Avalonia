@@ -470,10 +470,9 @@ public partial class MainWindowViewModel : ViewModelBase,
         TopOverlayContent = new ConfirmDeleteUserControlViewModel(
             message.Id,
             message.Title,
-            message.DeleteSql,
             message.OnSuccessCallback,
-            message.AdditionalQueries
-        );
+            message.AdditionalQueries, 
+            message.EntityType);
     }
 
     public void Receive(OpenMeasurementRegisterMessage message)
