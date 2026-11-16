@@ -471,7 +471,6 @@ public partial class MainWindowViewModel : ViewModelBase,
             message.Id,
             message.Title,
             message.OnSuccessCallback,
-            message.AdditionalQueries, 
             message.EntityType);
     }
 
