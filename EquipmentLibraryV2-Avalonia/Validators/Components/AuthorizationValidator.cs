@@ -11,7 +11,6 @@ public class AuthorizationValidator : AbstractValidator<AuthorizationUserControl
             .NotEmpty().WithMessage("Логин не может быть пустым");
         
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Пароль не может быть пустым")
-            .MinimumLength(6).WithMessage("Пароль должно содержать минимум 6 символов");
+            .NotEmpty().WithMessage("Пароль не может быть пустым");
     }
 }

@@ -141,9 +141,9 @@ public partial class AddOrEditUserUserControlViewModel : ViewModelBase
         try
         {
             const string addUserSql = "INSERT INTO public.users (login, first_name, last_name, password, user_type_id, date_joined) " +
-                                      "VALUES (@login, @first_name, @last_name, crypt(@password, gen_salt('bf')), @user_type_id, now())";
+                                      "VALUES (@login, @first_name, @last_name, crypt(@password, gen_salt('bf', 12)), @user_type_id, now())";
 
-            const string updateUserWithPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf')), user_type_id = @user_type_id WHERE id = @id";
+            const string updateUserWithPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, password = crypt(@password, gen_salt('bf', 12)), user_type_id = @user_type_id WHERE id = @id";
 
             const string updateUserWithoutPasswordSql = "UPDATE public.users SET login = @login, first_name = @first_name, last_name = @last_name, user_type_id = @user_type_id WHERE id = @id";
 

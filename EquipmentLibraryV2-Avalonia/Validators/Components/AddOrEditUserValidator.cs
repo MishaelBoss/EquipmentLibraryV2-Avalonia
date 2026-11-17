@@ -22,11 +22,11 @@ public class AddOrEditUserValidator : AbstractValidator<AddOrEditUserUserControl
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Пароль обязателен при регистрации нового аккаунта")
-            .MinimumLength(6).WithMessage("Пароль должен быть не короче 6 символов")
+            .MinimumLength(8).WithMessage("Пароль должен быть не короче 8 символов")
             .When(x => x.IsNewUser);
 
         RuleFor(x => x.Password)
-            .MinimumLength(6).WithMessage("Новый пароль должен быть не короче 6 символов")
+            .MinimumLength(8).WithMessage("Новый пароль должен быть не короче 8 символов")
             .When(x => !x.IsNewUser && !string.IsNullOrEmpty(x.Password) && x.Password != "********");
     }
 }

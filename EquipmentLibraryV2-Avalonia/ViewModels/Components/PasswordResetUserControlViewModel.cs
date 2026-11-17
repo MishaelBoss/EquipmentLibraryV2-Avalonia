@@ -186,7 +186,7 @@ public partial class PasswordResetUserControlViewModel(long? userId = null, stri
             
             var finalPasswordStr = new string(passwordArray);
             
-            const string sql = "UPDATE public.users SET password = crypt(@password, gen_salt('bf', 10)) WHERE id = @id";
+            const string sql = "UPDATE public.users SET password = crypt(@password, gen_salt('bf', 12)) WHERE id = @id";
             
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             
