@@ -366,3 +366,6 @@ FodyWeavers.xsd
 
 *.env
 *.dump
+
+# Rider / IntelliJ IDEA
+.idea/
