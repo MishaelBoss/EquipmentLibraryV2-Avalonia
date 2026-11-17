@@ -113,26 +113,44 @@ public partial class AuthorizationUserControlViewModel : ViewModelBase
             
         try
         {
-            if (await AuthService.LoginAsync(Login, Password))
-            {
-                var login = Login;
+            var result = await AuthService.LoginAsync(Login, Password);
 
-                WeakReferenceMessenger.Default.Send(
-                    new ShowOrHideNotification(
-                        ErrorAction.Add,
-                        new MessageUserControlViewModel
-                        {
-                            Type = NotificationType.Success,
-                            Title = "Вход выполнен",
-                            Object = $"Добро пожаловать, {login}!"
-                        }));
-
-                WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
-                ClearForm();
-            }
-            else
+            switch (result.Status)
             {
-                MessageError = "Неверный логин или пароль";
+                case LoginStatus.Ok:
+                {
+                    var login = Login;
+
+                    WeakReferenceMessenger.Default.Send(
+                        new ShowOrHideNotification(
+                            ErrorAction.Add,
+                            new MessageUserControlViewModel
+                            {
+                                Type = NotificationType.Success,
+                                Title = "Вход выполнен",
+                                Object = $"Добро пожаловать, {login}!"
+                            }));
+
+                    WeakReferenceMessenger.Default.Send(new OpenOrCloseAuthorizationMessage());
+                    ClearForm();
+                    break;
+                }
+
+                case LoginStatus.Locked:
+                    MessageError = $"Вход в аккаунт заблокирован. Повторите через {FormatDuration(result.RetryAfterSeconds)}";
+                    break;
+
+                case LoginStatus.Throttled:
+                    MessageError = $"Слишком много попыток входа. Повторите через {FormatDuration(result.RetryAfterSeconds)}";
+                    break;
+
+                case LoginStatus.Error:
+                    MessageError = "Ошибка соединения с сервером";
+                    break;
+
+                default:
+                    MessageError = "Неверный логин или пароль";
+                    break;
             }
         }
         catch (Exception ex)
@@ -183,6 +201,21 @@ public partial class AuthorizationUserControlViewModel : ViewModelBase
                 break;
             }
         }
+    }
+
+    private static string FormatDuration(int? seconds)
+    {
+        var total = Math.Max(0, seconds ?? 0);
+
+        if (total < 60)
+            return $"{total} сек.";
+
+        var minutes = (int)Math.Ceiling(total / 60d);
+        if (minutes < 60)
+            return $"{minutes} мин.";
+
+        var hours = (int)Math.Ceiling(minutes / 60d);
+        return $"{hours} ч.";
     }
 
     private void ClearForm()

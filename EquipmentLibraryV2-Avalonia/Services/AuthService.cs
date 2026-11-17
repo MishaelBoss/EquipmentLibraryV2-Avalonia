@@ -30,28 +30,41 @@ public static class AuthService
 
     private static string CookiePath => Path.Combine(AppPaths.UserDataDir, "login.cookie");
 
-    public static async Task<bool> LoginAsync(string username, string password)
+    public static async Task<LoginResult> LoginAsync(string username, string password)
     {
         try
         {
             if (!await ConnectivityService.ConnectivityChecker())
             {
                 Log.Warning("LoginAsync aborted for user {Username}: no connectivity", username);
-                return false;
+                return LoginResult.Error();
             }
 
             await using var connection = new NpgsqlConnection(await AppConfig.ConnectionAsync());
             await connection.OpenAsync();
 
-            const string sql = "SELECT id AS Id, login AS Login, user_type_id AS UserRole FROM public.users WHERE login = @u AND password = crypt(@p, password) AND is_active = true";
-            
-            var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { u = username, p = password });
+            const string sql = "SELECT status AS Status, retry_after_seconds AS RetryAfterSeconds, user_id AS UserId, user_login AS UserLogin, user_role AS UserRole FROM public.authenticate(@u, @p)";
 
-            if (user == null)
+            var row = await connection.QueryFirstAsync<AuthenticateRow>(sql, new { u = username, p = password });
+
+            switch (row.Status)
             {
-                Log.Warning("Login failed for user {Username}: user not found or invalid password", username);
-                return false;
+                case "locked":
+                    Log.Warning("Login blocked for user {Username}: account locked, retry after {RetryAfterSeconds} s",
+                        username, row.RetryAfterSeconds);
+                    return LoginResult.Locked(row.RetryAfterSeconds ?? 0);
+
+                case "throttled":
+                    Log.Warning("Login blocked for user {Username}: too many attempts from this address, retry after {RetryAfterSeconds} s",
+                        username, row.RetryAfterSeconds);
+                    return LoginResult.Throttled(row.RetryAfterSeconds ?? 0);
+
+                case not "ok":
+                    Log.Warning("Login failed for user {Username}: user not found or invalid password", username);
+                    return LoginResult.Invalid();
             }
+
+            var user = new User(row.UserId!.Value, row.UserLogin!, row.UserRole!.Value);
 
             CurrentSession = new UserSession(
                 Id: user.Id,
@@ -72,12 +85,12 @@ public static class AuthService
 
             StartSessionHealthCheck();
             
-            return true;
+            return LoginResult.Success();
         }
         catch (Exception ex)
         {
             Log.Error(ex, "LoginAsync failed for user {Username}", username);
-            return false;
+            return LoginResult.Error();
         }
     }
 
@@ -213,7 +226,7 @@ public static class AuthService
         }
         catch (Exception ex)
         {
-            Log.Logger.Error("Auto-login failed {ExMessage}", ex.Message);
+            Log.Logger.Error(ex, "Auto-login failed");
             return false;
         }
     }
