@@ -21,28 +21,28 @@
                 BoxShadow="0 2 8 0 #30000000">
             <StackPanel Spacing="16">
                 <Grid ColumnDefinitions="*, 16, *">
-                    <StackPanel Grid.Column="0" Spacing="6">
+                    <StackPanel x:Name="Ip" Grid.Column="0" Spacing="6">
                         <TextBlock Text="IP адрес сервера" Classes="FieldLabel"/>
                         <TextBox Classes="TB1" Text="{Binding Ip}" PlaceholderText="Например, 192.168.1.10"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="2" Spacing="6">
+                    <StackPanel x:Name="Port" Grid.Column="2" Spacing="6">
                         <TextBlock Text="Порт" Classes="FieldLabel"/>
                         <TextBox Classes="TB1" Text="{Binding Port}" PlaceholderText="Например, 5432"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid ColumnDefinitions="*, 16, *">
-                    <StackPanel Grid.Column="0" Spacing="6">
+                    <StackPanel x:Name="Database" Grid.Column="0" Spacing="6">
                         <TextBlock Text="База данных" Classes="FieldLabel"/>
                         <TextBox Classes="TB1" Text="{Binding Database}" PlaceholderText="Имя базы данных"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="2" Spacing="6">
+                    <StackPanel x:Name="User" Grid.Column="2" Spacing="6">
                         <TextBlock Text="Пользователь" Classes="FieldLabel"/>
                         <TextBox Classes="TB1" Text="{Binding User}" PlaceholderText="Имя пользователя"/>
                     </StackPanel>
                 </Grid>
 
-                <StackPanel Spacing="6">
+                <StackPanel x:Name="Password" Spacing="6">
                     <TextBlock Text="Пароль" Classes="FieldLabel"/>
                     <TextBox Classes="TB1" Text="{Binding Password}" PlaceholderText="Пароль"
                              PasswordChar="•"/>
@@ -60,7 +60,7 @@
                                    FontSize="13" FontWeight="SemiBold"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Button Grid.Column="1" Classes="Btn1"
+                    <Button x:Name="TestConnection" Grid.Column="1" Classes="Btn1"
                             Command="{Binding TestConnectionCommand}"
                             IsEnabled="{Binding !IsTesting}"
                             Padding="16,9" Cursor="Hand">

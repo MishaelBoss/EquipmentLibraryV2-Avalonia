@@ -17,7 +17,15 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
 {
     private readonly AppSettings _settings;
     public ObservableCollection<SettingsPageItem> Pages { get; }
+    public ObservableCollection<SettingsSearchResult> SearchResults { get; } = [];
+    private readonly List<SettingsSearchResult> _searchIndex = [];
 
+    public event Action<string>? NavigationRequested;
+
+    [ObservableProperty] public partial string SearchText { get; set; } = string.Empty;
+    [ObservableProperty] public partial bool IsSearching { get; set; }
+    [ObservableProperty] public partial bool NoSearchResults { get; set; }
+    [ObservableProperty] public partial SettingsSearchResult? SelectedSearchResult { get; set; }
     [ObservableProperty] public partial SettingsPageItem? SelectedPage { get; set; }
 
     [ObservableProperty] public partial bool HasChanges { get; set; }
@@ -34,6 +42,23 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
             new SettingsPageItem("Подключение", new ConnectionUserControlViewModel(_settings))
         ];
 
+        foreach (var page in Pages)
+            _searchIndex.Add(new SettingsSearchResult(page.Title, page, null));
+
+        _searchIndex.AddRange(
+        [
+            new SettingsSearchResult("Журналы работы приложения", Pages[0], "Logs"),
+            new SettingsSearchResult("Сохранять файлы в корень папки напрямую", Pages[1], "UseRawSelectedFolder"),
+            new SettingsSearchResult("Расположение сохраненных документов", Pages[1], "DownloadFolder"),
+            new SettingsSearchResult("Предлагать последние обновления", Pages[2], "CheckLatestUpdates"),
+            new SettingsSearchResult("IP адрес сервера", Pages[3], "Ip"),
+            new SettingsSearchResult("Порт", Pages[3], "Port"),
+            new SettingsSearchResult("База данных", Pages[3], "Database"),
+            new SettingsSearchResult("Пользователь", Pages[3], "User"),
+            new SettingsSearchResult("Пароль", Pages[3], "Password"),
+            new SettingsSearchResult("Проверить подключение", Pages[3], "TestConnection")
+        ]);
+
         SelectedPage = Pages[0];
 
         foreach (var page in Pages)
@@ -41,6 +66,32 @@ public partial class SettingsDialogWindowViewModel : ViewModelBase
             if (page.ViewModel is INotifyPropertyChanged npc)
                 npc.PropertyChanged += OnPagePropertyChanged;
         }
+    }
+
+    partial void OnSearchTextChanged(string? value)
+    {
+        var terms = (value ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        IsSearching = terms.Length > 0;
+        SearchResults.Clear();
+
+        if (IsSearching)
+        {
+            foreach (var result in _searchIndex.Where(result => terms.All(term =>
+                         result.Title.Contains(term, StringComparison.CurrentCultureIgnoreCase) ||
+                         result.Page.Title.Contains(term, StringComparison.CurrentCultureIgnoreCase))))
+                SearchResults.Add(result);
+        }
+
+        NoSearchResults = IsSearching && SearchResults.Count == 0;
+    }
+
+    partial void OnSelectedSearchResultChanged(SettingsSearchResult? value)
+    {
+        if (value is null) return;
+        SelectedPage = value.Page;
+        if (value.Target is not null)
+            NavigationRequested?.Invoke(value.Target);
+        SelectedSearchResult = null;
     }
 
     private void OnPagePropertyChanged(object? sender, PropertyChangedEventArgs e)

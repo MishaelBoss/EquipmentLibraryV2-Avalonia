@@ -18,7 +18,7 @@
                    FontSize="13"
                    TextWrapping="Wrap"/>
 
-        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517"
+        <Border x:Name="CheckLatestUpdates" BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517"
                 BoxShadow="0 2 8 0 #30000000">
             <Grid ColumnDefinitions="Auto, *, Auto" VerticalAlignment="Center">
                 <Border Width="40" Height="40" CornerRadius="20" Background="#1E3A5F" VerticalAlignment="Center" HorizontalAlignment="Center">

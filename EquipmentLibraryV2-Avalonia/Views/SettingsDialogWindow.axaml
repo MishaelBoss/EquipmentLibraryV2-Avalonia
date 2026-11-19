@@ -23,6 +23,9 @@
     <Window.Styles>
         <StyleInclude Source="/Styles/SettingsStyles.axaml"/>
         <StyleInclude Source="/Styles/Styles.axaml"/>
+        <Style Selector=":is(Control).setting-highlight">
+            <Setter Property="Opacity" Value="0.5"/>
+        </Style>
     </Window.Styles>
     
     <Window.DataTemplates>
@@ -34,6 +37,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type settingsVm:UpdatesUserControlViewModel}">
             <settings:UpdatesUserControlView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type settingsVm:ConnectionUserControlViewModel}">
+            <settings:ConnectionUserControlView/>
         </DataTemplate>
     </Window.DataTemplates>
 
@@ -48,12 +54,14 @@
             <Grid Grid.Column="0" RowDefinitions="Auto, *" Background="#2D2D35" Margin="0,0,0,0">
                 <TextBox Grid.Row="0" 
                          Margin="10,4" 
-                         PlaceholderText="Search" 
+                         PlaceholderText="Поиск настроек"
+                         Text="{Binding SearchText}"
                          Height="32" 
                          Classes="Search"/>
                 
                 <ListBox Grid.Row="1" 
-                         ItemsSource="{Binding Pages}" 
+                         ItemsSource="{Binding Pages}"
+                         IsVisible="{Binding !IsSearching}"
                          SelectedItem="{Binding SelectedPage}" 
                          Background="Transparent" 
                          BorderThickness="0" 
@@ -69,6 +77,25 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <ListBox Grid.Row="1" ItemsSource="{Binding SearchResults}"
+                         SelectedItem="{Binding SelectedSearchResult}"
+                         IsVisible="{Binding IsSearching}"
+                         Background="Transparent" BorderThickness="0" Margin="0,12,0,0">
+                    <ListBox.Styles>
+                        <StyleInclude Source="/Styles/SettingsListStyles.axaml"/>
+                    </ListBox.Styles>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="{Binding Title}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding Section}" FontSize="11" Foreground="#9E9EB0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Grid.Row="1" Text="Ничего не найдено"
+                           IsVisible="{Binding NoSearchResults}"
+                           Foreground="#9E9EB0" Margin="16,20,16,0"/>
             </Grid>
 
             <Border Grid.Column="1" 
@@ -84,8 +111,9 @@
                                Foreground="White" 
                                Margin="0,0,0,16"/>
                     
-                    <ContentControl Grid.Row="1" 
-                                    Content="{Binding SelectedPage.ViewModel}"/>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <ContentControl x:Name="SettingsContent" Content="{Binding SelectedPage.ViewModel}"/>
+                    </ScrollViewer>
                 </Grid>
             </Border>
         </Grid>

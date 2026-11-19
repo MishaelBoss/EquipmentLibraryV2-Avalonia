@@ -16,7 +16,7 @@
                    FontSize="13" 
                    TextWrapping="Wrap"/>
         
-        <Border BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517">
+        <Border x:Name="Logs" BorderBrush="#2D2D30" BorderThickness="1" CornerRadius="8" Padding="16" Background="#151517">
             <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="Журналы работы приложения" FontSize="14" FontWeight="Medium" Foreground="White"/>
